@@ -27,7 +27,7 @@ const frameworkRe = new RegExp(`\\b(${words(frameworks)})\\b`, 'i');
 const authorRe = new RegExp(`\\b(${words(authors)})\\b`);
 const generatedRe = new RegExp(`\\b${w('A', 'I')}\\b`);
 const generatedLongRe = new RegExp(w('artificial', ' intelligence'), 'i');
-const symbols = /[©®™]/g;
+const symbols = /[\u00a9\u00ae\u2122]/g;
 
 export const rules = [
   { name: 'en dash', test: (line) => line.includes(String.fromCharCode(0x2013)) },
