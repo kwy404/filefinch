@@ -1,0 +1,69 @@
+{
+  "name": "filefinch",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Send files and whole folders straight between your own devices in the browser, like a personal cloud drive without the cloud: peer to peer over WebRTC, no server, no account, no size limit, resumable, with end to end encryption and folder sync.",
+  "keywords": [
+    "p2p file transfer",
+    "peer to peer file transfer",
+    "send large files",
+    "send large files free",
+    "transfer files between devices",
+    "share files between phone and computer",
+    "file sharing without upload",
+    "webrtc file transfer",
+    "webrtc data channel",
+    "browser file transfer",
+    "airdrop alternative",
+    "airdrop for windows",
+    "send files without cloud",
+    "no account file sharing",
+    "end to end encrypted file transfer",
+    "folder sync",
+    "sync folders between computers",
+    "resume file transfer",
+    "serverless",
+    "pwa",
+    "offline",
+    "qr code",
+    "file system access api",
+    "local first"
+  ],
+  "homepage": "https://kwy404.github.io/filefinch/",
+  "bugs": {
+    "url": "https://github.com/kwy404/filefinch/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kwy404/filefinch.git"
+  },
+  "license": "MIT",
+  "author": "Alexandre Kohler (https://github.com/kwy404)",
+  "type": "module",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.18"
+  },
+  "scripts": {
+    "build:app": "node scripts/build-app.mjs",
+    "check:app": "node scripts/build-app.mjs --check",
+    "lint": "eslint .",
+    "check:rules": "node scripts/check-rules.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "node test/app-e2e.mjs",
+    "serve": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^16.5.0",
+    "jsqr": "^1.4.0",
+    "playwright-core": "^1.64.1",
+    "vitest": "^3.2.7"
+  }
+}
