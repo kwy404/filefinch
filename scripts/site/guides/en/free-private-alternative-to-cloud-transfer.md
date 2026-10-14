@@ -79,7 +79,7 @@ That single round trip is enough. Because the invite contains the network addres
 
 Sometimes a direct path is impossible. Both devices may be behind strict NAT, a mobile carrier may use carrier grade NAT, or a corporate firewall may block peer connections. In those cases a TURN relay can forward the traffic.
 
-A relay only forwards encrypted packets, so it cannot read your files. It can, however, see the two IP addresses and how much data flows. filefinch detects when a connection fails, explains why in plain words, and offers a Settings option to add your own TURN servers, stored locally on your device. A free public relay may be included when one is available, but that cannot be promised.
+A relay only forwards encrypted packets, so it cannot read your files. It can, however, see the two IP addresses and how much data flows. filefinch detects when a connection fails, explains why in plain words, and offers a Settings option to add your own TURN servers, stored locally on your device.
 
 ## Other things you get for free
 

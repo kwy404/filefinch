@@ -46,7 +46,7 @@
    "inLanguage": "en",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 1324,
+   "wordCount": 1302,
    "keywords": "is webrtc file sharing safe",
    "author": {
     "@type": "Person",
@@ -262,7 +262,7 @@
 <ul><li>Share it only with your own device or the specific person receiving files.</li><li>Do not post invites in public chats, forums or social media.</li><li>Use a fresh invite for each connection. An invite is meant for one connection.</li></ul>
 <p>If hiding your IP address from the other person is a hard requirement, a direct peer to peer tool is simply not the right fit for that situation.</p>
 <h3 id="turn-relays-when-traffic-goes-through-a-middle-server">TURN relays: when traffic goes through a middle server</h3>
-<p>Sometimes both devices sit behind strict NAT, such as symmetric NAT, carrier grade NAT on some mobile networks, or a locked down corporate firewall. A direct path may then be impossible, and the connection fails. filefinch detects this, explains it in plain words, and lets you add your own TURN servers in Settings. Those settings stay on your device. When a free public relay happens to be available, it may be included too, but there is no guarantee one always is.</p>
+<p>Sometimes both devices sit behind strict NAT, such as symmetric NAT, carrier grade NAT on some mobile networks, or a locked down corporate firewall. A direct path may then be impossible, and the connection fails. filefinch detects this, explains it in plain words, and lets you add your own TURN servers in Settings. Those settings stay on your device.</p>
 <p>A TURN relay forwards the encrypted DTLS packets between the two browsers. Here is what it can and cannot see:</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">A TURN relay can see</th><th scope="col">A TURN relay cannot see</th></tr></thead><tbody><tr><td>Both IP addresses</td><td>File contents</td></tr><tr><td>When the transfer happens</td><td>File names and folder paths</td></tr><tr><td>Roughly how much data moved</td><td>Your passphrase, if you use one</td></tr></tbody></table></div>
 <p>If you run your own TURN server, you control that metadata too.</p>

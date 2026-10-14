@@ -103,10 +103,12 @@ if (shots) {
   }
 }
 
-await browser.close();
+// Closing a headless Edge can hang on Windows, so do not wait for it forever.
+await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 5000))]);
 server.close();
 if (problems.length) {
   console.error(problems.join('\n'));
   process.exit(1);
 }
 console.log(`site QA: ${queue.length} pages, ${checked.size} internal URLs, no console errors, no broken links`);
+process.exit(0);

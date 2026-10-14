@@ -75,7 +75,7 @@ A few important points about TURN:
 - The relay can see both IP addresses and how much data flows.
 - Relays cost money to run, because every byte passes through them. That is why free public TURN servers are rare. Google, for example, offers public STUN servers but no public TURN server.
 
-filefinch detects when a direct connection fails, explains what happened in plain words, and offers a Settings option to add your own TURN servers, which are stored only on your device. It may also include a free public relay when one is available, but that is not guaranteed. TURN is described in [RFC 8656](https://www.rfc-editor.org/rfc/rfc8656).
+filefinch detects when a direct connection fails, explains what happened in plain words, and offers a Settings option to add your own TURN servers, which are stored only on your device. TURN is described in [RFC 8656](https://www.rfc-editor.org/rfc/rfc8656).
 
 ## ICE: trying every path and picking one that works
 

@@ -46,7 +46,7 @@
    "inLanguage": "en",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 1448,
+   "wordCount": 1431,
    "keywords": "peer to peer file transfer",
    "author": {
     "@type": "Person",
@@ -258,7 +258,7 @@
 <p>Some networks make a direct path impossible. Symmetric NAT, the carrier grade NAT used by some mobile carriers, and strict corporate firewalls can all prevent hole punching. In those cases a TURN server can help. TURN is a relay: both devices connect to it, and it forwards traffic between them.</p>
 <p>A few important points about TURN:</p>
 <ul><li>The data stays encrypted between the two browsers, so the relay forwards packets it cannot read.</li><li>The relay can see both IP addresses and how much data flows.</li><li>Relays cost money to run, because every byte passes through them. That is why free public TURN servers are rare. Google, for example, offers public STUN servers but no public TURN server.</li></ul>
-<p>filefinch detects when a direct connection fails, explains what happened in plain words, and offers a Settings option to add your own TURN servers, which are stored only on your device. It may also include a free public relay when one is available, but that is not guaranteed. TURN is described in <a href="https://www.rfc-editor.org/rfc/rfc8656" rel="noopener">RFC 8656</a>.</p>
+<p>filefinch detects when a direct connection fails, explains what happened in plain words, and offers a Settings option to add your own TURN servers, which are stored only on your device. TURN is described in <a href="https://www.rfc-editor.org/rfc/rfc8656" rel="noopener">RFC 8656</a>.</p>
 </section>
 <section id="ice-trying-every-path-and-picking-one-that-works" class="prose-sec"><h2>ICE: trying every path and picking one that works</h2>
 <p>With several possible routes, something has to choose. ICE, short for Interactive Connectivity Establishment, is that referee. Each device collects a list of candidates, which are addresses where it might be reachable:</p>

@@ -207,7 +207,7 @@ img { max-width: 100%; }
 .flight-stage[data-step="4"] .b2 { animation-delay: .4s; background: #22B98A; }
 .flight-stage[data-step="4"] .b3 { animation-delay: .8s; }
 @keyframes fill { from { transform: scaleX(.04); } to { transform: scaleX(1); } }
-.scan { position: relative; width: 82%; aspect-ratio: 1; margin-top: .6em; border-radius: .8em; background: repeating-linear-gradient(45deg, #2C4370 0 .5em, #34507F .5em 1em); overflow: hidden; }
+.scan { position: relative; width: 92%; aspect-ratio: 1; margin-top: .6em; border-radius: .8em; background: repeating-linear-gradient(45deg, #2C4370 0 .5em, #34507F .5em 1em); overflow: hidden; }
 .scan-c { position: absolute; inset: 14%; border: .22em solid #4BE0B0; border-radius: .4em; clip-path: polygon(0 0, 30% 0, 30% 8%, 8% 8%, 8% 30%, 0 30%, 0 70%, 8% 70%, 8% 92%, 30% 92%, 30% 100%, 70% 100%, 70% 92%, 92% 92%, 92% 70%, 100% 70%, 100% 30%, 92% 30%, 92% 8%, 70% 8%, 70% 0, 100% 0, 100% 100%, 0 100%); }
 .scan-line { position: absolute; left: 12%; right: 12%; height: .2em; top: 20%; background: #4BE0B0; box-shadow: 0 0 .8em #4BE0B0; animation: scan 1.6s ease-in-out infinite alternate; }
 @keyframes scan { to { top: 78%; } }
@@ -490,3 +490,6 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
 .foot-legal { max-width: 80rem; margin: 2.5rem auto 0; padding-top: 1.2rem; border-top: 1px solid rgb(255 255 255 / .12); display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem; font-size: .85rem; color: #9DB3E0; }
 @media (max-width: 1000px) { .foot-in { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .foot-in { grid-template-columns: 1fr; } .foot-more { grid-template-columns: 1fr; } }
+
+/* Very large screens: scale the whole page up a little. */
+@media (min-width: 2200px) { html { font-size: 118.75%; } }

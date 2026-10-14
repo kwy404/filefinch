@@ -83,7 +83,7 @@ If hiding your IP address from the other person is a hard requirement, a direct 
 
 ### TURN relays: when traffic goes through a middle server
 
-Sometimes both devices sit behind strict NAT, such as symmetric NAT, carrier grade NAT on some mobile networks, or a locked down corporate firewall. A direct path may then be impossible, and the connection fails. filefinch detects this, explains it in plain words, and lets you add your own TURN servers in Settings. Those settings stay on your device. When a free public relay happens to be available, it may be included too, but there is no guarantee one always is.
+Sometimes both devices sit behind strict NAT, such as symmetric NAT, carrier grade NAT on some mobile networks, or a locked down corporate firewall. A direct path may then be impossible, and the connection fails. filefinch detects this, explains it in plain words, and lets you add your own TURN servers in Settings. Those settings stay on your device.
 
 A TURN relay forwards the encrypted DTLS packets between the two browsers. Here is what it can and cannot see:
 
