@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>(function(){try{var t=localStorage.getItem('voodoo:theme');if(t&&t.charAt(0)==='"')t=JSON.parse(t);var r=document.documentElement;if(t==='light'||t==='dark'){r.setAttribute('data-theme',t);r.style.colorScheme=t}else{r.removeAttribute('data-theme')}}catch(e){}})();</script>
+<title>Peer to Peer File Transfer Explained in Plain Words | filefinch</title>
+<meta name="description" content="Peer to peer file transfer explained in plain words. How WebRTC, NAT, STUN, TURN, ICE and signaling let two browsers send files directly, and its limits.">
+<link rel="canonical" href="https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/">
+<link rel="alternate" hreflang="en" href="https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/">
+<link rel="alternate" hreflang="x-default" href="https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/">
+<meta name="author" content="Alexandre Kohler">
+<meta name="theme-color" content="#EAF5FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1530" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="filefinch">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Peer to Peer File Transfer Explained in Plain Words | filefinch">
+<meta property="og:description" content="Peer to peer file transfer explained in plain words. How WebRTC, NAT, STUN, TURN, ICE and signaling let two browsers send files directly, and its limits.">
+<meta property="og:url" content="https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/">
+<meta property="og:image" content="https://kwy404.github.io/filefinch/assets/og/peer-to-peer-file-transfer-explained.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A laptop shows an invite QR code while a phone scans it">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Peer to Peer File Transfer Explained in Plain Words | filefinch">
+<meta name="twitter:description" content="Peer to peer file transfer explained in plain words. How WebRTC, NAT, STUN, TURN, ICE and signaling let two browsers send files directly, and its limits.">
+<meta name="twitter:image" content="https://kwy404.github.io/filefinch/assets/og/peer-to-peer-file-transfer-explained.png">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monsooncss@0.2.0/dist/monsoon.min.css">
+<link rel="stylesheet" href="../../assets/site/site.css">
+<script src="https://cdn.jsdelivr.net/npm/voodoojs@1.0.0/dist/voodoo.full.min.js" data-manual defer></script>
+<script type="module" src="../../assets/site/site.js"></script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "TechArticle",
+   "@id": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#article",
+   "headline": "Peer to peer file transfer explained, without the jargon",
+   "description": "Peer to peer file transfer explained in plain words. How WebRTC, NAT, STUN, TURN, ICE and signaling let two browsers send files directly, and its limits.",
+   "image": "https://kwy404.github.io/filefinch/assets/og/peer-to-peer-file-transfer-explained.png",
+   "inLanguage": "en",
+   "datePublished": "2026-10-14",
+   "dateModified": "2026-10-14",
+   "wordCount": 1448,
+   "keywords": "peer to peer file transfer",
+   "author": {
+    "@type": "Person",
+    "name": "Alexandre Kohler",
+    "url": "https://github.com/kwy404"
+   },
+   "publisher": {
+    "@type": "Person",
+    "name": "Alexandre Kohler",
+    "url": "https://github.com/kwy404"
+   },
+   "mainEntityOfPage": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/",
+   "about": {
+    "@type": "WebApplication",
+    "name": "filefinch",
+    "url": "https://kwy404.github.io/filefinch/"
+   }
+  },
+  {
+   "@type": "HowTo",
+   "@id": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#howto",
+   "name": "How a peer to peer file transfer is set up with filefinch",
+   "description": "Peer to peer file transfer explained in plain words. How WebRTC, NAT, STUN, TURN, ICE and signaling let two browsers send files directly, and its limits.",
+   "image": "https://kwy404.github.io/filefinch/assets/og/peer-to-peer-file-transfer-explained.png",
+   "inLanguage": "en",
+   "totalTime": "PT5M",
+   "estimatedCost": {
+    "@type": "MonetaryAmount",
+    "currency": "USD",
+    "value": "0"
+   },
+   "tool": [
+    {
+     "@type": "HowToTool",
+     "name": "filefinch (free, in the browser)"
+    }
+   ],
+   "step": [
+    {
+     "@type": "HowToStep",
+     "position": 1,
+     "name": "Create the invite",
+     "text": "The first device gathers its network candidates, compresses the offer and shows it as a link and a QR code.",
+     "url": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#step-1"
+    },
+    {
+     "@type": "HowToStep",
+     "position": 2,
+     "name": "Open the invite",
+     "text": "The second device opens the link or scans the QR code and creates a short reply code.",
+     "url": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#step-2"
+    },
+    {
+     "@type": "HowToStep",
+     "position": 3,
+     "name": "Return the reply",
+     "text": "The reply goes back through any messenger, or by showing its QR code to the first device's camera.",
+     "url": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#step-3"
+    },
+    {
+     "@type": "HowToStep",
+     "position": 4,
+     "name": "Let ICE find a path",
+     "text": "The browsers test pairs of candidates and pick a direct path, or a TURN relay if nothing direct works.",
+     "url": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#step-4"
+    },
+    {
+     "@type": "HowToStep",
+     "position": 5,
+     "name": "Compare fingerprints and send",
+     "text": "Check that both screens show the same connection fingerprint, then send files over the encrypted data channel.",
+     "url": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#step-5"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/#faq",
+   "inLanguage": "en",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "What is peer to peer file transfer?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "It is a way of sending a file directly from one device to another instead of uploading it to a server first. Both devices must be online at the same time, and no copy is stored in the middle."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What is the difference between STUN and TURN?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "A STUN server only tells a device its public address, so the two devices can try to connect directly. A TURN server relays the traffic when no direct path is possible. A relay forwards encrypted packets it cannot read, but it can see the IP addresses and how much data flows."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does WebRTC need a server?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "WebRTC needs some way to exchange setup details, called signaling, and usually a STUN server to discover public addresses. filefinch avoids a signaling server by putting the setup details into a link or QR code that you pass along yourself."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is peer to peer file transfer encrypted?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "In WebRTC, yes. Data channels are always encrypted with DTLS, using keys generated by the two browsers. filefinch also offers an optional passphrase that adds a second layer of AES-GCM encryption."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Why does a peer to peer connection sometimes fail?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Strict networks such as symmetric NAT, carrier grade NAT on some mobile networks or corporate firewalls can block direct paths. A TURN relay solves this, and filefinch lets you add your own TURN servers in Settings."
+     }
+    }
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Home",
+     "item": "https://kwy404.github.io/filefinch/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Guides",
+     "item": "https://kwy404.github.io/filefinch/guides/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Peer to peer file transfer explained, without the jargon",
+     "item": "https://kwy404.github.io/filefinch/guides/peer-to-peer-file-transfer-explained/"
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body class="guide">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol><symbol id="i-system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 20 4l-4 16-4-6Z"/><path d="m12 14 8-10"/></symbol><symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3-3 15 0 18M12 3c3 3 3 15 0 18"/></symbol><symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 4 13 8-13 8Z"/></symbol><symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14M16 5v14"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1"/><path d="M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/></symbol><symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol><symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol></svg>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar" v-data="{ open: false }" @keydown.escape="open = false">
+  <div class="topbar-in">
+    <a class="brand" href="../../" aria-label="filefinch home"><img src="../../favicon.svg" width="34" height="34" alt=""><span class="brand-word">file<span>finch</span></span></a>
+    <nav id="topnav" class="topnav" :class="open ? 'is-open' : ''" aria-label="Main">
+      <a href="../../#how">How it works</a>
+      <a href="../../#privacy">Privacy</a>
+      <a href="../../#features">Features</a>
+      <a href="../../#faq">FAQ</a>
+      <a href="../../guides/" aria-current="page">Guides</a>
+      <a class="topnav-cta btn btn-primary btn-sm" href="../../app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Start sending</a>
+    </nav>
+    <div class="topbar-tools">
+      <a class="icon-btn lang-btn" href="../../pt/guias/" hreflang="pt-BR" lang="pt-BR" title="Guias em português" aria-label="Guias em português"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span>PT</span></a>
+      <a class="icon-btn" href="https://github.com/kwy404/filefinch" rel="noopener" aria-label="filefinch on GitHub"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg></a>
+      <button type="button" class="icon-btn theme-btn" v-theme-toggle.cycle aria-label="Theme: system, light or dark" title="Theme: system, light or dark"><svg class="ic ti-system" aria-hidden="true"><use href="#i-system"/></svg><svg class="ic ti-light" aria-hidden="true"><use href="#i-sun"/></svg><svg class="ic ti-dark" aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <button type="button" class="icon-btn nav-btn" aria-controls="topnav" :aria-expanded="open ? 'true' : 'false'" aria-expanded="false" @click="open = !open" aria-label="Menu"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+<main id="main">
+<div class="guide-wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">Peer to peer file transfer explained, without the jargon</li></ol></nav>
+<header class="guide-head">
+  <div class="guide-head-text">
+    <p class="kicker">Guide: peer to peer file transfer</p>
+    <h1>Peer to peer file transfer explained, without the jargon</h1>
+    <p class="lede">Peer to peer file transfer explained in plain words. How WebRTC, NAT, STUN, TURN, ICE and signaling let two browsers send files directly, and its limits.</p>
+    <p class="guide-meta"><span>7 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
+  </div>
+  <figure class="guide-art"><span class="art "><img class="art-l" src="../../assets/art/invite-qr.svg" width="640" height="400" alt="A laptop shows an invite QR code while a phone scans it" fetchpriority="high"><img class="art-d" src="../../assets/art/invite-qr-dark.svg" width="640" height="400" alt="" aria-hidden="true" fetchpriority="high"></span></figure>
+</header>
+<div class="guide-grid">
+  <aside class="guide-side" aria-label="On this page">
+    <div class="toc"><p class="toc-h">On this page</p><ol><li><a href="#client-server-versus-peer-to-peer">Client server versus peer to peer</a></li><li><a href="#the-obstacle-nat-and-firewalls">The obstacle: NAT and firewalls</a></li><li><a href="#stun-finding-out-how-you-look-from-outside">STUN: finding out how you look from outside</a></li><li><a href="#turn-the-relay-for-difficult-networks">TURN: the relay for difficult networks</a></li><li><a href="#ice-trying-every-path-and-picking-one-that-works">ICE: trying every path and picking one that works</a></li><li><a href="#signaling-the-introduction">Signaling: the introduction</a></li><li><a href="#data-channels-carrying-the-file">Data channels: carrying the file</a></li><li><a href="#when-peer-to-peer-is-not-the-right-tool">When peer to peer is not the right tool</a></li><li><a href="#steps">Step by step</a></li><li><a href="#faq">Questions people ask</a></li></ol></div>
+    <div class="try-card"><img src="../../assets/art/finn-head.svg" width="96" height="83" alt="" loading="lazy"><p class="try-h">Try it now</p><p>Open filefinch on two devices, share the invite link or QR code and the files fly straight across. Free, no account.</p><a class="btn btn-primary btn-sm" href="../../app/">Start sending</a><a class="btn btn-ghost btn-sm" href="../../#how">How it works</a></div>
+  </aside>
+  <article class="prose" id="article">
+<p>Peer to peer file transfer means two devices send a file straight to each other, instead of one uploading it to a server and the other downloading it later. The idea is simple. Making it work across home routers, mobile networks and office firewalls is where the interesting parts are.</p>
+<p>This guide explains those parts in plain words: what NAT is and why it gets in the way, what STUN, TURN and ICE do, what signaling means, and how a WebRTC data channel carries your file. It uses filefinch, a free open source browser app, as the running example, but the ideas apply to any tool built on WebRTC.</p>
+<section id="client-server-versus-peer-to-peer" class="prose-sec"><h2>Client server versus peer to peer</h2>
+<p>Most file sharing is client server. Your device is the client, a company's computer is the server, and every file passes through that server. It is like sending a parcel through a post office that keeps it at the counter until the recipient comes to collect it.</p>
+<p>Peer to peer is more like handing the parcel over in person. Both devices are equals, or peers, and the data goes from one to the other. That brings some clear benefits:</p>
+<ul><li>No stored copy on a third party machine</li><li>No upload that has to finish before the download can start</li><li>On the same local network, the data may never leave the building</li></ul>
+<p>It also brings one clear requirement: both devices have to be online at the same time, because nobody in the middle is holding the parcel.</p>
+</section>
+<section id="the-obstacle-nat-and-firewalls" class="prose-sec"><h2>The obstacle: NAT and firewalls</h2>
+<p>Your phone or laptop usually does not have its own public internet address. Your router has one public address and shares it among all the devices in your home, giving each one a private address such as 192.168.1.23. This is called Network Address Translation, or NAT.</p>
+<p>NAT works well for normal browsing, because your device starts every conversation and the router remembers where to send the replies. It is a problem for peer to peer, because now two devices, each hidden behind its own router, need to reach each other. Neither one knows the other's public address, and each router tends to drop traffic it was not expecting.</p>
+<p>Firewalls add another layer. Home routers are usually relaxed about outgoing traffic. Corporate networks and some mobile carriers are much stricter.</p>
+</section>
+<section id="stun-finding-out-how-you-look-from-outside" class="prose-sec"><h2>STUN: finding out how you look from outside</h2>
+<p>The first trick is simple: ask someone outside. A STUN server is a small public service that answers one question, namely which address and port a message came from. Your browser sends a tiny request, and the answer tells it how it appears on the public internet.</p>
+<p>filefinch uses public STUN servers run by Google for this step. The STUN server sees your IP address, as any server you contact does, but it never sees your files. Its only job is to report your public address back to you.</p>
+<p>Once each device knows its public address, the two can often open a path through both routers by sending packets toward each other at roughly the same time. This technique, usually called hole punching, works on most home networks. The STUN protocol is described in <a href="https://www.rfc-editor.org/rfc/rfc8489" rel="noopener">RFC 8489</a>.</p>
+</section>
+<section id="turn-the-relay-for-difficult-networks" class="prose-sec"><h2>TURN: the relay for difficult networks</h2>
+<p>Some networks make a direct path impossible. Symmetric NAT, the carrier grade NAT used by some mobile carriers, and strict corporate firewalls can all prevent hole punching. In those cases a TURN server can help. TURN is a relay: both devices connect to it, and it forwards traffic between them.</p>
+<p>A few important points about TURN:</p>
+<ul><li>The data stays encrypted between the two browsers, so the relay forwards packets it cannot read.</li><li>The relay can see both IP addresses and how much data flows.</li><li>Relays cost money to run, because every byte passes through them. That is why free public TURN servers are rare. Google, for example, offers public STUN servers but no public TURN server.</li></ul>
+<p>filefinch detects when a direct connection fails, explains what happened in plain words, and offers a Settings option to add your own TURN servers, which are stored only on your device. It may also include a free public relay when one is available, but that is not guaranteed. TURN is described in <a href="https://www.rfc-editor.org/rfc/rfc8656" rel="noopener">RFC 8656</a>.</p>
+</section>
+<section id="ice-trying-every-path-and-picking-one-that-works" class="prose-sec"><h2>ICE: trying every path and picking one that works</h2>
+<p>With several possible routes, something has to choose. ICE, short for Interactive Connectivity Establishment, is that referee. Each device collects a list of candidates, which are addresses where it might be reachable:</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Candidate type</th><th scope="col">What it is</th><th scope="col">When it helps</th></tr></thead><tbody><tr><td>Host</td><td>The device's own local network address</td><td>Both devices on the same network</td></tr><tr><td>Server reflexive</td><td>The public address learned through STUN</td><td>Most home networks</td></tr><tr><td>Relay</td><td>An address on a TURN server</td><td>When nothing else gets through</td></tr></tbody></table></div>
+<p>The two devices swap their candidate lists, test pairs of candidates against each other, and settle on a pair that works. Direct paths are preferred, and the relay is the last resort. ICE is described in <a href="https://www.rfc-editor.org/rfc/rfc8445" rel="noopener">RFC 8445</a>.</p>
+<p>This is also why two devices on the same Wi-Fi can connect without any internet once filefinch has been loaded: the host candidates are enough. The <a href="../../guides/transfer-files-on-the-same-wifi/">same Wi-Fi guide</a> covers that case.</p>
+</section>
+<section id="signaling-the-introduction" class="prose-sec"><h2>Signaling: the introduction</h2>
+<p>There is a chicken and egg problem in all of this. To swap candidate lists and security details, the devices need to talk. But they cannot talk until they are connected. The exchange that solves this is called signaling.</p>
+<p>WebRTC does not dictate how signaling happens. Many apps run a signaling server that passes these setup messages along. filefinch does it differently, with no signaling server at all:</p>
+<ol><li>The first device gathers all of its candidates before doing anything else, so the complete offer is ready in one piece.</li><li>It trims the offer, compresses it and encodes it into a link and a QR code. This is the invite.</li><li>The second device opens the link or scans the QR code, and creates its answer as a short reply code, again shown as a link or QR code.</li><li>The reply goes back through any messenger, or by showing it to the first device's camera.</li></ol>
+<p>One round trip, and the two browsers can connect. If camera scanning is not available in a browser, pasting the codes by hand always works. Because the invite contains your network addresses, share it only with your own device or the person you are sending to.</p>
+</section>
+<section id="data-channels-carrying-the-file" class="prose-sec"><h2>Data channels: carrying the file</h2>
+<p>Once ICE has found a path, WebRTC sets up an encrypted connection. Encryption is not optional in WebRTC: it always uses DTLS, with keys generated in the two browsers for that one connection. On top of it runs a data channel, a pipe for any kind of data. Video calls mostly use other parts of WebRTC; file transfer uses data channels.</p>
+<p>Here is how filefinch uses a data channel to move a file:</p>
+<ul><li>The sender reads the file in 64 KiB chunks, so the whole file is never loaded into memory at once.</li><li>The chunks travel through the channel, and the receiver saves them as they arrive.</li><li>The file is hashed with SHA-256 as it streams, and the receiver checks the hash at the end.</li><li>If the connection drops, the transfer resumes from the last confirmed offset after you reconnect.</li></ul>
+<p>For extra protection, both people can type the same passphrase. Each device then derives an AES-GCM key from it, and every chunk is sealed again before it is sent. The passphrase itself never travels.</p>
+<h3 id="how-do-you-know-nobody-is-in-the-middle">How do you know nobody is in the middle?</h3>
+<p>The invite and the reply travel through channels you choose. Someone able to intercept and replace both could, in principle, put themselves in the middle. filefinch makes that visible. Both devices show a short connection fingerprint derived from the DTLS certificates of both sides. If the two screens show the same code, nobody swapped the invite or the reply. The guide <a href="../../guides/is-webrtc-file-sharing-safe/">is WebRTC file sharing safe</a> goes deeper into this.</p>
+</section>
+<section id="when-peer-to-peer-is-not-the-right-tool" class="prose-sec"><h2>When peer to peer is not the right tool</h2>
+<p>Peer to peer transfer, including filefinch, does not fit every job:</p>
+<ul><li><strong>Both devices must be online at once.</strong> If the receiver is offline, a cloud upload lets the file wait for them.</li><li><strong>Speed follows the slower side.</strong> Across the internet that is usually the sender's upload speed. On the same local network it is often much faster.</li><li><strong>Some networks need a relay.</strong> Without a TURN server, a few strict networks cannot connect at all.</li><li><strong>Mobile browsers may pause background tabs.</strong> Keep the screen on during long transfers.</li></ul>
+<p>The MDN <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API" rel="noopener">WebRTC API documentation</a> is a good technical reference if you want to go further. To see all of this in action, open <a href="../../app/">filefinch</a> on two devices and send a file, or read <a href="../../#how">how it works</a> on the home page.</p>
+</section>
+    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Create the invite</h3><p>The first device gathers its network candidates, compresses the offer and shows it as a link and a QR code.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Open the invite</h3><p>The second device opens the link or scans the QR code and creates a short reply code.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Return the reply</h3><p>The reply goes back through any messenger, or by showing its QR code to the first device's camera.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Let ICE find a path</h3><p>The browsers test pairs of candidates and pick a direct path, or a TURN relay if nothing direct works.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Compare fingerprints and send</h3><p>Check that both screens show the same connection fingerprint, then send files over the encrypted data channel.</p></div></li></ol></section>
+    <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>What is peer to peer file transfer?</summary><p>It is a way of sending a file directly from one device to another instead of uploading it to a server first. Both devices must be online at the same time, and no copy is stored in the middle.</p></details><details><summary>What is the difference between STUN and TURN?</summary><p>A STUN server only tells a device its public address, so the two devices can try to connect directly. A TURN server relays the traffic when no direct path is possible. A relay forwards encrypted packets it cannot read, but it can see the IP addresses and how much data flows.</p></details><details><summary>Does WebRTC need a server?</summary><p>WebRTC needs some way to exchange setup details, called signaling, and usually a STUN server to discover public addresses. filefinch avoids a signaling server by putting the setup details into a link or QR code that you pass along yourself.</p></details><details><summary>Is peer to peer file transfer encrypted?</summary><p>In WebRTC, yes. Data channels are always encrypted with DTLS, using keys generated by the two browsers. filefinch also offers an optional passphrase that adds a second layer of AES-GCM encryption.</p></details><details><summary>Why does a peer to peer connection sometimes fail?</summary><p>Strict networks such as symmetric NAT, carrier grade NAT on some mobile networks or corporate firewalls can block direct paths. A TURN relay solves this, and filefinch lets you add your own TURN servers in Settings.</p></details></div></section>
+  </article>
+</div>
+<section class="related" aria-labelledby="related-h"><h2 id="related-h">Keep reading</h2><div class="cards"><a class="gcard" href="../../guides/is-webrtc-file-sharing-safe/"><span class="art "><img class="art-l" src="../../assets/art/fingerprint-match.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/fingerprint-match-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">is webrtc file sharing safe</span><span class="gcard-t">Is WebRTC file sharing safe? What it protects and what it does not</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/share-files-without-uploading/"><span class="art "><img class="art-l" src="../../assets/art/direct-flight.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/direct-flight-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">share files without uploading</span><span class="gcard-t">Share files without uploading them to the cloud</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/transfer-files-on-the-same-wifi/"><span class="art "><img class="art-l" src="../../assets/art/same-wifi.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/same-wifi-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transfer files on the same wifi</span><span class="gcard-t">How to transfer files on the same Wi-Fi between any devices</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/free-private-alternative-to-cloud-transfer/"><span class="art "><img class="art-l" src="../../assets/art/cloud-vs-direct.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/cloud-vs-direct-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">private alternative to cloud transfer</span><span class="gcard-t">A free and private alternative to cloud file transfer</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div></section>
+</div>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="../../"><img src="../../favicon.svg" width="34" height="34" alt=""><span class="brand-word">file<span>finch</span></span></a>
+      <p>Send files and whole folders straight between your own devices. Peer to peer in the browser: no server of ours, no account, nothing stored online.</p>
+      <p class="foot-made">Made by <strong>Alexandre Kohler</strong> (<a href="https://github.com/kwy404" rel="me noopener">GitHub</a> and <a href="https://www.linkedin.com/in/alexandre-silva-173687256/" rel="me noopener">LinkedIn</a>).</p>
+      <p class="foot-built">Built with <a href="https://kwy404.github.io/monsoon/" rel="noopener">Monsoon</a>. Interactive parts built with <a href="https://kwy404.github.io/Voodoo.js/" rel="noopener">Voodoo.js</a>.</p>
+    </div>
+    <div>
+      <h2 class="foot-h">filefinch</h2>
+      <ul class="foot-list"><li><a href="../../app/">Open the app</a></li><li><a href="../../#how">How it works</a></li><li><a href="../../guides/">All guides</a></li><li><a href="https://github.com/kwy404/filefinch" rel="noopener">Source on GitHub</a></li><li><a href="https://github.com/kwy404/filefinch/blob/main/SECURITY.md" rel="noopener">Security policy</a></li><li><a href="https://github.com/kwy404/filefinch/blob/main/CHANGELOG.md" rel="noopener">Changelog</a></li></ul>
+    </div>
+    <div>
+      <h2 class="foot-h">Popular guides</h2>
+      <ul class="foot-list"><li><a href="../../guides/send-large-files-without-limits/">Send large files without limits</a></li><li><a href="../../guides/transfer-files-from-phone-to-pc-without-cable/">Phone to PC without a cable</a></li><li><a href="../../guides/airdrop-for-windows-and-android/">AirDrop for Windows and Android</a></li><li><a href="../../guides/send-a-whole-folder/">Send a whole folder</a></li><li><a href="../../guides/is-webrtc-file-sharing-safe/">Is WebRTC file sharing safe?</a></li><li><a href="../../guides/peer-to-peer-file-transfer-explained/">Peer to peer file transfer explained</a></li></ul>
+    </div>
+    <div>
+      <h2 class="foot-h">More from kwy404</h2>
+      <ul class="foot-list foot-more"><li><a href="https://kwy404.github.io/monsoon/" rel="noopener">Monsoon</a><small>CSS framework with no build step</small></li><li><a href="https://kwy404.github.io/Voodoo.js/" rel="noopener">Voodoo.js</a><small>reactive HTML attributes</small></li><li><a href="https://kwy404.github.io/howlden/" rel="noopener">howlden</a><small>serverless peer to peer voice and chat rooms</small></li><li><a href="https://kwy404.github.io/breakhound/" rel="noopener">breakhound</a><small>finds bugs in any JS library</small></li><li><a href="https://kwy404.github.io/vueleap/" rel="noopener">vueleap</a><small>migrate Vue 2 to Vue 3</small></li><li><a href="https://kwy404.github.io/graphemely/" rel="noopener">graphemely</a><small>emoji safe string utilities</small></li><li><a href="https://kwy404.github.io/numberparrot/" rel="noopener">numberparrot</a><small>parse localized numbers</small></li><li><a href="https://kwy404.github.io/edgegoat/" rel="noopener">edgegoat</a><small>edge case test inputs</small></li><li><a href="https://kwy404.github.io/cookieowl/" rel="noopener">cookieowl</a><small>cookie consent for LGPD and GDPR</small></li><li><a href="https://kwy404.github.io/installkite/" rel="noopener">installkite</a><small>make any site an installable PWA</small></li><li><a href="https://kwy404.github.io/a11ymedic/" rel="noopener">a11ymedic</a><small>accessibility checker with fixes</small></li><li><a href="https://kwy404.github.io/fontsketch/" rel="noopener">fontsketch</a><small>turn your handwriting into a font</small></li><li><a href="https://kwy404.github.io/kastor/" rel="noopener">kastor</a><small>TypeScript ORM for almost every database</small></li></ul>
+    </div>
+  </div>
+  <p class="foot-legal">MIT License. Free and open source, no tracking. <span>filefinch 0.1.0</span></p>
+</footer>
+</body>
+</html>

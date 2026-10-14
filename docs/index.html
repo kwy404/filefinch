@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>(function(){try{var t=localStorage.getItem('voodoo:theme');if(t&&t.charAt(0)==='"')t=JSON.parse(t);var r=document.documentElement;if(t==='light'||t==='dark'){r.setAttribute('data-theme',t);r.style.colorScheme=t}else{r.removeAttribute('data-theme')}}catch(e){}})();</script>
+<title>filefinch: send files and folders straight between your devices, free and private</title>
+<meta name="description" content="Send files and whole folders of any size from one device to another with a link or QR code. Peer to peer: no server, no account, no upload, encrypted.">
+<link rel="canonical" href="https://kwy404.github.io/filefinch/">
+<link rel="alternate" hreflang="en" href="https://kwy404.github.io/filefinch/">
+<link rel="alternate" hreflang="x-default" href="https://kwy404.github.io/filefinch/">
+<meta name="author" content="Alexandre Kohler">
+<meta name="theme-color" content="#EAF5FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1530" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="filefinch">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="filefinch: send files and folders straight between your devices, free and private">
+<meta property="og:description" content="Send files and whole folders of any size from one device to another with a link or QR code. Peer to peer: no server, no account, no upload, encrypted.">
+<meta property="og:url" content="https://kwy404.github.io/filefinch/">
+<meta property="og:image" content="https://kwy404.github.io/filefinch/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="filefinch: Finn the finch courier flying files straight between your own devices, no cloud in between">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="filefinch: send files and folders straight between your devices, free and private">
+<meta name="twitter:description" content="Send files and whole folders of any size from one device to another with a link or QR code. Peer to peer: no server, no account, no upload, encrypted.">
+<meta name="twitter:image" content="https://kwy404.github.io/filefinch/og.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monsooncss@0.2.0/dist/monsoon.min.css">
+<link rel="stylesheet" href="assets/site/site.css">
+<script src="https://cdn.jsdelivr.net/npm/voodoojs@1.0.0/dist/voodoo.full.min.js" data-manual defer></script>
+<script type="module" src="assets/site/site.js"></script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebApplication",
+   "@id": "https://kwy404.github.io/filefinch/#app",
+   "name": "filefinch",
+   "url": "https://kwy404.github.io/filefinch/",
+   "applicationCategory": "UtilitiesApplication",
+   "applicationSubCategory": "Peer to peer file transfer",
+   "operatingSystem": "Any device with a modern web browser",
+   "browserRequirements": "Requires WebRTC and JavaScript",
+   "softwareVersion": "0.1.0",
+   "dateModified": "2026-10-14",
+   "description": "Send files and whole folders of any size from one device to another with a link or QR code. Peer to peer: no server, no account, no upload, encrypted.",
+   "image": "https://kwy404.github.io/filefinch/og.png",
+   "screenshot": "https://kwy404.github.io/filefinch/og.png",
+   "isAccessibleForFree": true,
+   "license": "https://opensource.org/licenses/MIT",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "featureList": [
+    "Whole folders",
+    "Resume after a drop",
+    "Previews",
+    "Folder sync",
+    "Local library",
+    "Invite link and QR code",
+    "Connection fingerprint",
+    "Optional passphrase",
+    "Integrity check",
+    "Installable, works offline",
+    "Help with strict networks",
+    "Any modern browser",
+    "100% serverless",
+    "No account",
+    "No upload",
+    "End to end encrypted",
+    "No size limit"
+   ],
+   "author": {
+    "@type": "Person",
+    "name": "Alexandre Kohler",
+    "url": "https://github.com/kwy404",
+    "sameAs": [
+     "https://github.com/kwy404",
+     "https://www.linkedin.com/in/alexandre-silva-173687256/"
+    ]
+   },
+   "codeRepository": "https://github.com/kwy404/filefinch"
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://kwy404.github.io/filefinch/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Is filefinch really free?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. It is free and open source under the MIT license. There are no plans, no ads, no account and no tracking. Since there is no server of ours carrying your files, there is nothing to pay for."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Do my files go through a server?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Files travel over a direct WebRTC connection between your two browsers. The only exception is a TURN relay, used only when both networks block direct connections. A relay forwards encrypted packets it cannot read, and filefinch tells you when one is in use."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is there a file size limit?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "filefinch sets none. Files are read and sent in small chunks, so a 50 GB video works the same way as a photo. The real limits are free space on the receiving device and how long both devices stay connected."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Do both devices need to be online at the same time?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. There is no storage in the middle, so the sender and the receiver must both have filefinch open while the files fly. If one closes the tab, the transfer pauses and can resume when you reconnect."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I connect two devices without an account?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Open filefinch on the first device and create an invite. Open the invite link or scan its QR code on the second device. It shows a short reply code; send it back by any messenger or scan it, and the devices connect directly."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I send a whole folder?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Pick or drop a folder and filefinch sends every file with its relative path. In browsers with folder access the tree is written straight into a folder you pick; elsewhere the folder arrives as one streamed .zip download."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it work between Android and iPhone, or Windows and Mac?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. filefinch runs in the browser, so any pair of modern browsers can connect: Android to iPhone, Windows to Mac, phone to PC or laptop to laptop."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What happens if the connection fails?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Usually one network is very strict (symmetric NAT or a corporate firewall). filefinch detects the failed connection, explains it in plain words and offers the TURN setting. Trying another network, like a phone hotspot, often works too."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can someone else join my transfer?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "An invite works for one connection. Treat the link like a key: send it only to your own device or to the person you are sending to. Comparing the connection fingerprint on both screens confirms you are talking to the right device."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does filefinch work without internet?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Once the app is loaded or installed it works offline. Two devices on the same local network can still connect through the invite and reply codes, because they find each other on the local network."
+     }
+    }
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://kwy404.github.io/filefinch/#site",
+   "name": "filefinch",
+   "url": "https://kwy404.github.io/filefinch/",
+   "inLanguage": [
+    "en",
+    "pt-BR"
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body class="home">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol><symbol id="i-system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 20 4l-4 16-4-6Z"/><path d="m12 14 8-10"/></symbol><symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3-3 15 0 18M12 3c3 3 3 15 0 18"/></symbol><symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 4 13 8-13 8Z"/></symbol><symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14M16 5v14"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol><symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1"/><path d="M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/></symbol><symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol><symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol></svg>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar" v-data="{ open: false }" @keydown.escape="open = false">
+  <div class="topbar-in">
+    <a class="brand" href="" aria-label="filefinch home"><img src="favicon.svg" width="34" height="34" alt=""><span class="brand-word">file<span>finch</span></span></a>
+    <nav id="topnav" class="topnav" :class="open ? 'is-open' : ''" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="guides/">Guides</a>
+      <a class="topnav-cta btn btn-primary btn-sm" href="app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Start sending</a>
+    </nav>
+    <div class="topbar-tools">
+      <a class="icon-btn lang-btn" href="pt/guias/" hreflang="pt-BR" lang="pt-BR" title="Guias em português" aria-label="Guias em português"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span>PT</span></a>
+      <a class="icon-btn" href="https://github.com/kwy404/filefinch" rel="noopener" aria-label="filefinch on GitHub"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg></a>
+      <button type="button" class="icon-btn theme-btn" v-theme-toggle.cycle aria-label="Theme: system, light or dark" title="Theme: system, light or dark"><svg class="ic ti-system" aria-hidden="true"><use href="#i-system"/></svg><svg class="ic ti-light" aria-hidden="true"><use href="#i-sun"/></svg><svg class="ic ti-dark" aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <button type="button" class="icon-btn nav-btn" aria-controls="topnav" :aria-expanded="open ? 'true' : 'false'" aria-expanded="false" @click="open = !open" aria-label="Menu"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="hero" aria-labelledby="hero-h">
+  <div class="hero-sky" aria-hidden="true"><span class="sun"></span><span class="streak s1"></span><span class="streak s2"></span><span class="streak s3"></span></div>
+  <div class="hero-in">
+    <div class="hero-copy">
+      <p class="kicker">Direct flight file transfer</p>
+      <h1 id="hero-h">Send files straight to your own devices. <span>No cloud in between.</span></h1>
+      <p class="lede">Like a personal drive between your phone and your computers, without the drive. Share an invite link or QR code and files and whole folders of any size fly from one device to the other, end to end encrypted.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg cta-main" href="app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Start sending</a>
+        <a class="btn btn-outline btn-lg" href="#how">See how it works</a>
+      </div>
+      <ul class="promise"><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/no-cloud.svg" width="22" height="22" alt=""><img class="art-d" src="assets/icons/dark/no-cloud.svg" width="22" height="22" alt=""></span><span>100% serverless</span></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/no-account.svg" width="22" height="22" alt=""><img class="art-d" src="assets/icons/dark/no-account.svg" width="22" height="22" alt=""></span><span>No account</span></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/direct.svg" width="22" height="22" alt=""><img class="art-d" src="assets/icons/dark/direct.svg" width="22" height="22" alt=""></span><span>No upload</span></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/lock.svg" width="22" height="22" alt=""><img class="art-d" src="assets/icons/dark/lock.svg" width="22" height="22" alt=""></span><span>End to end encrypted</span></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/infinity.svg" width="22" height="22" alt=""><img class="art-d" src="assets/icons/dark/infinity.svg" width="22" height="22" alt=""></span><span>No size limit</span></li></ul>
+    </div>
+    <div class="hero-demo"><div class="flight" v-data="{ step: 1, playing: true }" v-init="playing = !REDUCED_MOTION; setInterval(() => { if (playing) step = step % 4 + 1 }, 3600)">
+  <div class="flight-stage" :data-step="step" data-step="1" aria-live="polite">
+    <div class="dev dev-laptop" aria-hidden="true">
+      <div class="dev-screen">
+        <div class="scr scr-1"><p class="scr-k">Invite ready</p><div class="scr-qr"><svg viewBox="0 0 33 33" shape-rendering="crispEdges" aria-hidden="true"><rect width="33" height="33" fill="#fff"/><path fill="#10244A" d="M2 2h7v1h-7zM10 2h4v1h-4zM16 2h1v1h-1zM18 2h5v1h-5zM24 2h7v1h-7zM2 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM18 3h2v1h-2zM22 3h1v1h-1zM24 3h1v1h-1zM30 3h1v1h-1zM2 4h1v1h-1zM4 4h3v1h-3zM8 4h1v1h-1zM12 4h2v1h-2zM15 4h1v1h-1zM18 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM26 4h3v1h-3zM30 4h1v1h-1zM2 5h1v1h-1zM4 5h3v1h-3zM8 5h1v1h-1zM10 5h3v1h-3zM14 5h4v1h-4zM19 5h1v1h-1zM21 5h1v1h-1zM24 5h1v1h-1zM26 5h3v1h-3zM30 5h1v1h-1zM2 6h1v1h-1zM4 6h3v1h-3zM8 6h1v1h-1zM13 6h1v1h-1zM17 6h2v1h-2zM21 6h2v1h-2zM24 6h1v1h-1zM26 6h3v1h-3zM30 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM11 7h5v1h-5zM19 7h3v1h-3zM24 7h1v1h-1zM30 7h1v1h-1zM2 8h7v1h-7zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM24 8h7v1h-7zM10 9h1v1h-1zM12 9h1v1h-1zM16 9h7v1h-7zM2 10h1v1h-1zM4 10h2v1h-2zM7 10h3v1h-3zM11 10h1v1h-1zM13 10h1v1h-1zM17 10h3v1h-3zM21 10h1v1h-1zM24 10h1v1h-1zM27 10h1v1h-1zM29 10h2v1h-2zM2 11h1v1h-1zM6 11h2v1h-2zM9 11h1v1h-1zM11 11h1v1h-1zM13 11h3v1h-3zM19 11h4v1h-4zM24 11h1v1h-1zM26 11h1v1h-1zM30 11h1v1h-1zM3 12h1v1h-1zM5 12h1v1h-1zM8 12h3v1h-3zM15 12h1v1h-1zM20 12h1v1h-1zM25 12h1v1h-1zM28 12h2v1h-2zM3 13h2v1h-2zM9 13h1v1h-1zM12 13h5v1h-5zM18 13h1v1h-1zM20 13h3v1h-3zM24 13h2v1h-2zM30 13h1v1h-1zM2 14h4v1h-4zM8 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM19 14h1v1h-1zM22 14h2v1h-2zM25 14h1v1h-1zM27 14h2v1h-2zM3 15h1v1h-1zM5 15h1v1h-1zM12 15h1v1h-1zM15 15h5v1h-5zM21 15h1v1h-1zM23 15h3v1h-3zM28 15h3v1h-3zM2 16h1v1h-1zM5 16h1v1h-1zM8 16h3v1h-3zM13 16h1v1h-1zM16 16h1v1h-1zM19 16h3v1h-3zM23 16h3v1h-3zM28 16h3v1h-3zM2 17h1v1h-1zM5 17h1v1h-1zM9 17h3v1h-3zM13 17h3v1h-3zM20 17h1v1h-1zM23 17h1v1h-1zM29 17h1v1h-1zM2 18h2v1h-2zM5 18h1v1h-1zM8 18h2v1h-2zM12 18h1v1h-1zM14 18h1v1h-1zM20 18h3v1h-3zM26 18h2v1h-2zM29 18h1v1h-1zM4 19h1v1h-1zM9 19h7v1h-7zM17 19h1v1h-1zM19 19h1v1h-1zM22 19h1v1h-1zM25 19h1v1h-1zM27 19h3v1h-3zM2 20h1v1h-1zM5 20h4v1h-4zM11 20h1v1h-1zM13 20h2v1h-2zM17 20h1v1h-1zM20 20h1v1h-1zM24 20h2v1h-2zM28 20h1v1h-1zM6 21h2v1h-2zM10 21h1v1h-1zM17 21h4v1h-4zM24 21h1v1h-1zM28 21h1v1h-1zM3 22h2v1h-2zM6 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM17 22h12v1h-12zM10 23h3v1h-3zM14 23h3v1h-3zM18 23h5v1h-5zM26 23h5v1h-5zM2 24h7v1h-7zM10 24h1v1h-1zM14 24h2v1h-2zM18 24h5v1h-5zM24 24h1v1h-1zM26 24h2v1h-2zM29 24h1v1h-1zM2 25h1v1h-1zM8 25h1v1h-1zM10 25h3v1h-3zM14 25h1v1h-1zM18 25h1v1h-1zM22 25h1v1h-1zM26 25h2v1h-2zM29 25h1v1h-1zM2 26h1v1h-1zM4 26h3v1h-3zM8 26h1v1h-1zM13 26h2v1h-2zM16 26h1v1h-1zM19 26h1v1h-1zM22 26h5v1h-5zM28 26h1v1h-1zM2 27h1v1h-1zM4 27h3v1h-3zM8 27h1v1h-1zM10 27h1v1h-1zM12 27h2v1h-2zM16 27h4v1h-4zM21 27h3v1h-3zM26 27h2v1h-2zM30 27h1v1h-1zM2 28h1v1h-1zM4 28h3v1h-3zM8 28h1v1h-1zM10 28h2v1h-2zM13 28h1v1h-1zM15 28h1v1h-1zM18 28h1v1h-1zM20 28h3v1h-3zM25 28h1v1h-1zM28 28h1v1h-1zM30 28h1v1h-1zM2 29h1v1h-1zM8 29h1v1h-1zM14 29h2v1h-2zM18 29h1v1h-1zM22 29h1v1h-1zM25 29h1v1h-1zM27 29h1v1h-1zM29 29h1v1h-1zM2 30h7v1h-7zM10 30h1v1h-1zM13 30h2v1h-2zM20 30h7v1h-7zM29 30h1v1h-1z"/></svg></div><p class="scr-link"><svg class="ic"><use href="#i-link"/></svg><span>https://kwy404.github.io/filefinch/app/#i=7VfLbtswEPwVQueEBu6ZWwM</span></p><span class="scr-btn">Copy invite link</span></div>
+        <div class="scr scr-2"><p class="scr-k">Waiting for the reply</p><p class="scr-field">#r=Kp3vQ8tZ2mY...</p><span class="scr-btn scr-btn-ok"><svg class="ic"><use href="#i-check"/></svg>Reply received</span></div>
+        <div class="scr scr-3"><p class="scr-k">Connected directly</p><p class="scr-fp">7F2A&nbsp;91C4</p><p class="scr-sub"><svg class="ic"><use href="#i-lock"/></svg>Encrypted with DTLS</p></div>
+        <div class="scr scr-4"><p class="scr-k">Sending 3 files</p>
+          <div class="row"><span class="dot dot-a"></span><span class="nm">Holiday.mov</span><span class="bar"><i class="b1"></i></span></div>
+          <div class="row"><span class="dot dot-b"></span><span class="nm">Photos/</span><span class="bar"><i class="b2"></i></span></div>
+          <div class="row"><span class="dot dot-c"></span><span class="nm">Thesis.pdf</span><span class="bar"><i class="b3"></i></span></div>
+        </div>
+      </div>
+      <div class="dev-base"></div>
+    </div>
+    <div class="lane" aria-hidden="true">
+      <svg class="lane-trail" viewBox="0 0 200 120" preserveAspectRatio="none"><path d="M4 92 C60 4 140 4 196 92"/></svg>
+      <span class="lane-item lane-qr"><i></i><i></i><i></i></span>
+      <span class="lane-item lane-reply">#r=</span>
+      <span class="lane-item lane-fp"><svg class="ic"><use href="#i-lock"/></svg></span>
+      <img class="lane-item lane-finch lf-1" src="assets/art/flyer.svg" width="64" height="56" alt="">
+      <img class="lane-item lane-finch lf-2" src="assets/art/flyer.svg" width="64" height="56" alt="">
+      <img class="lane-item lane-finch lf-3" src="assets/art/flyer.svg" width="64" height="56" alt="">
+    </div>
+    <div class="dev dev-phone" aria-hidden="true">
+      <div class="dev-screen">
+        <div class="scr scr-1"><p class="scr-k">Scan the invite</p><div class="scan"><span class="scan-c"></span><span class="scan-line"></span></div></div>
+        <div class="scr scr-2"><p class="scr-k">Send this back</p><p class="scr-code">#r=Kp3v Q8tZ 2mY</p><span class="scr-btn">Share reply</span></div>
+        <div class="scr scr-3"><p class="scr-k">Connected</p><p class="scr-fp">7F2A&nbsp;91C4</p><p class="scr-sub scr-sub-ok"><svg class="ic"><use href="#i-check"/></svg>Codes match</p></div>
+        <div class="scr scr-4"><p class="scr-k">Receiving</p><div class="pv"><i></i><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+  </div>
+  <p class="sr-only" v-text="'Step ' + step + ' of 4'"></p>
+  <div class="flight-ctl">
+    <ol class="flight-steps"><li><button type="button" :class="step === 1 ? 'is-on' : ''" :aria-pressed="step === 1 ? 'true' : 'false'" aria-pressed="true" @click="step = 1; playing = false"><span class="fs-n">1</span><span class="fs-t">Create an invite</span><span class="fs-d">A link and a QR code on the first device</span></button></li><li><button type="button" :class="step === 2 ? 'is-on' : ''" :aria-pressed="step === 2 ? 'true' : 'false'" aria-pressed="false" @click="step = 2; playing = false"><span class="fs-n">2</span><span class="fs-t">Send the reply</span><span class="fs-d">The second device answers with a short code</span></button></li><li><button type="button" :class="step === 3 ? 'is-on' : ''" :aria-pressed="step === 3 ? 'true' : 'false'" aria-pressed="false" @click="step = 3; playing = false"><span class="fs-n">3</span><span class="fs-t">Compare the fingerprint</span><span class="fs-d">Both screens show the same code</span></button></li><li><button type="button" :class="step === 4 ? 'is-on' : ''" :aria-pressed="step === 4 ? 'true' : 'false'" aria-pressed="false" @click="step = 4; playing = false"><span class="fs-n">4</span><span class="fs-t">Files fly direct</span><span class="fs-d">Device to device, encrypted</span></button></li></ol>
+    <button type="button" class="flight-play icon-btn" @click="playing = !playing" :aria-label="playing ? 'Pause the demo' : 'Play the demo'" aria-label="Pause the demo"><svg class="ic" v-show="playing" aria-hidden="true"><use href="#i-pause"/></svg><svg class="ic" v-show="!playing" style="display:none" aria-hidden="true"><use href="#i-play"/></svg></button>
+  </div>
+</div></div>
+  </div>
+</section>
+
+<section class="band promises" aria-label="What filefinch promises">
+  <ul class="promise-grid"><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/no-cloud.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/no-cloud.svg" width="44" height="44" alt=""></span><h2>100% serverless</h2><p>No server of ours ever touches your files or messages.</p></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/no-account.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/no-account.svg" width="44" height="44" alt=""></span><h2>No account</h2><p>Nothing to sign up for, nothing to log in to.</p></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/direct.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/direct.svg" width="44" height="44" alt=""></span><h2>No upload</h2><p>Files go device to device, never to a storage service.</p></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/lock.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/lock.svg" width="44" height="44" alt=""></span><h2>End to end encrypted</h2><p>Every connection is encrypted with DTLS by the browser.</p></li><li><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/infinity.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/infinity.svg" width="44" height="44" alt=""></span><h2>No size limit</h2><p>filefinch sets no cap. Your disk is the only limit.</p></li></ul>
+</section>
+
+<section id="how" class="sec" aria-labelledby="how-h">
+  <header class="sec-head"><p class="kicker">How it works</p><h2 id="how-h">Three steps, one round trip</h2><p class="lede">There is no signaling server. The invite itself carries everything the second device needs to reach the first, compressed into a link and a QR code.</p></header>
+  <ol class="how">
+    <li><figure><span class="art "><img class="art-l" src="assets/art/invite-qr.svg" width="640" height="400" alt="A laptop shows an invite QR code and a link while a phone scans it" loading="lazy" decoding="async"><img class="art-d" src="assets/art/invite-qr-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure><span class="how-n">1</span><h3>Create an invite</h3><p>Open filefinch on the first device and tap <strong>Create invite</strong>. You get a link and a QR code. Scan it with the other device, or send the link to yourself through any messenger.</p></li>
+    <li><figure><span class="art "><img class="art-l" src="assets/art/reply-code.svg" width="640" height="400" alt="The guest phone sends a short reply code back through any messenger" loading="lazy" decoding="async"><img class="art-d" src="assets/art/reply-code-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure><span class="how-n">2</span><h3>Send the reply back</h3><p>The second device answers with a short reply code, also as a link or QR code. Paste it or scan it on the first device. That single round trip connects them, and you can paste by hand if a camera is not handy.</p></li>
+    <li><figure><span class="art "><img class="art-l" src="assets/art/direct-flight.svg" width="640" height="400" alt="Finn the finch flying a parcel straight between a phone and a laptop" loading="lazy" decoding="async"><img class="art-d" src="assets/art/direct-flight-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure><span class="how-n">3</span><h3>Files fly direct</h3><p>Both screens show the same short fingerprint. Compare it, then drop files or a folder. They stream straight to the other device, in either direction, with progress, previews and resume.</p></li>
+  </ol>
+</section>
+
+<section id="privacy" class="sec sec-tint" aria-labelledby="privacy-h">
+  <div class="split">
+    <div>
+      <p class="kicker">Why it is private</p>
+      <h2 id="privacy-h">Your files take the direct line</h2>
+      <p class="lede">Explained simply: filefinch is a web page that connects two browsers to each other. After that, it steps out of the way.</p>
+      <ul class="checks">
+        <li><strong>No server of ours ever sees your files or messages.</strong> There is no filefinch server at all: the site is static pages, and the connection is browser to browser.</li>
+        <li><strong>WebRTC encrypts every connection end to end with DTLS.</strong> The keys are created inside the two browsers for each connection and never leave them.</li>
+        <li><strong>Compare the fingerprint.</strong> Both devices show a short code derived from the two connection certificates. If they match, nobody swapped the invite on the way.</li>
+        <li><strong>Add a passphrase for an extra layer.</strong> PBKDF2 with 600,000 rounds turns it into an AES-GCM key on each device, and every chunk is sealed again. The passphrase never travels.</li>
+        <li><strong>No account, nothing stored online.</strong> No sign up, no analytics, no tracking. What you keep stays on your device.</li>
+      </ul>
+    </div>
+    <figure class="split-art"><span class="art "><img class="art-l" src="assets/art/lock-line.svg" width="640" height="400" alt="Two devices joined by one direct line with a padlock in the middle" loading="lazy" decoding="async"><img class="art-d" src="assets/art/lock-line-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+  </div>
+  <div class="honest">
+    <figure><span class="art "><img class="art-l" src="assets/art/relay-tower.svg" width="640" height="400" alt="A relay tower that forwards sealed parcels between two devices behind strict network walls" loading="lazy" decoding="async"><img class="art-d" src="assets/art/relay-tower-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+    <div>
+      <h3>The honest part: relays and addresses</h3>
+      <p>Some networks block every direct route. Then a <strong>TURN relay</strong> can forward the traffic between the two devices. A relay only passes along encrypted packets and cannot read them, but it does see that two addresses are talking and how much data flows. filefinch tells you when a relay is in use, and you can add your own TURN server in Settings so only a relay you trust is used.</p>
+      <p>To find a route, each browser asks a public <strong>STUN</strong> server for its public address. That server sees your IP address, as every website you visit does, and nothing else. The invite link contains the network addresses of the device that created it, so share it only with your own device or with the person you are sending to.</p>
+      <p>No software can promise it is impossible to attack. What filefinch can promise is a short list of things that never happen: no upload to us, no account, no copy left online.</p>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="sec" aria-labelledby="features-h">
+  <header class="sec-head"><p class="kicker">Features</p><h2 id="features-h">Everything a parcel needs on the way</h2><p class="lede">Built for real files: big videos, deep folders, flaky Wi-Fi and phones that fall asleep.</p></header>
+  <div class="feat-grid"><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/folder-flock.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/folder-flock.svg" width="44" height="44" alt=""></span><h3>Whole folders</h3><p>Drop a folder and its tree arrives intact: subfolders, names and all. Paths are checked so nothing can be written outside the folder you choose.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/resume.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/resume.svg" width="44" height="44" alt=""></span><h3>Resume after a drop</h3><p>If Wi-Fi blinks or a tab sleeps, reconnect and the transfer continues from the last confirmed piece instead of starting over.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/preview.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/preview.svg" width="44" height="44" alt=""></span><h3>Previews</h3><p>See photos, videos, audio, PDF and text right in the browser. Previews are drawn safely, so a received page or script never runs.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/sync.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/sync.svg" width="44" height="44" alt=""></span><h3>Folder sync</h3><p>Keep a folder in step between two computers: two way, push or pull. You review the plan of changes before anything is written.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/library.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/library.svg" width="44" height="44" alt=""></span><h3>Local library</h3><p>Keep received files in a library inside filefinch, stored in this browser on your own device, to preview, save or send again later. Nothing is kept online.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/qr.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/qr.svg" width="44" height="44" alt=""></span><h3>Invite link and QR code</h3><p>One link or one QR code to connect, one short reply to finish. Scan with the camera or paste, whatever is easier.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/fingerprint.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/fingerprint.svg" width="44" height="44" alt=""></span><h3>Connection fingerprint</h3><p>Both screens show the same short code. Compare it and you know nobody swapped the invite in the middle.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/key.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/key.svg" width="44" height="44" alt=""></span><h3>Optional passphrase</h3><p>Add a passphrase and every chunk is sealed again with AES-GCM, with a key derived on each device. Nothing about it travels in the invite.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/shield.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/shield.svg" width="44" height="44" alt=""></span><h3>Integrity check</h3><p>Every file is hashed with SHA-256 while it streams, and the receiver checks the result before marking it done.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/install.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/install.svg" width="44" height="44" alt=""></span><h3>Installable, works offline</h3><p>Install it as an app. Once loaded, the app itself works without internet, so two devices on the same local network can still connect.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/relay.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/relay.svg" width="44" height="44" alt=""></span><h3>Help with strict networks</h3><p>When a direct route is impossible, filefinch says so in plain words and lets you add your own TURN relay in Settings.</p></article><article class="feat"><span class="fi" aria-hidden="true"><img class="art-l" src="assets/icons/light/globe.svg" width="44" height="44" alt=""><img class="art-d" src="assets/icons/dark/globe.svg" width="44" height="44" alt=""></span><h3>Any modern browser</h3><p>Windows, macOS, Linux, Android and iPhone. No app store, no install required, nothing to update.</p></article></div>
+  <div class="feat-art">
+    <figure><span class="art "><img class="art-l" src="assets/art/folder-flock.svg" width="640" height="400" alt="A folder whose files fly out as a flock of small finches" loading="lazy" decoding="async"><img class="art-d" src="assets/art/folder-flock-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><figcaption>A folder flies as a flock: every file keeps its place in the tree.</figcaption></figure>
+    <figure><span class="art "><img class="art-l" src="assets/art/resume-flight.svg" width="640" height="400" alt="A transfer that lost its connection picks up again where it stopped" loading="lazy" decoding="async"><img class="art-d" src="assets/art/resume-flight-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><figcaption>Lost the connection? Reconnect and the transfer continues where it stopped.</figcaption></figure>
+    <figure><span class="art "><img class="art-l" src="assets/art/local-library.svg" width="640" height="400" alt="Finn sorting received files on a shelf on your own device" loading="lazy" decoding="async"><img class="art-d" src="assets/art/local-library-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><figcaption>The local library keeps the files you choose on your device, not online.</figcaption></figure>
+  </div>
+</section>
+
+<section id="devices" class="sec sec-tint" aria-labelledby="devices-h" v-data="{ tab: 'phone-pc' }">
+  <header class="sec-head"><p class="kicker">Device scenarios</p><h2 id="devices-h">Any device to any device</h2><p class="lede">filefinch runs in the browser, so the pair can be anything with a modern browser.</p></header>
+  <div class="tabs" role="tablist" aria-label="Device scenarios"><button type="button" role="tab" id="tab-phone-pc" aria-controls="panel-phone-pc" :aria-selected="tab === 'phone-pc' ? 'true' : 'false'" aria-selected="true" :tabindex="tab === 'phone-pc' ? '0' : '-1'" tabindex="0" @click="tab = 'phone-pc'" @keydown.right="tab = 'pc-pc'; $el.nextElementSibling && $el.nextElementSibling.focus()" @keydown.left="tab = 'android-iphone'; $el.previousElementSibling && $el.previousElementSibling.focus()">Phone to PC</button><button type="button" role="tab" id="tab-pc-pc" aria-controls="panel-pc-pc" :aria-selected="tab === 'pc-pc' ? 'true' : 'false'" aria-selected="false" :tabindex="tab === 'pc-pc' ? '0' : '-1'" tabindex="-1" @click="tab = 'pc-pc'" @keydown.right="tab = 'android-iphone'; $el.nextElementSibling && $el.nextElementSibling.focus()" @keydown.left="tab = 'phone-pc'; $el.previousElementSibling && $el.previousElementSibling.focus()">PC to PC</button><button type="button" role="tab" id="tab-android-iphone" aria-controls="panel-android-iphone" :aria-selected="tab === 'android-iphone' ? 'true' : 'false'" aria-selected="false" :tabindex="tab === 'android-iphone' ? '0' : '-1'" tabindex="-1" @click="tab = 'android-iphone'" @keydown.right="tab = 'phone-pc'; $el.nextElementSibling && $el.nextElementSibling.focus()" @keydown.left="tab = 'pc-pc'; $el.previousElementSibling && $el.previousElementSibling.focus()">Android to iPhone</button></div>
+  <div class="scene" role="tabpanel" id="panel-phone-pc" aria-labelledby="tab-phone-pc" v-show="tab === 'phone-pc'">
+    <figure><span class="art "><img class="art-l" src="assets/art/phone-to-pc.svg" width="640" height="400" alt="Photos and videos flying from a phone straight to a desktop computer" loading="lazy" decoding="async"><img class="art-d" src="assets/art/phone-to-pc-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+    <div><h3>Photos from your phone to your PC, no cable</h3><ol class="scene-steps"><li>Open filefinch on the PC and create an invite. A QR code appears.</li><li>Scan it with the phone camera, or open the link if you sent it to yourself.</li><li>Show the reply code to the PC camera or paste it, then pick the photos and videos.</li></ol><p class="scene-note">Videos arrive in their original quality and size. Nothing is recompressed.</p><a class="btn btn-primary" href="app/">Start sending</a></div>
+  </div>
+  <div class="scene" role="tabpanel" id="panel-pc-pc" aria-labelledby="tab-pc-pc" v-show="tab === 'pc-pc'" style="display:none">
+    <figure><span class="art "><img class="art-l" src="assets/art/sync-twins.svg" width="640" height="400" alt="Two computers keeping one folder in step with circular arrows between them" loading="lazy" decoding="async"><img class="art-d" src="assets/art/sync-twins-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+    <div><h3>A whole project from one computer to another</h3><ol class="scene-steps"><li>Create an invite on one computer and paste the link on the other, through any chat you trust.</li><li>Send the reply code back, then drop a folder or choose Sync.</li><li>Review the plan of changes and let the files fly. Next time only what changed is sent.</li></ol><p class="scene-note">On the same Wi-Fi or cable network the transfer stays inside your home or office.</p><a class="btn btn-primary" href="app/">Start sending</a></div>
+  </div>
+  <div class="scene" role="tabpanel" id="panel-android-iphone" aria-labelledby="tab-android-iphone" v-show="tab === 'android-iphone'" style="display:none">
+    <figure><span class="art "><img class="art-l" src="assets/art/android-iphone.svg" width="640" height="400" alt="Two different phones trading parcels through the browser" loading="lazy" decoding="async"><img class="art-d" src="assets/art/android-iphone-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+    <div><h3>Android to iPhone, and back</h3><ol class="scene-steps"><li>Open filefinch in the browser on both phones. No app store needed.</li><li>Scan the invite QR code with the other phone, then scan its reply code back.</li><li>Pick files on either side. Both phones can send and receive over the same connection.</li></ol><p class="scene-note">Keep the screen on while big files fly, since phones may pause background tabs.</p><a class="btn btn-primary" href="app/">Start sending</a></div>
+  </div>
+</section>
+
+<section id="compare" class="sec" aria-labelledby="compare-h">
+  <div class="split split-rev">
+    <figure class="split-art"><span class="art "><img class="art-l" src="assets/art/cloud-vs-direct.svg" width="640" height="400" alt="On the left a file goes up to a cloud and down again, on the right it flies straight across" loading="lazy" decoding="async"><img class="art-d" src="assets/art/cloud-vs-direct-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+    <div><p class="kicker">Two approaches</p><h2 id="compare-h">Cloud upload or direct flight?</h2><p class="lede">Both are useful. Uploading to storage is great when the receiver is offline. A direct transfer is better when you want the file on your other device now, privately and without limits.</p></div>
+  </div>
+  <div class="table-wrap"><table class="vs-table"><caption class="sr-only">Cloud upload compared with a direct transfer</caption><thead><tr><th scope="col"></th><th scope="col">Upload to cloud storage</th><th scope="col">Direct with filefinch</th></tr></thead><tbody><tr><th scope="row">Where your files go</th><td>Uploaded to a storage service, then downloaded</td><td>Straight from one device to the other</td></tr><tr><th scope="row">Waiting time</th><td>Upload first, then the download can start</td><td>The receiver gets data as soon as it is sent</td></tr><tr><th scope="row">Account</th><td>Usually needed, at least for large files</td><td>None</td></tr><tr><th scope="row">Size limits</th><td>Set by the plan you are on</td><td>None set by filefinch</td></tr><tr><th scope="row">Copies left online</th><td>Until a link expires or you delete them</td><td>None, nothing is stored online</td></tr><tr><th scope="row">Who can read the files</th><td>The service can, unless it offers client side encryption</td><td>Only the two devices (DTLS, plus an optional passphrase)</td></tr><tr><th scope="row">Both devices online</th><td>Not needed, the receiver can download later</td><td>Needed while the files fly</td></tr><tr><th scope="row">Works without internet</th><td>No</td><td>Yes, on the same local network once the app is loaded</td></tr></tbody></table></div>
+</section>
+
+<section id="limits" class="sec sec-tint" aria-labelledby="limits-h">
+  <div class="split">
+    <div><p class="kicker">Limits, honestly</p><h2 id="limits-h">What a direct flight needs</h2><p class="lede">No middle storage means a few rules of the air. Here they are, before you find out the hard way.</p>
+      <dl class="limits"><div><dt>Both devices must be online</dt><dd>There is no mailbox in the middle. Keep filefinch open on both devices until the transfer finishes. If one side drops, resume picks it up later.</dd></div><div><dt>Strict networks can block a direct route</dt><dd>When both devices sit behind strict NAT (common on some mobile carriers and office networks), a direct connection may be impossible. filefinch says so and offers a TURN relay setting. A relay forwards only encrypted packets.</dd></div><div><dt>Speed follows the slower side</dt><dd>A direct connection is as fast as the slower of the two links. On the same Wi-Fi that is usually far faster than any upload, across the internet it depends on the upload speed of the sender.</dd></div><div><dt>Phones sleep</dt><dd>Mobile browsers may pause a tab in the background. Keep the screen on for long transfers, or let resume continue when you come back.</dd></div><div><dt>Saving huge files depends on the browser</dt><dd>Browsers with folder access write straight to disk. Others save through a streamed download, and a folder arrives as a .zip. Only small files are ever held in memory.</dd></div></dl>
+    </div>
+    <figure class="split-art"><span class="art "><img class="art-l" src="assets/art/strict-nat.svg" width="640" height="400" alt="Two houses with high walls where the direct path fails until a relay is added" loading="lazy" decoding="async"><img class="art-d" src="assets/art/strict-nat-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span></figure>
+  </div>
+</section>
+
+<section id="faq" class="sec" aria-labelledby="faq-h">
+  <header class="sec-head"><p class="kicker">FAQ</p><h2 id="faq-h">Questions people ask</h2></header>
+  <div class="faq faq-home"><details><summary>Is filefinch really free?</summary><p>Yes. It is free and open source under the MIT license. There are no plans, no ads, no account and no tracking. Since there is no server of ours carrying your files, there is nothing to pay for.</p></details><details><summary>Do my files go through a server?</summary><p>No. Files travel over a direct WebRTC connection between your two browsers. The only exception is a TURN relay, used only when both networks block direct connections. A relay forwards encrypted packets it cannot read, and filefinch tells you when one is in use.</p></details><details><summary>Is there a file size limit?</summary><p>filefinch sets none. Files are read and sent in small chunks, so a 50 GB video works the same way as a photo. The real limits are free space on the receiving device and how long both devices stay connected.</p></details><details><summary>Do both devices need to be online at the same time?</summary><p>Yes. There is no storage in the middle, so the sender and the receiver must both have filefinch open while the files fly. If one closes the tab, the transfer pauses and can resume when you reconnect.</p></details><details><summary>How do I connect two devices without an account?</summary><p>Open filefinch on the first device and create an invite. Open the invite link or scan its QR code on the second device. It shows a short reply code; send it back by any messenger or scan it, and the devices connect directly.</p></details><details><summary>Can I send a whole folder?</summary><p>Yes. Pick or drop a folder and filefinch sends every file with its relative path. In browsers with folder access the tree is written straight into a folder you pick; elsewhere the folder arrives as one streamed .zip download.</p></details><details><summary>Does it work between Android and iPhone, or Windows and Mac?</summary><p>Yes. filefinch runs in the browser, so any pair of modern browsers can connect: Android to iPhone, Windows to Mac, phone to PC or laptop to laptop.</p></details><details><summary>What happens if the connection fails?</summary><p>Usually one network is very strict (symmetric NAT or a corporate firewall). filefinch detects the failed connection, explains it in plain words and offers the TURN setting. Trying another network, like a phone hotspot, often works too.</p></details><details><summary>Can someone else join my transfer?</summary><p>An invite works for one connection. Treat the link like a key: send it only to your own device or to the person you are sending to. Comparing the connection fingerprint on both screens confirms you are talking to the right device.</p></details><details><summary>Does filefinch work without internet?</summary><p>Once the app is loaded or installed it works offline. Two devices on the same local network can still connect through the invite and reply codes, because they find each other on the local network.</p></details></div>
+</section>
+
+<section class="sec" aria-labelledby="guides-h">
+  <header class="sec-head"><p class="kicker">Guides</p><h2 id="guides-h">The flight manual</h2><p class="lede">Practical guides for moving files between your own devices.</p></header>
+  <div class="cards"><a class="gcard" href="guides/send-large-files-without-limits/"><span class="art "><img class="art-l" src="assets/art/big-file.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="assets/art/big-file-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">send large files without limits</span><span class="gcard-t">How to send large files without limits, straight from device to device</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="guides/transfer-files-from-phone-to-pc-without-cable/"><span class="art "><img class="art-l" src="assets/art/phone-to-pc.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="assets/art/phone-to-pc-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transfer files from phone to pc without cable</span><span class="gcard-t">How to transfer files from phone to PC without a cable</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="guides/airdrop-for-windows-and-android/"><span class="art "><img class="art-l" src="assets/art/android-iphone.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="assets/art/android-iphone-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">airdrop for windows and android</span><span class="gcard-t">AirDrop for Windows and Android, and a way that works on every device</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="guides/send-a-whole-folder/"><span class="art "><img class="art-l" src="assets/art/folder-flock.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="assets/art/folder-flock-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">send a whole folder</span><span class="gcard-t">How to send a whole folder, subfolders and all</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="guides/is-webrtc-file-sharing-safe/"><span class="art "><img class="art-l" src="assets/art/fingerprint-match.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="assets/art/fingerprint-match-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">is webrtc file sharing safe</span><span class="gcard-t">Is WebRTC file sharing safe? What it protects and what it does not</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="guides/peer-to-peer-file-transfer-explained/"><span class="art "><img class="art-l" src="assets/art/invite-qr.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="assets/art/invite-qr-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">peer to peer file transfer</span><span class="gcard-t">Peer to peer file transfer explained, without the jargon</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div>
+  <p class="more-link"><a class="btn btn-outline" href="guides/">All guides<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+</section>
+
+<section class="final" aria-labelledby="final-h">
+  <div class="final-in">
+    <span class="art final-finn"><img class="art-l" src="assets/art/finn.svg" width="220" height="220" alt="Finn the finch courier ready with a parcel" loading="lazy"><img class="art-d" src="assets/art/finn-dark.svg" width="220" height="220" alt="" aria-hidden="true" loading="lazy"></span>
+    <div><h2 id="final-h">Your files, on a direct flight</h2><p>Open filefinch on two devices and send your first file in under a minute. Free, open source, no account.</p><p class="hero-cta"><a class="btn btn-primary btn-lg cta-main" href="app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Start sending</a><a class="btn btn-outline btn-lg" href="https://github.com/kwy404/filefinch" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg>Source on GitHub</a></p></div>
+  </div>
+</section>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-brand">
+      <a class="brand" href=""><img src="favicon.svg" width="34" height="34" alt=""><span class="brand-word">file<span>finch</span></span></a>
+      <p>Send files and whole folders straight between your own devices. Peer to peer in the browser: no server of ours, no account, nothing stored online.</p>
+      <p class="foot-made">Made by <strong>Alexandre Kohler</strong> (<a href="https://github.com/kwy404" rel="me noopener">GitHub</a> and <a href="https://www.linkedin.com/in/alexandre-silva-173687256/" rel="me noopener">LinkedIn</a>).</p>
+      <p class="foot-built">Built with <a href="https://kwy404.github.io/monsoon/" rel="noopener">Monsoon</a>. Interactive parts built with <a href="https://kwy404.github.io/Voodoo.js/" rel="noopener">Voodoo.js</a>.</p>
+    </div>
+    <div>
+      <h2 class="foot-h">filefinch</h2>
+      <ul class="foot-list"><li><a href="app/">Open the app</a></li><li><a href="#how">How it works</a></li><li><a href="guides/">All guides</a></li><li><a href="https://github.com/kwy404/filefinch" rel="noopener">Source on GitHub</a></li><li><a href="https://github.com/kwy404/filefinch/blob/main/SECURITY.md" rel="noopener">Security policy</a></li><li><a href="https://github.com/kwy404/filefinch/blob/main/CHANGELOG.md" rel="noopener">Changelog</a></li></ul>
+    </div>
+    <div>
+      <h2 class="foot-h">Popular guides</h2>
+      <ul class="foot-list"><li><a href="guides/send-large-files-without-limits/">Send large files without limits</a></li><li><a href="guides/transfer-files-from-phone-to-pc-without-cable/">Phone to PC without a cable</a></li><li><a href="guides/airdrop-for-windows-and-android/">AirDrop for Windows and Android</a></li><li><a href="guides/send-a-whole-folder/">Send a whole folder</a></li><li><a href="guides/is-webrtc-file-sharing-safe/">Is WebRTC file sharing safe?</a></li><li><a href="guides/peer-to-peer-file-transfer-explained/">Peer to peer file transfer explained</a></li></ul>
+    </div>
+    <div>
+      <h2 class="foot-h">More from kwy404</h2>
+      <ul class="foot-list foot-more"><li><a href="https://kwy404.github.io/monsoon/" rel="noopener">Monsoon</a><small>CSS framework with no build step</small></li><li><a href="https://kwy404.github.io/Voodoo.js/" rel="noopener">Voodoo.js</a><small>reactive HTML attributes</small></li><li><a href="https://kwy404.github.io/howlden/" rel="noopener">howlden</a><small>serverless peer to peer voice and chat rooms</small></li><li><a href="https://kwy404.github.io/breakhound/" rel="noopener">breakhound</a><small>finds bugs in any JS library</small></li><li><a href="https://kwy404.github.io/vueleap/" rel="noopener">vueleap</a><small>migrate Vue 2 to Vue 3</small></li><li><a href="https://kwy404.github.io/graphemely/" rel="noopener">graphemely</a><small>emoji safe string utilities</small></li><li><a href="https://kwy404.github.io/numberparrot/" rel="noopener">numberparrot</a><small>parse localized numbers</small></li><li><a href="https://kwy404.github.io/edgegoat/" rel="noopener">edgegoat</a><small>edge case test inputs</small></li><li><a href="https://kwy404.github.io/cookieowl/" rel="noopener">cookieowl</a><small>cookie consent for LGPD and GDPR</small></li><li><a href="https://kwy404.github.io/installkite/" rel="noopener">installkite</a><small>make any site an installable PWA</small></li><li><a href="https://kwy404.github.io/a11ymedic/" rel="noopener">a11ymedic</a><small>accessibility checker with fixes</small></li><li><a href="https://kwy404.github.io/fontsketch/" rel="noopener">fontsketch</a><small>turn your handwriting into a font</small></li><li><a href="https://kwy404.github.io/kastor/" rel="noopener">kastor</a><small>TypeScript ORM for almost every database</small></li></ul>
+    </div>
+  </div>
+  <p class="foot-legal">MIT License. Free and open source, no tracking. <span>filefinch 0.1.0</span></p>
+</footer>
+</body>
+</html>
