@@ -2,7 +2,7 @@
 // streamed downloads, so a large file goes to disk as it arrives instead of filling memory.
 
 // precache:start
-const CACHE_VERSION = '358096574027';
+const CACHE_VERSION = 'd5026601e5ee';
 const PRECACHE = [
   './',
   'app.css',
@@ -23,16 +23,23 @@ const PRECACHE = [
   'lib/format.js',
   'lib/ice.js',
   'lib/invite.js',
+  'lib/mqtt.js',
   'lib/paths.js',
   'lib/protocol.js',
   'lib/qr.js',
+  'lib/relay.js',
+  'lib/rendezvous.js',
   'lib/sha256.js',
   'lib/sync.js',
   'lib/transfer.js',
   'lib/version.js',
+  'lib/wordlist.js',
+  'lib/words.js',
   'lib/zip.js',
   'main.js',
   'manifest.webmanifest',
+  'motion.js',
+  'pairing.js',
   'panels.js',
   'preview.js',
   'scan.js',
@@ -41,7 +48,8 @@ const PRECACHE = [
   'sync-ui.js',
   'theme.js',
   'transfers-ui.js',
-  'ui.js'
+  'ui.js',
+  'word-inputs.js'
 ];
 // precache:end
 

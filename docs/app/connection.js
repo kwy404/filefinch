@@ -55,23 +55,28 @@ export class Connection extends Emitter {
     return pc;
   }
 
-  /** Host side: returns the invite code. extra: { lock, salt, iterations } for a passphrase. */
-  async host(extra = {}) {
+  /** Host side: creates the offer and waits for ICE gathering. Returns the full SDP. */
+  async prepareOffer() {
     this.role = 'host';
-    this.sid = randomId(9);
+    this.sid ??= randomId(9);
     this.setState('gathering');
     const pc = this.createPeer();
     this.attachChannel(pc.createDataChannel('filefinch', { ordered: true }));
     await pc.setLocalDescription(await pc.createOffer());
     await waitForGathering(pc);
     if (this.state === 'closed') throw new Error('closed');
-    const code = await encodeSignal('i', { sdp: pc.localDescription.sdp, name: this.name, sid: this.sid, ...extra });
     this.setState('waiting-reply');
-    return code;
+    return pc.localDescription.sdp;
   }
 
-  /** Guest side: takes a decoded invite, returns the reply code. */
-  async join(invite) {
+  /** Host side, link mode: returns the invite code. extra: { lock, salt, iterations } for a passphrase. */
+  async host(extra = {}) {
+    const sdp = await this.prepareOffer();
+    return encodeSignal('i', { sdp, name: this.name, sid: this.sid, ...extra });
+  }
+
+  /** Guest side: answers an offer { sdp, sid, name } and returns the answer SDP. */
+  async answerOffer(invite) {
     this.role = 'guest';
     this.sid = invite.sid;
     this.peerName = invite.name;
@@ -86,21 +91,30 @@ export class Connection extends Emitter {
     await pc.setLocalDescription(await pc.createAnswer());
     await waitForGathering(pc);
     if (this.state === 'closed') throw new Error('closed');
-    const code = await encodeSignal('r', { sdp: pc.localDescription.sdp, name: this.name, sid: this.sid });
     this.setState('connecting');
     this.startConnectTimer();
-    return code;
+    return pc.localDescription.sdp;
   }
 
-  /** Host side: applies the reply code from the other device. */
+  /** Guest side, link mode: takes a decoded invite, returns the reply code. */
+  async join(invite) {
+    const sdp = await this.answerOffer(invite);
+    return encodeSignal('r', { sdp, name: this.name, sid: this.sid });
+  }
+
+  /** Host side, link mode: applies the reply code from the other device. */
   async applyReply(code) {
-    const reply = await decodeSignal(code, 'r');
+    return this.applyAnswer(await decodeSignal(code, 'r'));
+  }
+
+  /** Host side: applies an answer { sdp, name, sid }. */
+  async applyAnswer(reply) {
     if (reply.sid && reply.sid !== this.sid) {
       const err = new Error('This reply belongs to a different invite. Make sure the other device opened the newest invite.');
       err.code = 'sid';
       throw err;
     }
-    if (this.pc.signalingState !== 'have-local-offer') throw new Error('This invite was already used. Create a new one.');
+    if (this.pc?.signalingState !== 'have-local-offer') throw new Error('This invite was already used. Create a new one.');
     this.peerName = reply.name;
     this.setState('connecting');
     await this.pc.setRemoteDescription({ type: 'answer', sdp: reply.sdp });

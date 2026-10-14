@@ -36,6 +36,8 @@ function load() {
     turn: Array.isArray(saved.turn) ? saved.turn.filter((t) => t && typeof t.urls === 'string') : [],
     relayOnly: saved.relayOnly === true,
     destination: ['ask', 'download', 'library'].includes(saved.destination) ? saved.destination : 'ask',
+    connectMode: saved.connectMode === 'link' ? 'link' : 'words',
+    sound: saved.sound === true,
   };
   return s;
 }

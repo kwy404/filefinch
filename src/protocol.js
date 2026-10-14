@@ -110,6 +110,7 @@ const SCHEMAS = {
   'sync-delete': (m) => isId(m.sync) && Array.isArray(m.paths) && m.paths.every((p) => isStr(p, 4096)),
   'sync-done': (m) => isId(m.sync) && (m.base === undefined || typeof m.base === 'object'),
   'sync-cancel': (m) => isId(m.sync) && (m.reason === undefined || isStr(m.reason, 300)),
+  pair: (m) => typeof m.ok === 'boolean',
   ping: () => true,
   bye: () => true,
 };

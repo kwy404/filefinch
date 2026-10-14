@@ -1,12 +1,17 @@
-// filefinch app entry: navigation, theme and language, the invite and reply flow, the hello
-// handshake (device id, passphrase check) and the glue between the connection and the engine.
+// filefinch app entry: navigation, theme and language, pairing with six words (through public
+// relays) or with a link (no third party), the hello handshake (device id, passphrase check),
+// the confirmation words, and the glue between the connection and the engine.
 
 import { applyI18n, getLang, setLang, t } from './i18n.js';
-import { $, $$, bytes, copyText, showDialog, toast } from './ui.js';
+import { $, $$, bytes, copyText, el, showDialog, toast } from './ui.js';
 import { settings, save, iceConfig } from './settings.js';
 import { Connection, signalChannel } from './connection.js';
 import { TransferEngine } from './lib/transfer.js';
-import { PassphraseLayer, makeKeyCheck, verifyKeyCheck } from './lib/crypto.js';
+import { PassphraseLayer, makeKeyCheck, sdpFingerprint, verifyKeyCheck } from './lib/crypto.js';
+import { confirmWords, resolvePhrase, wordsFromLink, wordsLink } from './lib/words.js';
+import { CODE_LIFETIME_MS, CodeCreator, CodeJoiner } from './pairing.js';
+import { wordInputs } from './word-inputs.js';
+import { celebrate } from './motion.js';
 import { decodeSignal, findSignal, signalLink } from './lib/invite.js';
 import { decodeControl } from './lib/protocol.js';
 import { encodeQr, qrSvg } from './lib/qr.js';
@@ -26,6 +31,12 @@ let helloDone = false;
 let preHello = [];
 let lastPeerDevice = null;
 let connectPanel = 'start';
+let codeSide = null; // CodeCreator or CodeJoiner while meeting on the relays
+let pairing = null; // { role: 'creator' | 'joiner', nonce, expected, confirmed, attempts }
+let helloSeen = null;
+let countdown = null;
+let joinInputs = null;
+let confirmInputs = null;
 
 const app = {
   engine,
@@ -37,6 +48,7 @@ const app = {
   getTheme,
   setTheme,
   setLanguage,
+  connectModeChanged: () => ['start', 'link'].includes(connectPanel) && showPanel('start'),
 };
 
 // ---- navigation ----
@@ -99,12 +111,32 @@ function setLanguage(lang) {
 
 // ---- connect panels ----
 
-const PANELS = { start: '#connect-start', invite: '#connect-invite', reply: '#connect-reply', busy: '#connect-busy', failed: '#connect-failed', status: '#connect-status', lost: '#connect-lost' };
+const PANELS = {
+  start: '#connect-start',
+  link: '#connect-link',
+  code: '#connect-code',
+  'confirm-show': '#connect-confirm-show',
+  'confirm-type': '#connect-confirm-type',
+  invite: '#connect-invite',
+  reply: '#connect-reply',
+  busy: '#connect-busy',
+  failed: '#connect-failed',
+  status: '#connect-status',
+  lost: '#connect-lost',
+};
+
+/** The first panel: pairing words by default, or the link mode when chosen in Settings. */
+const firstPanel = () => (settings.connectMode === 'link' ? 'link' : 'start');
 
 function showPanel(name, text) {
+  if (name === 'start') name = firstPanel();
   connectPanel = name;
   for (const [k, sel] of Object.entries(PANELS)) $(sel).hidden = k !== name;
   if (name === 'busy') $('#busy-text').textContent = text ?? '';
+  const choosing = name === 'start' || name === 'link';
+  $('#connect-foot').hidden = !choosing;
+  $('#mode-link').hidden = name !== 'start';
+  $('#mode-words').hidden = name !== 'link';
   renderPill();
 }
 
@@ -116,6 +148,9 @@ function renderPill() {
   if (app.isConnected()) {
     cls = conn.unstable ? 'status-away' : 'status-online';
     label = conn.unstable ? t('pill.unstable') : t('pill.connected', { name: app.peer?.name ?? '' });
+  } else if (conn?.state === 'open' && pairing && !pairing.confirmed) {
+    cls = 'status-away';
+    label = t('pill.confirm');
   } else if (conn && ['connecting', 'open'].includes(conn.state)) {
     cls = 'status-away';
     label = t('pill.connecting');
@@ -155,7 +190,17 @@ function showFailure(text, title = t('fail.title')) {
   go('connect');
 }
 
+function stopRelays() {
+  codeSide?.stop();
+  codeSide = null;
+  clearInterval(countdown);
+  countdown = null;
+}
+
 function resetConnection() {
+  stopRelays();
+  pairing = null;
+  helloSeen = null;
   helloDone = false;
   preHello = [];
   if (conn) {
@@ -222,6 +267,227 @@ async function startHost() {
     showPanel('invite');
   } catch (err) {
     if (err?.message !== 'closed') showFailure(errorText(err));
+  }
+}
+
+// ---- pairing with six words ----
+
+async function passphraseLayerFromForm() {
+  const usePass = $('#use-pass').checked;
+  const pass = $('#pass-input').value;
+  if (usePass && pass.length < 4) {
+    toast(t('connect.pass.short'), 'warning');
+    $('#pass-input').focus();
+    return false;
+  }
+  if (!usePass) return null;
+  showPanel('busy', t('busy.key'));
+  return PassphraseLayer.create(pass);
+}
+
+function renderWords(list, words) {
+  list.replaceChildren(...words.map((w, i) => el('li.ff-word', {}, el('span.ff-word-i', { text: String(i + 1) }), el('span.ff-word-w', { text: w }))));
+}
+
+function renderRelays(status) {
+  $('#code-relays').textContent = t('pair.code.relays', { n: status.connected.length, total: status.total });
+}
+
+/** Shows a QR code and six words, and waits on the public relays for the other device. */
+async function startCode() {
+  if (!supported()) return;
+  saveName();
+  resetConnection();
+  go('connect');
+  let pass;
+  try {
+    pass = await passphraseLayerFromForm();
+  } catch (err) {
+    return showFailure(errorText(err));
+  }
+  if (pass === false) return;
+  layer = pass;
+  showPanel('busy', t('pair.busy.code'));
+  const c = makeConnection();
+  const nonce = randomId(12);
+  const offerReady = c.prepareOffer().then((sdp) => ({
+    sdp,
+    name: settings.name,
+    sid: c.sid,
+    nonce,
+    ...(layer ? { lock: 1, salt: toBase64Url(layer.salt), iterations: layer.iterations } : {}),
+  }));
+  offerReady.catch(() => {});
+  const creator = new CodeCreator(offerReady);
+  codeSide = creator;
+  pairing = { role: 'creator', nonce };
+  creator.on('status', renderRelays);
+  creator.on('expired', () => {
+    if (codeSide !== creator) return;
+    resetConnection();
+    showFailure(t('pair.expired'), t('pair.expired.title'));
+  });
+  creator.on('answer', async (msg) => {
+    if (codeSide !== creator || typeof msg.sdp !== 'string') return;
+    try {
+      await c.applyAnswer({ sdp: msg.sdp, name: String(msg.name ?? '').slice(0, 40), sid: msg.sid });
+      showPanel('busy', t('busy.connect', { name: c.peerName || '?' }));
+    } catch (err) {
+      showFailure(errorText(err));
+    }
+  });
+  try {
+    const words = await creator.start();
+    if (codeSide !== creator) return;
+    const link = wordsLink(location.href, words);
+    const qr = encodeQr(link, { ecl: 'M' });
+    const box = $('#code-qr');
+    box.innerHTML = qrSvg(qr, { margin: 3 });
+    box.dataset.version = qr.version;
+    box.dataset.link = link;
+    renderWords($('#code-words'), words);
+    $('#code-words').dataset.words = words.join(' ');
+    renderRelays(creator.hub.status());
+    const tick = () => {
+      const left = Math.max(0, creator.expires - Date.now());
+      const m = Math.floor(left / 60000);
+      const sec = Math.floor((left % 60000) / 1000);
+      const el2 = $('#code-countdown');
+      el2.textContent = `${m}:${String(sec).padStart(2, '0')}`;
+      el2.classList.toggle('is-low', left < 60000);
+      el2.style.setProperty('--left', String(left / CODE_LIFETIME_MS));
+    };
+    tick();
+    countdown = setInterval(tick, 1000);
+    showPanel('code');
+  } catch (err) {
+    if (codeSide !== creator) return;
+    resetConnection();
+    showFailure(t('pair.norelay', { error: err.message }), t('pair.norelay.title'));
+  }
+}
+
+/** Joins with six words typed in, pasted, or carried by a scanned pairing link. */
+async function startWordsJoin(input) {
+  if (!supported()) return;
+  const res = resolvePhrase(input);
+  if (!res.ok) {
+    toast(t('pair.words.incomplete'), 'warning');
+    return;
+  }
+  // Pressing Connect right after the last word already started the same join.
+  if (codeSide instanceof CodeJoiner && codeSide.phrase === res.words.join(' ')) return;
+  saveName();
+  resetConnection();
+  go('connect');
+  showPanel('busy', t('pair.busy.find'));
+  const joiner = new CodeJoiner();
+  joiner.phrase = res.words.join(' ');
+  codeSide = joiner;
+  joiner.on('status', (st) => connectPanel === 'busy' && st.connected.length && ($('#busy-text').textContent = t('pair.busy.knock', { n: st.connected.length })));
+  joiner.on('timeout', () => {
+    if (codeSide !== joiner) return;
+    resetConnection();
+    showFailure(t('pair.nopeer'), t('pair.nopeer.title'));
+  });
+  joiner.on('offer', async (msg) => {
+    if (codeSide !== joiner) return;
+    if (typeof msg.sdp !== 'string' || typeof msg.nonce !== 'string' || typeof msg.sid !== 'string') return;
+    try {
+      if (msg.lock) {
+        const pass = await askPassphrase();
+        if (!pass) {
+          resetConnection();
+          return showPanel('start');
+        }
+        const iterations = Number(msg.iterations) || 600000;
+        if (iterations < 100000 || iterations > 5000000 || typeof msg.salt !== 'string') throw new Error(t('err.damaged'));
+        showPanel('busy', t('busy.key'));
+        layer = await PassphraseLayer.create(pass, fromBase64Url(msg.salt), iterations);
+      } else {
+        layer = null;
+      }
+      showPanel('busy', t('busy.join'));
+      const c = makeConnection();
+      pairing = { role: 'joiner', nonce: msg.nonce.slice(0, 64) };
+      const name = String(msg.name ?? '').slice(0, 40);
+      const sdp = await c.answerOffer({ sdp: msg.sdp, sid: msg.sid.slice(0, 32), name });
+      if (codeSide !== joiner) return;
+      joiner.sendAnswer({ sdp, name: settings.name, sid: msg.sid });
+      showPanel('busy', t('busy.connect', { name: name || '?' }));
+    } catch (err) {
+      if (err?.message !== 'closed') showFailure(errorText(err));
+    }
+  });
+  try {
+    await joiner.start(res.words);
+  } catch (err) {
+    if (codeSide !== joiner) return;
+    resetConnection();
+    showFailure(t('pair.norelay', { error: err.message }), t('pair.norelay.title'));
+  }
+}
+
+/** After the channel opens: the joiner shows confirmation words, the creator types them. */
+function beginConfirm() {
+  const local = sdpFingerprint(conn.pc?.localDescription?.sdp);
+  const remote = sdpFingerprint(conn.pc?.remoteDescription?.sdp);
+  pairing.expected = confirmWords(local, remote, pairing.nonce);
+  pairing.attempts = 0;
+  for (const id of ['#confirm-fp-show', '#confirm-fp-type']) $(id).textContent = conn.fingerprint ?? '';
+  if (pairing.role === 'joiner') {
+    renderWords($('#confirm-words'), pairing.expected);
+    $('#confirm-words').dataset.words = pairing.expected.join(' ');
+    showPanel('confirm-show');
+  } else {
+    confirmInputs.reset();
+    $('#confirm-error').hidden = true;
+    $('#confirm-type-title').textContent = t('confirm.type.title.named', { name: app.peer?.name || '?' });
+    showPanel('confirm-type');
+    setTimeout(() => confirmInputs.focus(), 50);
+  }
+  go('connect');
+}
+
+function confirmTyped() {
+  if (!pairing || pairing.role !== 'creator' || pairing.confirmed || !conn?.dc) return;
+  const res = confirmInputs.values();
+  const box = $('#confirm-error');
+  if (!res.ok) {
+    box.hidden = false;
+    $('#confirm-error-text').textContent = t('confirm.incomplete');
+    return;
+  }
+  if (res.words.join(' ') === pairing.expected.join(' ')) {
+    pairing.confirmed = true;
+    try {
+      conn.dc.send(JSON.stringify({ t: 'pair', ok: true }));
+    } catch {}
+    finishAttach();
+    return;
+  }
+  pairing.attempts++;
+  confirmInputs.setError();
+  if (pairing.attempts >= 3) {
+    try {
+      conn.dc.send(JSON.stringify({ t: 'pair', ok: false }));
+    } catch {}
+    resetConnection();
+    showFailure(t('confirm.rejected'), t('confirm.rejected.title'));
+    return;
+  }
+  box.hidden = false;
+  $('#confirm-error-text').textContent = t('confirm.wrong', { left: 3 - pairing.attempts });
+}
+
+function handlePair(m) {
+  if (!pairing || pairing.role !== 'joiner' || pairing.confirmed) return;
+  if (m.ok) {
+    pairing.confirmed = true;
+    finishAttach();
+  } else {
+    resetConnection();
+    showFailure(t('confirm.rejected.peer'), t('confirm.rejected.title'));
   }
 }
 
@@ -312,6 +578,7 @@ async function onConnState(c, state, detail) {
   if (c !== conn) return;
   if (state === 'connecting' && c.role === 'host') showPanel('busy', t('busy.connect', { name: c.peerName || '?' }));
   if (state === 'open') {
+    stopRelays();
     const hello = { t: 'hello', name: settings.name, device: settings.deviceId, v: PROTOCOL_VERSION };
     if (layer) hello.check = await makeKeyCheck(layer.key);
     try {
@@ -343,7 +610,8 @@ function onText(text) {
   try {
     m = decodeControl(text);
   } catch {}
-  if (m?.t === 'hello') handleHello(m);
+  if (m?.t === 'hello' && !helloSeen) handleHello(m);
+  else if (m?.t === 'pair') handlePair(m);
   else preHello.push(text);
 }
 
@@ -366,7 +634,21 @@ async function handleHello(m) {
     return;
   }
   if (c !== conn) return;
+  helloSeen = m;
   app.peer = { name: m.name || c.peerName || '?', device: m.device };
+  // Words pairing: nothing moves until the confirmation words match.
+  if (pairing && !pairing.confirmed) {
+    beginConfirm();
+    renderPill();
+    return;
+  }
+  finishAttach();
+}
+
+function finishAttach() {
+  const c = conn;
+  const m = helloSeen;
+  if (!c || !m || helloDone) return;
   const same = lastPeerDevice === m.device;
   const hadInterrupted = [...engine.outgoing.values(), ...engine.incoming.values()].some((x) => x.state === 'interrupted');
   if (!same && hadInterrupted) {
@@ -386,7 +668,9 @@ async function handleHello(m) {
   }
   showPanel('status');
   renderStatus();
-  toast(t(same && hadInterrupted ? 'toast.resumed' : 'toast.connected', { name: app.peer.name }), 'success', 7000);
+  go('connect');
+  celebrate.connected($('#connect-status .ff-link-anim'));
+  toast(t(same && hadInterrupted ? 'toast.resumed' : pairing?.confirmed ? 'toast.paired' : 'toast.connected', { name: app.peer.name }), 'success', 7000);
 }
 
 function onMessage(m) {
@@ -403,6 +687,12 @@ function renderStatus() {
   if (!app.isConnected()) return;
   $('#peer-title').textContent = t('status.title', { name: app.peer?.name ?? '' });
   $('#peer-fp').textContent = conn.fingerprint ?? '';
+  const paired = !!pairing?.confirmed;
+  $('#paired-note').hidden = !paired;
+  if (paired !== $('#fp-box').dataset.paired) {
+    $('#fp-box').open = !paired;
+    $('#fp-box').dataset.paired = paired;
+  }
   $('#sec-pass-text').textContent = t(layer ? 'status.pass.on' : 'status.pass.off');
   $('#sec-pass').classList.toggle('ff-muted', !layer);
   const r = conn.route;
@@ -466,6 +756,7 @@ function bind() {
       showPanel('start');
     }
     if (action === 'open-ice') openSettings(true);
+    if (action === 'new-code') startCode();
   });
   $('#device-name').value = settings.name;
   $('#device-name').addEventListener('change', saveName);
@@ -474,6 +765,23 @@ function bind() {
     if (e.target.checked) $('#pass-input').focus();
   });
   $('#host-btn').addEventListener('click', startHost);
+  $('#code-btn').addEventListener('click', startCode);
+  $('#code-new').addEventListener('click', startCode);
+  $('#code-copy').addEventListener('click', (e) => copyText($('#code-words').dataset.words ?? '', e.currentTarget));
+  joinInputs = wordInputs($('#join-words'), { idPrefix: 'join-word', auto: true, onReady: (words) => startWordsJoin(words) });
+  confirmInputs = wordInputs($('#confirm-inputs'), { idPrefix: 'confirm-word', onReady: () => confirmTyped() });
+  $('#words-join-btn').addEventListener('click', () => startWordsJoin(joinInputs.inputs.map((x) => x.value)));
+  $('#confirm-btn').addEventListener('click', confirmTyped);
+  $('#mode-link').addEventListener('click', () => {
+    settings.connectMode = 'link';
+    save();
+    showPanel('start');
+  });
+  $('#mode-words').addEventListener('click', () => {
+    settings.connectMode = 'words';
+    save();
+    showPanel('start');
+  });
   $('#join-btn').addEventListener('click', () => startJoin($('#join-input').value));
   $('#reply-btn').addEventListener('click', () => submitReply($('#reply-input').value));
   $('#reply-input').addEventListener('paste', () => setTimeout(() => findSignal($('#reply-input').value)?.kind === 'r' && submitReply($('#reply-input').value), 0));
@@ -500,9 +808,16 @@ function bind() {
     if (!ok) return;
     $('#join-scan').hidden = false;
     $('#reply-scan').hidden = false;
+    $('#words-scan').hidden = false;
+    $('#words-scan').addEventListener('click', async () => {
+      const sig = await scanSignal();
+      if (sig?.kind === 'w') startWordsJoin(sig.words);
+      else if (sig) startJoin(`#${sig.kind ?? 'i'}=${sig.code}`);
+    });
     $('#join-scan').addEventListener('click', async () => {
       const sig = await scanSignal();
-      if (sig) startJoin(`#${sig.kind ?? 'i'}=${sig.code}`);
+      if (sig?.kind === 'w') startWordsJoin(sig.words);
+      else if (sig) startJoin(`#${sig.kind ?? 'i'}=${sig.code}`);
     });
     $('#reply-scan').addEventListener('click', async () => {
       const sig = await scanSignal();
@@ -520,6 +835,14 @@ function bind() {
 }
 
 function handleHash() {
+  const words = wordsFromLink(location.hash);
+  if (words) {
+    // A scanned pairing code: join with its words, nothing to type.
+    history.replaceState(null, '', location.pathname + location.search);
+    go('connect');
+    startWordsJoin(words);
+    return;
+  }
   const sig = findSignal(location.hash);
   if (!sig) return;
   history.replaceState(null, '', location.pathname + location.search);
@@ -550,7 +873,7 @@ function boot() {
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   engine.on('error', (err) => console.warn('filefinch:', err.message));
   // A handle for debugging from the console and for the end to end test.
-  window.filefinch = { app, engine, settings, version: PROTOCOL_VERSION, connection: () => conn };
+  window.filefinch = { app, engine, settings, version: PROTOCOL_VERSION, connection: () => conn, pairing: () => pairing };
 }
 
 boot();

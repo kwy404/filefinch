@@ -51,3 +51,24 @@ jobs:
         env:
           FILEFINCH_BROWSER: /usr/bin/google-chrome
           FILEFINCH_E2E_MB: 64
+
+  pairing:
+    name: Pairing words through public relays
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Uses public MQTT brokers that are not ours, so an outage there does not fail the build.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Two browser contexts pair with six words and transfer files
+        run: npm run test:e2e:words
+        env:
+          FILEFINCH_BROWSER: /usr/bin/google-chrome

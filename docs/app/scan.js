@@ -4,6 +4,7 @@
 import { $, showDialog } from './ui.js';
 import { t } from './i18n.js';
 import { findSignal } from './lib/invite.js';
+import { wordsFromLink } from './lib/words.js';
 
 export async function canScan() {
   if (!('BarcodeDetector' in globalThis) || !navigator.mediaDevices?.getUserMedia) return false;
@@ -15,7 +16,7 @@ export async function canScan() {
   }
 }
 
-/** Opens the camera and resolves with { kind, code } from the first filefinch QR code, or null. */
+/** Opens the camera and resolves with { kind, code } (or { kind: 'w', words }) from the first filefinch QR code, or null. */
 export async function scanSignal() {
   const dialog = $('#scan-dialog');
   const video = $('#scan-video');
@@ -35,7 +36,8 @@ export async function scanSignal() {
       try {
         const codes = await detector.detect(video);
         for (const c of codes) {
-          const sig = findSignal(c.rawValue);
+          const words = wordsFromLink(c.rawValue);
+          const sig = words ? { kind: 'w', words } : findSignal(c.rawValue);
           if (sig) found = sig;
           else status.textContent = t('scan.notours');
         }

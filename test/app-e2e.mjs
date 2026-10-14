@@ -148,8 +148,11 @@ async function connect(pageA, pageB, ctxA, { passphrase } = {}) {
   await pageA.click('[data-go="connect"]');
   if (await pageA.locator('#connect-lost').isVisible()) await pageA.click('#connect-lost [data-action="restart-connect"]');
   if (await pageA.locator('#connect-failed').isVisible()) await pageA.click('#connect-failed [data-action="restart-connect"]');
-  await pageA.locator('#connect-start').waitFor({ state: 'visible' });
+  // This test covers the zero third party link mode; app-e2e-words.mjs covers pairing words.
+  if (await pageA.locator('#mode-link').isVisible()) await pageA.click('#mode-link');
+  await pageA.locator('#connect-link').waitFor({ state: 'visible' });
   if (passphrase) {
+    if (!(await pageA.locator('#use-pass').isVisible())) await pageA.click('.ff-options summary');
     await pageA.check('#use-pass');
     await pageA.fill('#pass-input', passphrase);
   }
@@ -175,6 +178,8 @@ async function connect(pageA, pageB, ctxA, { passphrase } = {}) {
   await helper.close();
   await pageA.locator('#connect-status').waitFor({ state: 'visible', timeout: 40000 });
   await pageB.locator('#connect-status').waitFor({ state: 'visible', timeout: 40000 });
+  await pageA.waitForFunction(() => document.querySelector('#peer-fp').textContent.trim().length > 0, null, { timeout: 10000 });
+  await pageB.waitForFunction(() => document.querySelector('#peer-fp').textContent.trim().length > 0, null, { timeout: 10000 });
   const fpA = (await pageA.textContent('#peer-fp')).trim();
   const fpB = (await pageB.textContent('#peer-fp')).trim();
   return { invite, reply, qrVersion: Number(qrVersion), delivered, fpA, fpB, ms: Date.now() - started };
@@ -232,6 +237,7 @@ async function main() {
   try {
     // 0. A connection that cannot work says why in plain words and offers the relay setting.
     await pageA.evaluate(() => (window.filefinch.settings.relayOnly = true));
+    await pageA.click('#mode-link');
     await pageA.click('#host-btn');
     await pageA.locator('#connect-invite').waitFor({ state: 'visible', timeout: 30000 });
     await pageB.goto(await pageA.inputValue('#invite-link'));
@@ -248,7 +254,7 @@ async function main() {
     const c = await connect(pageA, pageB, ctxA);
     check('invite and reply connect two browser contexts', true, `${c.ms} ms, invite QR version ${c.qrVersion}`);
     check('reply link opened in another tab reaches the waiting tab', /delivered/i.test(c.delivered), c.delivered.trim());
-    check('both sides show the same fingerprint', c.fpA === c.fpB && /^\d{4} \d{4} \d{4}$/.test(c.fpA), c.fpA);
+    check('both sides show the same fingerprint', c.fpA === c.fpB && /^\d{4} \d{4} \d{4}$/.test(c.fpA), `${c.fpA} / ${c.fpB}`);
     check('invite link is short', c.invite.length < 700, `${c.invite.length} characters`);
 
     // The ceiling: raw 64 KB messages on the same data channel with no app logic, for comparison.

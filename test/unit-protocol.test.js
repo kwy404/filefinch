@@ -71,6 +71,7 @@ describe('control messages', () => {
       { t: 'sync-delete', sync: 's1', paths: ['old.txt'] },
       { t: 'sync-done', sync: 's1', base: {} },
       { t: 'sync-cancel', sync: 's1' },
+      { t: 'pair', ok: true },
       { t: 'ping' },
       { t: 'bye' },
     ];

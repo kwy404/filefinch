@@ -12,6 +12,7 @@ import { canPreview, openPreview } from './preview.js';
 import { recordTransfer } from './history.js';
 import { settings } from './settings.js';
 import { addToLibrary } from './library.js';
+import { celebrate } from './motion.js';
 
 const MAX_ROWS = 300;
 const cards = new Map();
@@ -177,6 +178,10 @@ function render(tr) {
     entry.note.textContent = tr.note;
   }
   renderActions(tr, entry);
+  if (tr.dir === 'out' && tr.state === 'active' && !tr.liftedOff) {
+    tr.liftedOff = true;
+    celebrate.sent(entry.card);
+  }
   if (entry.files.open || tr.files.length === 1) renderFiles(tr, entry);
   entry.files.hidden = tr.files.length === 1;
   updateEmpty();
@@ -476,6 +481,7 @@ async function onFinished(tr) {
     if (!tr.note && tr.state !== 'canceled') tr.note = t(key);
   }
   if (tr.kind !== 'sync') {
+    if (tr.state === 'done' && tr.dir === 'in') requestAnimationFrame(() => celebrate.received(cards.get(`in:${tr.id}`)?.card));
     if (tr.state === 'done') toast(t(tr.dir === 'out' ? 'toast.sent' : 'toast.received', { label: tr.label }), 'success');
     if (tr.dest === 'library') app.refreshLibrary?.();
   }
