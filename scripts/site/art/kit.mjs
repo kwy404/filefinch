@@ -246,3 +246,13 @@ export function appScreen(p, w, h, { rows = 3, title = true, done = 0, accent = 
 export function svgDoc(W, H, body, title) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-labelledby="t"><title id="t">${title}</title>${body}</svg>`;
 }
+
+/** A numbered word tile, like one word of a recovery phrase. */
+export function wordChip(p, x, y, w, n, word, { h = w * 0.34, accent = p.blue, size = h * 0.42 } = {}) {
+  return `<g transform="translate(${x} ${y})"><rect width="${w}" height="${h}" rx="${h * 0.3}" fill="${p.card}" stroke="${p.line}" stroke-width="2"/><rect x="${h * 0.16}" y="${h * 0.16}" width="${h * 0.68}" height="${h * 0.68}" rx="${h * 0.2}" fill="${accent}"/><text x="${h * 0.5}" y="${h * 0.5 + size * 0.36}" text-anchor="middle" font-family="${FONT}" font-size="${size * 0.9}" font-weight="800" fill="#fff">${n}</text><text x="${h * 1.02}" y="${h * 0.5 + size * 0.36}" font-family="${FONT}" font-size="${size}" font-weight="700" fill="${p.ink}">${word}</text></g>`;
+}
+
+/** A sealed envelope with a small lock, centered at x,y. */
+export function envelope(p, x, y, s = 1, { rot = 0 } = {}) {
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><rect x="-24" y="-16" width="48" height="32" rx="5" fill="${p.card}" stroke="${p.ink}" stroke-width="2.4"/><path d="M-24 -14 L0 4 L24 -14" fill="none" stroke="${p.ink}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="14" cy="10" r="9" fill="${p.mint}" stroke="${p.card}" stroke-width="2"/><path d="M10.5 9 v-2 a3.5 3.5 0 0 1 7 0 v2" fill="none" stroke="#fff" stroke-width="1.8"/><rect x="9.5" y="9" width="9" height="6.5" rx="1.5" fill="#fff"/></g>`;
+}

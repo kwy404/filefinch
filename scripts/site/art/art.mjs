@@ -4,7 +4,7 @@
 import { PAL } from './palette.mjs';
 import { placeFinn, placeHead } from './finn.mjs';
 import {
-  appScreen, bird, bubble, check, desktop, fileSheet, folder, label, laptop, lock, noCloud, panel, parcel,
+  appScreen, bird, envelope, wordChip, bubble, check, desktop, fileSheet, folder, label, laptop, lock, noCloud, panel, parcel,
   phone, progress, qr, sky, svgDoc, tablet, trail,
 } from './kit.mjs';
 
@@ -43,6 +43,28 @@ export const ART = {
       tilt: -8,
       screen: (w, h) => `<rect width="${w}" height="${h}" fill="${p.ink2}"/>${qr(p, w * 0.2, h * 0.3, w * 0.6, { seed: 11, color: p.ink, bg: '#FFFFFF' })}<path d="M${w * 0.12} ${h * 0.26} v-${h * 0.05} h${w * 0.12} M${w * 0.76} ${h * 0.21} h${w * 0.12} v${h * 0.05} M${w * 0.12} ${h * 0.62} v${h * 0.05} h${w * 0.12} M${w * 0.76} ${h * 0.67} h${w * 0.12} v-${h * 0.05}" fill="none" stroke="${p.mint}" stroke-width="4" stroke-linecap="round"/><circle cx="${w / 2}" cy="${h * 0.86}" r="${w * 0.1}" fill="#fff"/>`,
     }) + trail(p, 'M360 160 C390 150 410 160 430 170', { color: p.mint, dash: '2 7' }),
+  },
+  'six-words': {
+    title: 'A laptop shows six numbered words and a phone types the same six words to connect the two devices',
+    draw: (p, t) => {
+      const words = ['maple', 'harbor', 'orbit', 'canyon', 'river', 'meadow'];
+      const grid = (w, h, filled) => `<rect width="${w}" height="${h}" fill="${p.card2}"/>` + words.map((wd, i) => wordChip(p, w * 0.06 + (i % 2) * w * 0.46, h * 0.12 + Math.floor(i / 2) * h * 0.28, w * 0.42, i + 1, i < filled ? wd : '', { h: h * 0.21 })).join('');
+      return panel(p, W, H) + `<circle cx="320" cy="200" r="160" fill="${p.card}" opacity=".45"/>`
+        + laptop(p, 60, 90, 290, { screen: (w, h) => grid(w, h, 6) })
+        + phone(p, 440, 70, 120, { screen: (w, h) => grid(w, h, 4) + `<rect x="${w * 0.52}" y="${h * 0.12 + 2 * h * 0.28 + h * 0.04}" width="2.5" height="${h * 0.13}" fill="${p.blue}"/>` })
+        + trail(p, 'M360 150 C390 110 420 110 440 130', { color: p.coral, dash: '2 8' }) + (t ? '' : '');
+    },
+  },
+  'word-handshake': {
+    title: 'The six word handshake travels sealed through a public relay that cannot read it, then the files fly straight between the two devices',
+    draw: (p, t) => sky(p, W, H, { theme: t })
+      + phone(p, 70, 170, 74, { screen: (w, h) => appScreen(p, w, h, { rows: 3, done: 1 }) })
+      + laptop(p, 430, 196, 170, { screen: (w, h) => appScreen(p, w, h, { rows: 3, done: 2, accent: p.mint }) })
+      + `<g transform="translate(320 0)"><path d="M-16 150 L-5 60 H5 L16 150 Z" fill="${p.navy}"/><circle cy="52" r="9" fill="${p.coral}"/><path d="M-20 40 a26 26 0 0 1 40 0" fill="none" stroke="${p.coral}" stroke-width="4" stroke-linecap="round"/></g>`
+      + trail(p, 'M150 180 C190 90 260 50 300 60', { color: p.soft, dash: '2 7' }) + trail(p, 'M340 60 C390 50 450 110 490 190', { color: p.soft, dash: '2 7' })
+      + envelope(p, 220, 92, 0.9, { rot: -12 }) + envelope(p, 420, 92, 0.9, { rot: 12 })
+      + trail(p, 'M150 250 C250 300 390 300 450 260', { color: p.coral, width: 4, dash: '1 0' })
+      + bird(p, 300, 288, 1, { carry: 'parcel', wing: 'down' }),
   },
   'reply-code': {
     title: 'The guest phone sends a short reply code back through any messenger and the host laptop pastes it to finish the connection',
@@ -127,8 +149,8 @@ export const ART = {
   'fingerprint-match': {
     title: 'Both screens show the same short connection fingerprint so you can confirm nobody sits in the middle',
     draw: (p) => panel(p, W, H)
-      + phone(p, 90, 90, 104, { screen: (w, h) => `<rect width="${w}" height="${h}" fill="${p.card2}"/><rect x="${w * 0.1}" y="${h * 0.38}" width="${w * 0.8}" height="${h * 0.2}" rx="10" fill="${p.sky2}" stroke="${p.blue}" stroke-width="2"/>${label('7F 2A 91', w / 2, h * 0.5, 15, p.ink, { anchor: 'middle', weight: 800, ls: 1 })}` })
-      + laptop(p, 360, 130, 210, { screen: (w, h) => `<rect width="${w}" height="${h}" fill="${p.card2}"/><rect x="${w * 0.2}" y="${h * 0.32}" width="${w * 0.6}" height="${h * 0.3}" rx="10" fill="${p.sky2}" stroke="${p.blue}" stroke-width="2"/>${label('7F 2A 91', w / 2, h * 0.53, 22, p.ink, { anchor: 'middle', weight: 800, ls: 2 })}` })
+      + phone(p, 90, 90, 104, { screen: (w, h) => `<rect width="${w}" height="${h}" fill="${p.card2}"/><rect x="${w * 0.1}" y="${h * 0.38}" width="${w * 0.8}" height="${h * 0.2}" rx="10" fill="${p.sky2}" stroke="${p.blue}" stroke-width="2"/>${label('4188 2276', w / 2, h * 0.5, 13, p.ink, { anchor: 'middle', weight: 800, ls: 1 })}` })
+      + laptop(p, 360, 130, 210, { screen: (w, h) => `<rect width="${w}" height="${h}" fill="${p.card2}"/><rect x="${w * 0.2}" y="${h * 0.32}" width="${w * 0.6}" height="${h * 0.3}" rx="10" fill="${p.sky2}" stroke="${p.blue}" stroke-width="2"/>${label('4188 2276 8949', w / 2, h * 0.53, 17, p.ink, { anchor: 'middle', weight: 800, ls: 2 })}` })
       + `<path d="M210 200 H350" stroke="${p.mint}" stroke-width="4" stroke-dasharray="8 8" stroke-linecap="round"/>` + check(p, 280, 200, 1.5),
   },
   'cloud-vs-direct': {

@@ -14,6 +14,7 @@ import { bannerSVG, socialSVG } from './art/banner.mjs';
 import { ICONS, iconSVG } from './art/icons.mjs';
 import { ART, artSVG } from './art/art.mjs';
 import { bird } from './art/kit.mjs';
+import { LIT, litSVG } from './art/lit.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const write = (p, s) => {
@@ -52,13 +53,19 @@ export function buildArt() {
     write(`docs/assets/art/${n}.svg`, artSVG(n, 'light'));
     write(`docs/assets/art/${n}-dark.svg`, artSVG(n, 'dark'));
   }
+  for (const n of Object.keys(LIT)) {
+    write(`docs/assets/lit/${n}.svg`, litSVG(n, 'dark'));
+    write(`docs/assets/lit/${n}-light.svg`, litSVG(n, 'light'));
+    write(`assets/illustrations/lit/${n}.svg`, litSVG(n, 'dark'));
+    write(`assets/illustrations/lit/${n}-light.svg`, litSVG(n, 'light'));
+  }
   write('docs/favicon.svg', faviconSVG());
   write('docs/assets/art/finn.svg', mascotSVG('light'));
   write('docs/assets/art/finn-dark.svg', mascotSVG('dark'));
   write('docs/assets/art/finn-head.svg', headSVG('light'));
   write('docs/assets/art/finn-head-dark.svg', headSVG('dark'));
   write('docs/assets/art/flyer.svg', flyerSVG());
-  return Object.keys(ART);
+  return [...Object.keys(ART), ...Object.keys(LIT)];
 }
 
 function findBrowser() {

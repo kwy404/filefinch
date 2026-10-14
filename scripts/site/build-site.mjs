@@ -12,10 +12,10 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { encodeQr, qrPath } from '../../src/qr.js';
+import { encodeQr } from '../../src/qr.js';
 import { baseImages, buildArt, renderPng } from './build-art.mjs';
 import { cardSVG } from './art/banner.mjs';
-import { HOME, homeBody, homeJsonLd } from './home.mjs';
+import { HOME, availableShots, homeBody, homeJsonLd } from './home.mjs';
 import { GUIDE_BASE, guideBody, guideJsonLd, guidePath, indexBody, indexJsonLd } from './guides.mjs';
 import { SITE, UPDATED, esc, page, rel } from './layout.mjs';
 import { frontMatter, render } from './md.mjs';
@@ -91,7 +91,6 @@ const altFor = (g) => {
 const out = {};
 const APP_URL = `${SITE}app/`;
 const qr = encodeQr(APP_URL, { ecl: 'M' });
-const qrMarkup = `<svg viewBox="0 0 ${qr.size + 4} ${qr.size + 4}" shape-rendering="crispEdges" aria-hidden="true"><rect width="${qr.size + 4}" height="${qr.size + 4}" fill="#fff"/><path fill="#10244A" d="${qrPath(qr, 2)}"/></svg>`;
 
 for (const g of guides) {
   const lang = g.meta.lang;
@@ -113,11 +112,11 @@ for (const g of guides) {
 
 out['index.html'] = page(
   {
-    lang: 'en', path: '', title: HOME.title, description: HOME.description, jsonld: homeJsonLd(), bodyClass: 'home',
+    lang: 'en', path: '', title: HOME.title, description: HOME.description, jsonld: homeJsonLd(), bodyClass: 'home', head: `<script>document.documentElement.classList.add('js')</script>\n<link rel="stylesheet" href="assets/site/home.css">\n<script type="module" src="assets/site/home.js"></script>\n`,
     alternates: { en: SITE, 'x-default': SITE },
     ogAlt: 'filefinch: Finn the finch courier flying files straight between your own devices, no cloud in between',
   },
-  homeBody('', { guides, qrMarkup, link: `${APP_URL}#i=7VfLbtswEPwVQueEBu6ZWwM` }),
+  homeBody('', { guides, qr, shots: availableShots(docs) }),
 );
 
 for (const g of guides) {
