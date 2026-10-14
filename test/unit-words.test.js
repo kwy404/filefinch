@@ -37,8 +37,8 @@ describe('word generation', () => {
     expect(asked).toBe(9);
     expect(words).toHaveLength(6);
     const seen = new Set();
-    for (let i = 0; i < 400; i++) for (const w of generateWords()) seen.add(w);
-    expect(seen.size).toBeGreaterThan(1400); // 2400 draws over 2048 words
+    for (let i = 0; i < 2000; i++) for (const w of generateWords()) seen.add(w);
+    expect(seen.size).toBeGreaterThan(2000); // 12000 draws over 2048 words, about 2042 distinct expected
     expect(generateWords()).not.toEqual(generateWords());
   });
 });

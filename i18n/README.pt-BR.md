@@ -1,14 +1,14 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@main/assets/mascot-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@main/assets/mascot.svg" width="168" alt="Finn, o mascote do filefinch: um pequeno tentilhão entregador com boné, bolsa de mensageiro e um pacotinho">
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/mascot-dark.svg">
+    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/mascot.svg" width="168" alt="Finn, o mascote do filefinch: um pequeno tentilhão entregador com boné, bolsa de mensageiro e um pacotinho">
   </picture>
 </p>
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@main/assets/banner-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@main/assets/banner.svg" width="820" alt="Banner do filefinch: envie arquivos e pastas inteiras direto entre os seus aparelhos, sem nuvem, sem conta, com criptografia de ponta a ponta">
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/banner-dark.svg">
+    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/banner.svg" width="820" alt="Banner do filefinch: envie arquivos e pastas inteiras direto entre os seus aparelhos, sem nuvem, sem conta, com criptografia de ponta a ponta">
   </picture>
 </p>
 

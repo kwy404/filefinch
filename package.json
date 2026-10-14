@@ -1,6 +1,6 @@
 {
   "name": "filefinch",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "description": "Send files and whole folders straight between your own devices in the browser, like a personal cloud drive without the cloud: peer to peer over WebRTC, no server, no account, no size limit, resumable, with end to end encryption and folder sync.",
   "keywords": [
