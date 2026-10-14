@@ -565,8 +565,12 @@ async function submitReply(text) {
   }
   if (!conn || conn.role !== 'host') return;
   try {
-    await conn.applyReply(sig.code);
-    showPanel('busy', t('busy.connect', { name: conn.peerName || '?' }));
+    const result = await conn.applyReply(sig.code);
+    if (result === 'duplicate') {
+      toast(t('reply.duplicate'), 'info');
+      return;
+    }
+    if (result === 'applied') showPanel('busy', t('busy.connect', { name: conn.peerName || '?' }));
   } catch (err) {
     toast(errorText(err), 'danger', 8000);
   }
@@ -708,7 +712,10 @@ function renderStatus() {
 const channel = signalChannel();
 if (channel) {
   channel.addEventListener('message', ({ data }) => {
-    if (data?.type !== 'reply' || !conn || conn.role !== 'host' || conn.state !== 'waiting-reply') return;
+    if (data?.type !== 'reply' || !conn || conn.role !== 'host') return;
+    // A reply for this invite is taken even when it already arrived another way: applying it
+    // again is a harmless duplicate, and the other tab learns it was delivered.
+    if (!['waiting-reply', 'connecting', 'open'].includes(conn.state)) return;
     if (data.sid && data.sid !== conn.sid) return;
     channel.postMessage({ type: 'ack', id: data.id });
     submitReply(`#r=${data.code}`);

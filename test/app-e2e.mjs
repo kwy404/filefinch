@@ -144,7 +144,7 @@ async function runSync(pageA, pageB) {
   return { send: stats[0], receive: stats[1], deletes: stats[2], conflicts: stats[3], same: stats[4] };
 }
 
-async function connect(pageA, pageB, ctxA, { passphrase } = {}) {
+async function connect(pageA, pageB, ctxA, { passphrase, race = false } = {}) {
   await pageA.click('[data-go="connect"]');
   if (await pageA.locator('#connect-lost').isVisible()) await pageA.click('#connect-lost [data-action="restart-connect"]');
   if (await pageA.locator('#connect-failed').isVisible()) await pageA.click('#connect-failed [data-action="restart-connect"]');
@@ -172,7 +172,11 @@ async function connect(pageA, pageB, ctxA, { passphrase } = {}) {
   const reply = await pageB.inputValue('#reply-link');
   // The reply link is opened on the host device in a new tab and handed to the waiting tab.
   const helper = await ctxA.newPage();
-  await helper.goto(reply);
+  if (race) {
+    // The same reply arrives twice at once: pasted by hand and handed over from another tab.
+    await pageA.fill('#reply-input', reply);
+    await Promise.all([pageA.click('#reply-btn'), helper.goto(reply)]);
+  } else await helper.goto(reply);
   await helper.locator('#connect-failed').waitFor({ state: 'visible' });
   const delivered = await helper.textContent('#fail-text');
   await helper.close();
@@ -251,8 +255,8 @@ async function main() {
     await pageA.evaluate(() => (window.filefinch.settings.relayOnly = false));
 
     // 1. Connect through the invite flow.
-    const c = await connect(pageA, pageB, ctxA);
-    check('invite and reply connect two browser contexts', true, `${c.ms} ms, invite QR version ${c.qrVersion}`);
+    const c = await connect(pageA, pageB, ctxA, { race: true });
+    check('invite and reply connect two browser contexts, even with the reply applied twice at once', true, `${c.ms} ms, invite QR version ${c.qrVersion}`);
     check('reply link opened in another tab reaches the waiting tab', /delivered/i.test(c.delivered), c.delivered.trim());
     check('both sides show the same fingerprint', c.fpA === c.fpB && /^\d{4} \d{4} \d{4}$/.test(c.fpA), `${c.fpA} / ${c.fpB}`);
     check('invite link is short', c.invite.length < 700, `${c.invite.length} characters`);

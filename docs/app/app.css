@@ -1621,3 +1621,61 @@ details.ff-fp summary {
     display: none;
   }
 }
+
+/* ---- word tiles and inputs fit the longest BIP39 words (8 letters) at any width ---- */
+/* The number sits above the word, so the word gets the whole tile width, and the word's font
+   scales with the tile through container units. Words never break. */
+
+.ff-words,
+.ff-words-input {
+  --cols: 2;
+  container-type: inline-size;
+}
+
+@media (min-width: 30rem) {
+  .ff-words {
+    --cols: 3;
+  }
+}
+
+@media (min-width: 36rem) {
+  .ff-words-input {
+    --cols: 3;
+  }
+}
+
+.ff-word {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.55rem 0.7rem 0.65rem;
+}
+
+.ff-word-w {
+  /* 8 monospace letters are at most 5.2em wide; 1.6rem is the tile padding and border. */
+  font-size: 1.15rem;
+  font-size: clamp(0.95rem, (100cqi / var(--cols) - 1.6rem) / 5.2, 1.6rem);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+.ff-word-cell {
+  grid-template-rows: auto auto auto;
+}
+
+.ff-word-label {
+  position: static;
+  display: block;
+  padding: 0 0 0.2rem 0.2rem;
+  line-height: 1;
+}
+
+.ff-word-field {
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  font-size: 1rem;
+  white-space: nowrap;
+}

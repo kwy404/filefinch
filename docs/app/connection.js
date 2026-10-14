@@ -107,18 +107,43 @@ export class Connection extends Emitter {
     return this.applyAnswer(await decodeSignal(code, 'r'));
   }
 
-  /** Host side: applies an answer { sdp, name, sid }. */
+  /**
+   * Host side: applies an answer { sdp, name, sid }. Idempotent: the same reply can arrive twice
+   * (a reply link handed over from another tab plus a manual paste, a double click, or the
+   * relays delivering it twice). The first call wins; a repeat of the same answer returns
+   * 'duplicate' without touching the connection, and a different answer gets a clear error.
+   * The answer is claimed before the first await, so two calls racing in the same tick cannot
+   * both reach setRemoteDescription (which fails in the "stable" state).
+   */
   async applyAnswer(reply) {
     if (reply.sid && reply.sid !== this.sid) {
       const err = new Error('This reply belongs to a different invite. Make sure the other device opened the newest invite.');
       err.code = 'sid';
       throw err;
     }
-    if (this.pc?.signalingState !== 'have-local-offer') throw new Error('This invite was already used. Create a new one.');
+    if (this.answer) {
+      if (this.answer.sdp === reply.sdp) return 'duplicate';
+      const err = new Error('This invite is already connecting to another reply. Create a new invite to connect a different device.');
+      err.code = 'used';
+      throw err;
+    }
+    if (this.pc?.signalingState !== 'have-local-offer') {
+      const err = new Error('This invite was already used. Create a new one.');
+      err.code = 'used';
+      throw err;
+    }
+    this.answer = { sdp: reply.sdp };
     this.peerName = reply.name;
     this.setState('connecting');
-    await this.pc.setRemoteDescription({ type: 'answer', sdp: reply.sdp });
+    try {
+      await this.pc.setRemoteDescription({ type: 'answer', sdp: reply.sdp });
+    } catch (err) {
+      if (this.state === 'closed') return 'closed';
+      this.answer = null;
+      throw err;
+    }
     this.startConnectTimer();
+    return 'applied';
   }
 
   startConnectTimer() {
