@@ -51,12 +51,15 @@
   "scripts": {
     "build:app": "node scripts/build-app.mjs",
     "check:app": "node scripts/build-app.mjs --check",
+    "build:site": "node scripts/site/build-site.mjs",
+    "build:art": "node scripts/site/build-art.mjs --png",
     "lint": "eslint .",
     "check:rules": "node scripts/check-rules.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "node test/app-e2e.mjs",
-    "serve": "node scripts/serve.mjs"
+    "serve": "node scripts/serve.mjs",
+    "test:site": "node test/site-qa.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
