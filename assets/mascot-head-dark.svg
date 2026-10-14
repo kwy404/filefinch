@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="126 44 236 204" width="236" height="204" role="img" aria-labelledby="t">
+<title id="t">Finn the finch courier, head with his cap</title>
+<g fill="#DCE7FF" stroke="#DCE7FF" stroke-width="16" stroke-linejoin="round"><path d="M222 70 C268 70 304 106 304 152 C304 198 268 234 222 234 C176 234 140 198 140 152 C140 106 176 70 222 70 Z"/><path d="M146 134 C140 92 176 60 222 60 C266 60 300 88 300 126 C276 120 250 118 222 118 C196 118 170 124 146 134 Z"/><path d="M282 112 C306 106 334 112 350 126 C334 136 306 138 282 132 Z"/><path d="M296 150 C318 150 338 160 346 172 C336 184 316 188 296 184 Z"/></g>
+<path d="M222 70 C268 70 304 106 304 152 C304 198 268 234 222 234 C176 234 140 198 140 152 C140 106 176 70 222 70 Z" fill="#FF8A5B"/>
+<path d="M256 190 C276 196 292 190 300 176 C298 204 282 224 256 232 C238 226 236 200 256 190 Z" fill="#FFF0DA"/>
+<path d="M282 112 C306 106 334 112 350 126 C334 136 306 138 282 132 Z" fill="#1C3570"/>
+<path d="M146 134 C140 92 176 60 222 60 C266 60 300 88 300 126 C276 120 250 118 222 118 C196 118 170 124 146 134 Z" fill="#2B4C94"/>
+<path d="M148 126 C170 116 196 110 222 110 C252 110 278 114 300 120" fill="none" stroke="#FFD66B" stroke-width="7" stroke-linecap="round"/>
+<circle cx="222" cy="62" r="7" fill="#1C3570"/>
+<path d="M296 150 C318 150 338 160 346 172 C336 184 316 188 296 184 Z" fill="#FFB84F"/>
+<path d="M298 168 C316 168 332 170 344 172" fill="none" stroke="#B86F12" stroke-width="3" stroke-linecap="round"/>
+<circle cx="258" cy="158" r="13" fill="#0B1530"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/>
+<ellipse cx="270" cy="186" rx="13" ry="8" fill="#FF8F7A" opacity=".75"/>
+</svg>

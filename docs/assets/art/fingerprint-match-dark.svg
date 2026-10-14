@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="t"><title id="t">Both screens show the same short connection fingerprint so you can confirm nobody sits in the middle</title><defs><linearGradient id="pn4u" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#11214A"/><stop offset="1" stop-color="#0B1530"/></linearGradient></defs><rect width="640" height="400" fill="url(#pn4u)"/><ellipse cx="142" cy="308.08000000000004" rx="64.48" ry="7.7376000000000005" fill="rgba(0,0,0,.35)"/><g transform="translate(90 90) rotate(0 52 105.04)">
+<defs><clipPath id="ph4v"><rect x="6.24" y="6.24" width="91.52" height="197.60000000000002" rx="11.44"/></clipPath></defs>
+<rect width="104" height="210.08" rx="17.68" fill="#EAF1FF"/>
+<rect x="6.24" y="6.24" width="91.52" height="197.60000000000002" rx="11.44" fill="#14244D"/>
+<g clip-path="url(#ph4v)"><g transform="translate(6.24 6.24)"><rect width="91.52" height="197.60000000000002" fill="#1A2C5A"/><rect x="9.152" y="75.08800000000001" width="73.216" height="39.52000000000001" rx="10" fill="#11214A" stroke="#6FA0FF" stroke-width="2"/><text x="45.76" y="98.80000000000001" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="800" fill="#EAF1FF" text-anchor="middle" letter-spacing="1">7F 2A 91</text></g></g>
+<circle cx="52" cy="14.56" r="3.6400000000000006" fill="#1C3570"/>
+</g><ellipse cx="465" cy="277" rx="126" ry="15.12" fill="rgba(0,0,0,.35)"/><g transform="translate(360 130)">
+<defs><clipPath id="lp4w"><rect x="7.3500000000000005" y="7.3500000000000005" width="195.3" height="115.49999999999999" rx="3.15"/></clipPath></defs>
+<rect width="210" height="130.2" rx="7.3500000000000005" fill="#EAF1FF"/>
+<rect x="7.3500000000000005" y="7.3500000000000005" width="195.3" height="115.49999999999999" rx="3.15" fill="#14244D"/>
+<g clip-path="url(#lp4w)"><g transform="translate(7.3500000000000005 7.3500000000000005)"><rect width="195.3" height="115.49999999999999" fill="#1A2C5A"/><rect x="39.06" y="36.959999999999994" width="117.18" height="34.64999999999999" rx="10" fill="#11214A" stroke="#6FA0FF" stroke-width="2"/><text x="97.65" y="61.214999999999996" font-family="'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#EAF1FF" text-anchor="middle" letter-spacing="2">7F 2A 91</text></g></g>
+<path d="M-16.8 131.25 H226.8 L216.3 141.75 H-6.3 Z" fill="#C3D3F5"/>
+<rect x="88.2" y="131.25" width="33.6" height="3.36" rx="1.68" fill="#9AAED6"/>
+</g><path d="M210 200 H350" stroke="#4BE0B0" stroke-width="4" stroke-dasharray="8 8" stroke-linecap="round"/><g transform="translate(280 200) scale(1.5)"><circle r="14" fill="#4BE0B0" stroke="#14244D" stroke-width="3"/><path d="M-6 0 l4 4 8-9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
