@@ -13,12 +13,12 @@ howto: How to send a large file with filefinch
 steps:
   - name: Open filefinch on both devices
     text: Open the filefinch app in a modern browser on the sending device and on the receiving device. No account or install is needed.
-  - name: Create an invite on the sender
-    text: On the first device, create an invite. filefinch shows it as a link and as a QR code.
-  - name: Join from the receiver
-    text: Open the link or scan the QR code on the second device, then send the short reply code back by any messenger or show it to the first device's camera.
-  - name: Compare the fingerprint
-    text: Check that both screens show the same short connection code. If they match, the connection is between your two devices and nobody in the middle.
+  - name: Show the pairing code on the sender
+    text: On the first device, tap Show pairing code. The screen shows 6 words and a QR code that holds the same words.
+  - name: Enter the 6 words on the receiver
+    text: On the second device, type the 6 words in the Have a pairing code? box or scan the QR code. If you prefer zero third parties, use an invite link and reply code instead.
+  - name: Confirm the 6 words
+    text: The receiver shows 6 new confirmation words. Type them on the sender. If they match, the connection is between your two devices and nobody in the middle. With an invite link, compare the 12 digit fingerprint on both screens instead.
   - name: Pick the file and send
     text: Choose the large file on the sender. It streams in small chunks, and the receiver checks a SHA-256 hash when it finishes.
   - name: Keep both devices awake
@@ -34,6 +34,8 @@ faq:
     a: It depends on the slower of the two connections, usually the sender's upload speed over the internet. On the same Wi-Fi or wired network the traffic stays local and is often much faster than uploading.
   - q: Do I need to install anything to send large files?
     a: No. filefinch runs in Chrome, Edge, Firefox and Safari. You can install it as an app if you like, but it works from a normal browser tab.
+  - q: Does pairing with 6 words send my file through a server?
+    a: No. The 6-word handshake travels encrypted through public relays that cannot read it, and only to set up the connection. Your files go device to device over WebRTC. If you want no relay in the setup at all, use the Zero third parties invite link instead.
 related: [share-files-without-uploading, send-video-in-original-quality, transfer-files-on-the-same-wifi, peer-to-peer-file-transfer-explained]
 ---
 To send a large file without a size limit, skip the upload step entirely: connect the two devices directly and stream the file from one browser to the other. filefinch does exactly that. It is free, open source and runs in the browser, and it does not cap the size of what you send. The real limits are the free space on the receiving disk and keeping both devices online until the last byte arrives.
@@ -59,16 +61,24 @@ Because nothing is buffered in full on either side, a 2 GB video and a 200 GB di
 
 ## Setting up the connection
 
-There is no account and no signaling server of ours in the middle. The setup is one round trip:
+There is no account and no server of ours in the middle. By default, you pair the two devices with 6 words:
 
-1. Open [filefinch](app:) on the device that has the file and create an invite. It appears as a link and as a QR code.
-2. On the receiving device, open that link or scan the QR code with the camera.
-3. The receiver gets a short reply code, also as a link or QR code. Send it back through any messenger you like, or simply hold it up to the first device's camera.
-4. The two browsers connect directly.
+1. Open [filefinch](app:) on the device that has the file and tap Show pairing code. The screen shows 6 words and a QR code side by side.
+2. On the receiving device, type the 6 words in the "Have a pairing code?" box, or scan the QR code with the phone camera. The QR code holds the same 6 words, so both routes lead to the same handshake.
+3. The two browsers find each other and connect directly. The code works once and expires after 10 minutes.
+4. The receiving device shows 6 new confirmation words. Type them on the sending device. They prove the other screen is really yours, and no file moves until they match.
 
-If camera scanning is not available in your browser, copying and pasting the codes always works.
+The words come from the BIP39 English list of 2048 words, so the first four letters of each word are enough, a single typo is fixed for you, and autocomplete suggests words as you type. You can also paste the whole phrase into any box.
 
-> Before sending anything sensitive, look at the short connection fingerprint on both screens. If both show the same code, nobody swapped the invite or reply on the way.
+What happens behind the scenes is worth knowing. Both devices turn the words into a topic name and a key, then meet on several public MQTT brokers, servers run by third parties rather than by filefinch, to swap their connection details. In other words, the 6-word handshake travels encrypted through public relays that cannot read it: the brokers only see random looking topic names and ciphertext, and both devices leave them as soon as the connection opens. Your files go device to device and never pass through those relays. This mode needs internet to reach them; if no relay answers, use the link mode below.
+
+### Zero third parties: the invite link
+
+If you would rather keep every outside service out of the handshake, choose "Prefer zero third parties? Use a link or QR instead", then create an invite. The invite link (and its QR code) carries the sender's full, compressed connection offer. The receiver opens it and gets a short reply code, also as a link or QR code, and sends it back through any messenger or holds it up to the first device's camera. That single round trip is the whole setup, and no relay carries it. Copying and pasting the codes always works if camera scanning is not available in your browser.
+
+As in every mode, each browser still asks a public STUN server for its own public address, and a TURN relay may step in when both networks block direct routes. Neither one ever sees your files in readable form.
+
+> After a 6 word pairing, the confirmation words are your check. They are built from the encryption certificates of both devices, so if they match, nobody slipped into the middle while the devices were being introduced. With an invite link, look at the 12 digit connection fingerprint on both screens before sending anything sensitive. If both show the same code, you get the same assurance.
 
 For extra protection you can add a passphrase that both people type. Each chunk is then sealed again with AES-GCM using a key derived from that passphrase, and the passphrase itself never travels over the network. The [privacy section](home:#privacy) covers this in more detail.
 
@@ -101,7 +111,7 @@ Speed is not a fixed number, and you should be wary of anyone quoting one withou
 - **Close heavy background uploads.** Cloud backups and game updates compete for the same bandwidth.
 - **Keep both screens on.** A phone that dims and pauses the tab slows things down or stops them.
 
-Once the app has loaded, two devices on the same local network can even connect with no internet at all, because the invite contains their local network addresses.
+Once the app has loaded, two devices on the same local network can even connect with no internet at all by using the invite link mode, because the invite contains their local network addresses. Pairing with 6 words needs a working internet connection to reach the public relays.
 
 ## Video and large media keep their quality
 

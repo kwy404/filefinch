@@ -46,7 +46,7 @@
    "inLanguage": "en",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 1278,
+   "wordCount": 1606,
    "keywords": "share files without uploading",
    "author": {
     "@type": "Person",
@@ -88,36 +88,36 @@
     {
      "@type": "HowToStep",
      "position": 1,
-     "name": "Open filefinch on the sending device",
-     "text": "Open the web app in any modern browser. There is nothing to install and no account to create.",
+     "name": "Open filefinch on both devices",
+     "text": "Open the web app in any modern browser on the sending and the receiving device. There is nothing to install and no account to create.",
      "url": "https://kwy404.github.io/filefinch/guides/share-files-without-uploading/#step-1"
     },
     {
      "@type": "HowToStep",
      "position": 2,
-     "name": "Create an invite",
-     "text": "Create an invite on the device that has the files. It appears as a link and a QR code.",
+     "name": "Show the pairing code",
+     "text": "On the device that has the files, tap Show pairing code. The screen shows 6 words and a QR code that holds the same words.",
      "url": "https://kwy404.github.io/filefinch/guides/share-files-without-uploading/#step-2"
     },
     {
      "@type": "HowToStep",
      "position": 3,
-     "name": "Open the invite on the other device",
-     "text": "Scan the QR code or open the link on the receiving device. It shows a short reply code.",
+     "name": "Type the words or scan the code",
+     "text": "On the receiving device, type the 6 words or scan the QR code with the camera. The first four letters of each word are enough.",
      "url": "https://kwy404.github.io/filefinch/guides/share-files-without-uploading/#step-3"
     },
     {
      "@type": "HowToStep",
      "position": 4,
-     "name": "Send the reply back",
-     "text": "Show the reply QR code to the first device's camera, or send the reply link back through any messenger.",
+     "name": "Or use an invite link",
+     "text": "If you prefer zero third parties, create an invite link instead. The other device opens it and sends back a short reply code.",
      "url": "https://kwy404.github.io/filefinch/guides/share-files-without-uploading/#step-4"
     },
     {
      "@type": "HowToStep",
      "position": 5,
-     "name": "Check the fingerprint and send",
-     "text": "Make sure both screens show the same connection fingerprint, then pick your files and send them directly.",
+     "name": "Confirm the words and send",
+     "text": "The receiving device shows 6 new confirmation words. Type them on the device with the files, then pick your files. They go device to device. With an invite link, check that both screens show the same 12 digit fingerprint instead.",
      "url": "https://kwy404.github.io/filefinch/guides/share-files-without-uploading/#step-5"
     }
    ]
@@ -133,6 +133,14 @@
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "Yes. With a direct browser to browser transfer, the file goes from your device to the receiver's device over an encrypted WebRTC connection. filefinch does this for free with no account, and no copy is stored on a server."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does anything pass through a server when I connect?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No server of ours. When you pair with 6 words, the short handshake travels encrypted through public relays that cannot read it, and your files go device to device. If you prefer zero third parties, use an invite link, which carries the handshake itself."
      }
     },
     {
@@ -226,13 +234,13 @@
     <p class="kicker">Guide: share files without uploading</p>
     <h1>Share files without uploading them to the cloud</h1>
     <p class="lede">Share files without uploading them anywhere. Send photos, videos and folders straight from one browser to another, free, with no account and no cloud copy.</p>
-    <p class="guide-meta"><span>6 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
+    <p class="guide-meta"><span>7 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
   </div>
   <figure class="guide-art"><span class="art "><img class="art-l" src="../../assets/art/direct-flight.svg" width="640" height="400" alt="Finn the finch flying a parcel straight between a phone and a laptop with no cloud in the sky" fetchpriority="high"><img class="art-d" src="../../assets/art/direct-flight-dark.svg" width="640" height="400" alt="" aria-hidden="true" fetchpriority="high"></span></figure>
 </header>
 <div class="guide-grid">
   <aside class="guide-side" aria-label="On this page">
-    <div class="toc"><p class="toc-h">On this page</p><ol><li><a href="#what-without-uploading-really-means">What &quot;without uploading&quot; really means</a></li><li><a href="#how-filefinch-connects-two-devices-with-no-server">How filefinch connects two devices with no server</a></li><li><a href="#step-by-step-share-a-file-without-uploading">Step by step: share a file without uploading</a></li><li><a href="#why-skipping-the-upload-helps">Why skipping the upload helps</a></li><li><a href="#sharing-folders-not-just-files">Sharing folders, not just files</a></li><li><a href="#comparing-the-common-ways-to-share">Comparing the common ways to share</a></li><li><a href="#when-filefinch-is-not-the-right-tool">When filefinch is not the right tool</a></li><li><a href="#a-quick-checklist-before-you-send">A quick checklist before you send</a></li><li><a href="#steps">Step by step</a></li><li><a href="#faq">Questions people ask</a></li></ol></div>
+    <div class="toc"><p class="toc-h">On this page</p><ol><li><a href="#what-without-uploading-really-means">What &quot;without uploading&quot; really means</a></li><li><a href="#how-filefinch-connects-two-devices">How filefinch connects two devices</a></li><li><a href="#step-by-step-share-a-file-without-uploading">Step by step: share a file without uploading</a></li><li><a href="#why-skipping-the-upload-helps">Why skipping the upload helps</a></li><li><a href="#sharing-folders-not-just-files">Sharing folders, not just files</a></li><li><a href="#comparing-the-common-ways-to-share">Comparing the common ways to share</a></li><li><a href="#when-filefinch-is-not-the-right-tool">When filefinch is not the right tool</a></li><li><a href="#a-quick-checklist-before-you-send">A quick checklist before you send</a></li><li><a href="#steps">Step by step</a></li><li><a href="#faq">Questions people ask</a></li></ol></div>
     <div class="try-card"><img src="../../assets/art/finn-head.svg" width="96" height="83" alt="" loading="lazy"><p class="try-h">Try it now</p><p>Open filefinch on two devices, share the invite link or QR code and the files fly straight across. Free, no account.</p><a class="btn btn-primary btn-sm" href="../../app/">Start sending</a><a class="btn btn-ghost btn-sm" href="../../#how">How it works</a></div>
   </aside>
   <article class="prose" id="article">
@@ -243,16 +251,20 @@
 <ul><li>No copy of the file should be stored on a third party server.</li><li>No account, sign up or email address should be needed.</li><li>The file should arrive exactly as it was sent, not shrunk or converted.</li><li>The receiver should not have to wait for an upload to finish before the download can start.</li></ul>
 <p>A direct, peer to peer transfer covers all four. The sender's browser reads the file in small chunks and hands each chunk straight to the receiver's browser over a WebRTC data channel. Nothing is parked in the middle waiting to be picked up. When the transfer ends, the only copies are the one you started with and the one the receiver saved.</p>
 </section>
-<section id="how-filefinch-connects-two-devices-with-no-server" class="prose-sec"><h2>How filefinch connects two devices with no server</h2>
-<p>Most direct transfer tools still rely on a signaling server, a small service that introduces the two devices to each other. filefinch skips that too. The site is static, hosted on GitHub Pages, and no backend of ours takes part in the connection.</p>
-<p>Instead, the introduction happens through a link or a QR code:</p>
-<ol><li>The first device creates an invite. The browser gathers the network details it needs, compresses them and packs them into a link and a QR code.</li><li>The second device opens that link or scans the QR code. It produces a short reply code, also shown as a link or QR code.</li><li>The reply goes back to the first device, either through any messenger you like or by showing the QR code to the first device's camera.</li></ol>
-<p>That single round trip is enough. From then on the two browsers talk directly. If camera scanning is not available in your browser, you can always paste the codes by hand.</p>
-<aside class="tip"><p>The invite contains the network addresses of the device that made it. Share it only with your own device or the person you are sending to, and use each invite for one connection.</p></aside>
+<section id="how-filefinch-connects-two-devices" class="prose-sec"><h2>How filefinch connects two devices</h2>
+<p>Two browsers cannot find each other on their own. Before any file moves, they need a short introduction: a few lines of setup details that say how to reach each device and how to secure the connection. filefinch gives you two ways to make that introduction, and neither runs through a server of ours. The site is static, hosted on GitHub Pages, and no backend of ours takes part in the connection.</p>
+<h3 id="the-default-6-words">The default: 6 words</h3>
+<ol><li>On the device with the files, tap <strong>Show pairing code</strong>. The screen shows 6 words and a QR code side by side.</li><li>On the other device, type the words into the &quot;Have a pairing code?&quot; box, or scan the QR code with the camera. The QR code holds the same words, so both routes lead to the same handshake.</li><li>Both devices turn the words into a meeting point and a key, swap their setup details, and connect.</li><li>The receiving device shows 6 new confirmation words. Type them on the device with the files. They prove the other screen is really yours, and no file moves until they match.</li></ol>
+<p>The words come from a standard list of 2048 simple English words. The first four letters of each word are enough, a single typo gets corrected, and autocomplete suggests words as you type. You can also paste the whole phrase into any box.</p>
+<p>Behind the scenes, the 6-word handshake travels encrypted through public relays that cannot read it. These relays are public MQTT brokers run by third parties, not by filefinch, and all they carry is a random looking topic name and scrambled data. A code works once and expires after 10 minutes, and both devices leave the relays as soon as the connection opens. Your files go device to device and never pass through them.</p>
+<h3 id="zero-third-parties-an-invite-link">Zero third parties: an invite link</h3>
+<p>If you would rather no relay carry anything at all, choose &quot;Prefer zero third parties? Use a link or QR instead&quot;, then create an invite. The link and its QR code hold the whole handshake. The other device opens it and answers with a short reply code, which goes back through any messenger you like or by showing it to the first device's camera. That single round trip is enough, and pasting the codes by hand always works. Once connected, compare the 12 digit connection fingerprint on both screens.</p>
+<p>Like every mode, each browser still asks a public STUN server for its own public address, and a TURN relay may step in when both networks block a direct route. This mode also works fully offline on a local network once the app is loaded.</p>
+<aside class="tip"><p>An invite link contains the network addresses of the device that made it. Share it only with your own device or the person you are sending to, and use each invite for one connection.</p></aside>
 </section>
 <section id="step-by-step-share-a-file-without-uploading" class="prose-sec"><h2>Step by step: share a file without uploading</h2>
-<ol><li>Open <a href="../../app/">filefinch</a> on the device that has the file. There is nothing to install, though you can add it to your home screen if you like.</li><li>Create an invite and send the link to the other device, or let the other device scan the QR code.</li><li>On the receiving device, open the link. A reply code appears.</li><li>Send the reply back, or point the first device's camera at the reply QR code.</li><li>Check that both screens show the same short connection fingerprint, then pick your files and send.</li></ol>
-<p>Both devices can send in either direction over the same connection, so once you are connected, the receiver can send files back without creating a new invite.</p>
+<ol><li>Open <a href="../../app/">filefinch</a> on both devices. There is nothing to install, though you can add it to your home screen if you like.</li><li>On the device that has the file, tap Show pairing code.</li><li>On the receiving device, type the 6 words or scan the QR code.</li><li>Type the 6 confirmation words that the receiving device shows into the device with the file, then pick your files and send.</li><li>Prefer the Zero third parties mode? Create an invite link instead, open it on the other device, send the reply back and compare the 12 digit fingerprint on both screens.</li></ol>
+<p>Both devices can send in either direction over the same connection, so once you are connected, the receiver can send files back without pairing again.</p>
 </section>
 <section id="why-skipping-the-upload-helps" class="prose-sec"><h2>Why skipping the upload helps</h2>
 <h3 id="privacy">Privacy</h3>
@@ -274,14 +286,14 @@
 <section id="when-filefinch-is-not-the-right-tool" class="prose-sec"><h2>When filefinch is not the right tool</h2>
 <p>Being direct has a cost: there is no mailbox in the middle. Both devices must be online at the same time with filefinch open. If the person you are sending to is asleep, traveling or simply not around, a cloud upload or an email attachment is the better tool, because the file can wait for them.</p>
 <p>A few other honest limits:</p>
-<ul><li>On phones, mobile browsers may pause a tab in the background. Keep the screen on during long transfers.</li><li>Some networks block direct connections, for example strict corporate firewalls or carrier grade NAT on some mobile networks. In that case a TURN relay is needed. filefinch explains when this happens and lets you add your own TURN servers in Settings. A relay forwards only encrypted packets, but it can see both IP addresses and how much data flows.</li><li>If you need a link that many people can open over several days, that is a publishing job, and a hosting or cloud service fits it better.</li></ul>
+<ul><li>On phones, mobile browsers may pause a tab in the background. Keep the screen on during long transfers.</li><li>The 6 word mode needs internet access to reach the public relays. If no relay answers, or you are on a local network without internet, use an invite link instead.</li><li>Some networks block direct connections, for example strict corporate firewalls or carrier grade NAT on some mobile networks. In that case a TURN relay is needed. filefinch explains when this happens and lets you add your own TURN servers in Settings. A relay forwards only encrypted packets, but it can see both IP addresses and how much data flows.</li><li>If you need a link that many people can open over several days, that is a publishing job, and a hosting or cloud service fits it better.</li></ul>
 </section>
 <section id="a-quick-checklist-before-you-send" class="prose-sec"><h2>A quick checklist before you send</h2>
-<ul><li>Both devices have filefinch open and are online.</li><li>The receiver has enough free disk space for everything you are sending.</li><li>You shared the invite only with the intended device or person.</li><li>Both screens show the same connection fingerprint.</li><li>For long transfers on a phone, the screen stays on.</li></ul>
+<ul><li>Both devices have filefinch open and are online.</li><li>The receiver has enough free disk space for everything you are sending.</li><li>You shared the 6 words or the invite only with the intended device or person.</li><li>The confirmation words matched, or with an invite link, both screens show the same connection fingerprint.</li><li>For long transfers on a phone, the screen stays on.</li></ul>
 <p>When all five are true, open <a href="../../app/">the app</a> and send. For a closer look at how the connection itself works, read <a href="../../guides/peer-to-peer-file-transfer-explained/">peer to peer file transfer explained</a>, or see the <a href="../../#privacy">privacy section</a> on the home page.</p>
 </section>
-    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Open filefinch on the sending device</h3><p>Open the web app in any modern browser. There is nothing to install and no account to create.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Create an invite</h3><p>Create an invite on the device that has the files. It appears as a link and a QR code.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Open the invite on the other device</h3><p>Scan the QR code or open the link on the receiving device. It shows a short reply code.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Send the reply back</h3><p>Show the reply QR code to the first device's camera, or send the reply link back through any messenger.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Check the fingerprint and send</h3><p>Make sure both screens show the same connection fingerprint, then pick your files and send them directly.</p></div></li></ol></section>
-    <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>Can I share a file without uploading it to the cloud?</summary><p>Yes. With a direct browser to browser transfer, the file goes from your device to the receiver's device over an encrypted WebRTC connection. filefinch does this for free with no account, and no copy is stored on a server.</p></details><details><summary>Do both people need to be online at the same time?</summary><p>Yes. There is no mailbox in the middle, so both devices must be online with filefinch open while the transfer runs. If the receiver cannot be online, a cloud upload or an email attachment is the better choice.</p></details><details><summary>Is there a file size limit when sharing without uploading?</summary><p>filefinch does not set one. The practical limits are free disk space on the receiver, both devices staying connected and the way the browser saves files. Interrupted transfers can resume from the last confirmed point.</p></details><details><summary>Does the receiver need to install an app?</summary><p>No. Any modern browser such as Chrome, Edge, Firefox or Safari works, on phones, tablets and computers. You can optionally install filefinch from the browser so it opens like an app.</p></details><details><summary>Can anyone else see the files I share this way?</summary><p>The connection is encrypted with DTLS, with keys generated by the two browsers. If a TURN relay is needed, it forwards only encrypted packets, though it can see the IP addresses and the amount of data. You can add a passphrase for a second layer of encryption.</p></details></div></section>
+    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Open filefinch on both devices</h3><p>Open the web app in any modern browser on the sending and the receiving device. There is nothing to install and no account to create.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Show the pairing code</h3><p>On the device that has the files, tap Show pairing code. The screen shows 6 words and a QR code that holds the same words.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Type the words or scan the code</h3><p>On the receiving device, type the 6 words or scan the QR code with the camera. The first four letters of each word are enough.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Or use an invite link</h3><p>If you prefer zero third parties, create an invite link instead. The other device opens it and sends back a short reply code.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Confirm the words and send</h3><p>The receiving device shows 6 new confirmation words. Type them on the device with the files, then pick your files. They go device to device. With an invite link, check that both screens show the same 12 digit fingerprint instead.</p></div></li></ol></section>
+    <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>Can I share a file without uploading it to the cloud?</summary><p>Yes. With a direct browser to browser transfer, the file goes from your device to the receiver's device over an encrypted WebRTC connection. filefinch does this for free with no account, and no copy is stored on a server.</p></details><details><summary>Does anything pass through a server when I connect?</summary><p>No server of ours. When you pair with 6 words, the short handshake travels encrypted through public relays that cannot read it, and your files go device to device. If you prefer zero third parties, use an invite link, which carries the handshake itself.</p></details><details><summary>Do both people need to be online at the same time?</summary><p>Yes. There is no mailbox in the middle, so both devices must be online with filefinch open while the transfer runs. If the receiver cannot be online, a cloud upload or an email attachment is the better choice.</p></details><details><summary>Is there a file size limit when sharing without uploading?</summary><p>filefinch does not set one. The practical limits are free disk space on the receiver, both devices staying connected and the way the browser saves files. Interrupted transfers can resume from the last confirmed point.</p></details><details><summary>Does the receiver need to install an app?</summary><p>No. Any modern browser such as Chrome, Edge, Firefox or Safari works, on phones, tablets and computers. You can optionally install filefinch from the browser so it opens like an app.</p></details><details><summary>Can anyone else see the files I share this way?</summary><p>The connection is encrypted with DTLS, with keys generated by the two browsers. If a TURN relay is needed, it forwards only encrypted packets, though it can see the IP addresses and the amount of data. You can add a passphrase for a second layer of encryption.</p></details></div></section>
   </article>
 </div>
 <section class="related" aria-labelledby="related-h"><h2 id="related-h">Keep reading</h2><div class="cards"><a class="gcard" href="../../guides/send-large-files-without-limits/"><span class="art "><img class="art-l" src="../../assets/art/big-file.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/big-file-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">send large files without limits</span><span class="gcard-t">How to send large files without limits, straight from device to device</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/free-private-alternative-to-cloud-transfer/"><span class="art "><img class="art-l" src="../../assets/art/cloud-vs-direct.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/cloud-vs-direct-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">private alternative to cloud transfer</span><span class="gcard-t">A free and private alternative to cloud file transfer</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/transfer-files-on-the-same-wifi/"><span class="art "><img class="art-l" src="../../assets/art/same-wifi.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/same-wifi-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transfer files on the same wifi</span><span class="gcard-t">How to transfer files on the same Wi-Fi between any devices</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/peer-to-peer-file-transfer-explained/"><span class="art "><img class="art-l" src="../../assets/art/invite-qr.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/invite-qr-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">peer to peer file transfer</span><span class="gcard-t">Peer to peer file transfer explained, without the jargon</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div></section>

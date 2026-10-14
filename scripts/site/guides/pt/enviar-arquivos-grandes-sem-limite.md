@@ -13,10 +13,10 @@ howto: Como enviar um arquivo grande com o filefinch
 steps:
   - name: Abra o filefinch nos dois aparelhos
     text: Quem envia e quem recebe abrem o filefinch no navegador. Não precisa instalar nada nem criar conta.
-  - name: Crie o convite
-    text: O primeiro aparelho gera um convite em forma de link e QR code. Mande o link pelo mensageiro que preferir ou mostre o QR code.
-  - name: Devolva o código de resposta
-    text: O segundo aparelho abre o convite e mostra um código curto de resposta, que volta para o primeiro aparelho por mensagem ou pela câmera.
+  - name: Mostre o código de pareamento
+    text: No primeiro aparelho, toque em Mostrar código de pareamento. Aparecem um QR code e 6 palavras lado a lado.
+  - name: Digite as 6 palavras no outro aparelho
+    text: Quem recebe digita as palavras na caixa Tem um código de pareamento ou escaneia o QR code. Se preferir zero terceiros, use um link de convite com código de resposta.
   - name: Escolha o arquivo e envie
     text: Selecione o arquivo grande ou uma pasta inteira. Ele vai em pedaços direto de um navegador para o outro.
   - name: Mantenha os dois online até o fim
@@ -25,7 +25,7 @@ faq:
   - q: Qual o tamanho máximo de arquivo que posso enviar?
     a: O filefinch não impõe limite de tamanho. Na prática, o que limita é o espaço livre no disco de quem recebe, os dois aparelhos ficarem online e a forma como o navegador salva o arquivo.
   - q: Preciso fazer upload do arquivo para algum servidor?
-    a: Não. O arquivo vai direto de um navegador para o outro por uma conexão WebRTC criptografada. Nada fica guardado em servidor nenhum no caminho.
+    a: Não. O arquivo vai direto de um navegador para o outro por uma conexão WebRTC criptografada e não fica guardado em servidor nenhum. Só o handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo, e seus arquivos vão de aparelho para aparelho.
   - q: E se a internet cair no meio do envio?
     a: Basta reconectar. A transferência continua a partir do último ponto confirmado em vez de começar do zero, o que faz muita diferença em arquivos de vários gigabytes.
   - q: O envio é muito lento, o que pode ser?
@@ -46,12 +46,20 @@ No filefinch não existe esse armazenamento no meio. Os dois aparelhos se conect
 
 ## Passo a passo para enviar um arquivo grande
 
-1. Abra o [filefinch](app:) no navegador do computador ou celular que vai enviar.
-2. Crie um convite. Ele aparece como link e como QR code.
-3. Mande o link para quem vai receber pelo WhatsApp, Telegram, e-mail ou o que preferir. Se a pessoa estiver do seu lado, ela pode só escanear o QR code.
-4. Do outro lado, ao abrir o convite, aparece um código curto de resposta. Esse código volta para você pelo mesmo mensageiro, ou pela câmera.
-5. Conectou? Confira se o código de verificação (a impressão digital da conexão) é igual nas duas telas.
+O jeito padrão de conectar é parear com 6 palavras, mais ou menos como no Bluetooth:
+
+1. Abra o [filefinch](app:) no navegador dos dois aparelhos, o que envia e o que recebe.
+2. No aparelho que vai enviar, toque em Mostrar código de pareamento. Aparecem um QR code e 6 palavras lado a lado.
+3. Se a pessoa estiver do seu lado, ela só escaneia o QR code. Se estiver longe, mande as 6 palavras por mensagem ou leia numa ligação.
+4. Do outro lado, a pessoa digita as palavras na caixa Tem um código de pareamento. As 4 primeiras letras de cada palavra bastam, e dá para colar a frase inteira.
+5. Conectou? O aparelho de quem recebe mostra 6 novas palavras de confirmação. Digite essas palavras no aparelho que envia. Se a pessoa estiver longe, ela pode ler as palavras para você numa ligação. Nenhum arquivo se move até elas conferirem.
 6. Escolha o arquivo ou a pasta e envie.
+
+O código vale para uma conexão só e expira em 10 minutos. Para o pareamento acontecer, o handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo. Depois disso, seus arquivos vão de aparelho para aparelho e nunca passam por esses relays.
+
+### Modo Zero terceiros: link de convite
+
+Se você prefere que nenhum relay participe da conexão, use o modo Zero terceiros. Toque na opção de usar um link ou QR e depois em Criar convite. Mande o link para quem vai receber pelo WhatsApp, Telegram, e-mail ou o que preferir. Ao abrir o convite, aparece um código curto de resposta, que volta para você pelo mesmo mensageiro ou pela câmera. É uma única ida e volta. Depois de conectar, confira se a impressão digital da conexão, um código de 12 dígitos, é igual nas duas telas.
 
 > Dica: se a câmera não conseguir ler o código, copiar e colar sempre funciona.
 
@@ -74,7 +82,7 @@ Sobre esse último ponto: navegadores baseados em Chromium no computador consegu
 
 A velocidade é sempre a da conexão mais lenta entre as duas, e quase sempre isso significa a velocidade de upload de quem envia. Muita internet residencial no Brasil tem upload bem menor que o download, então vale saber disso antes de mandar um arquivo enorme pela internet.
 
-Quando os dois aparelhos estão na mesma rede, a história muda. O tráfego fica dentro do roteador e não depende do seu plano de internet, por isso costuma ser bem mais rápido. Depois que o filefinch carregou uma vez, dá até para transferir sem internet nenhuma, só com a rede local.
+Quando os dois aparelhos estão na mesma rede, a história muda. O tráfego fica dentro do roteador e não depende do seu plano de internet, por isso costuma ser bem mais rápido. Depois que o filefinch carregou uma vez, dá até para transferir sem internet nenhuma, só com a rede local, usando o modo Zero terceiros. O pareamento por 6 palavras precisa de internet para alcançar os relays.
 
 ### Se a conexão cair, nada se perde
 
@@ -84,9 +92,11 @@ E para ter certeza de que nada veio corrompido, cada arquivo é verificado com S
 
 ## Segurança e privacidade
 
+Nenhum servidor nosso participa da transferência. No pareamento por palavras, os dois aparelhos transformam as 6 palavras em um nome de tópico e uma chave, e se encontram em alguns brokers MQTT públicos, mantidos por terceiros e não pelo filefinch. Esses relays só veem nomes que parecem aleatórios e texto cifrado, e os dois lados saem deles assim que a conexão abre.
+
 A conexão WebRTC é sempre criptografada com DTLS, com chaves criadas nos dois navegadores a cada conexão. Para arquivos sensíveis, dá para ativar uma senha extra: os dois digitam a mesma frase, que vira uma chave AES-GCM de 256 bits em cada aparelho, e cada pedaço é lacrado de novo. A senha em si nunca trafega pela rede.
 
-Um cuidado importante: o link de convite contém os endereços de rede do aparelho que o criou. Mande só para o seu outro aparelho ou para a pessoa que vai receber, e use um convite novo a cada conexão. Mais detalhes na seção de [privacidade](home:#privacy).
+Um cuidado importante: os dados de conexão contêm os endereços de rede do aparelho. Mostre as 6 palavras ou mande o link de convite só para o seu outro aparelho ou para a pessoa que vai receber, e use um código novo a cada conexão. Mais detalhes na seção de [privacidade](home:#privacy).
 
 ## Vídeos e fotos na qualidade original
 
@@ -98,12 +108,13 @@ Se o arquivo estiver no celular, veja também [como transferir arquivos do celul
 
 Seja honesto com a sua situação. Se quem vai receber não pode ficar online ao mesmo tempo que você, um link de nuvem é a ferramenta certa, porque ele guarda o arquivo até a pessoa baixar. O filefinch não tem caixa postal no meio.
 
-Também pode acontecer de os dois aparelhos estarem atrás de redes muito restritas, como algumas operadoras móveis ou firewalls de empresa. Nesse caso a conexão direta pode falhar, e o filefinch avisa e explica o motivo. Você pode adicionar seu próprio servidor TURN nas configurações para retransmitir os dados, que continuam criptografados. Fora isso, para quem pode ficar online junto, enviar direto costuma ser o caminho mais simples.
+Também pode acontecer de os dois aparelhos estarem atrás de redes muito restritas, como algumas operadoras móveis ou firewalls de empresa. Nesse caso a conexão direta pode falhar, e o filefinch avisa e explica o motivo. Você pode adicionar seu próprio servidor TURN nas configurações para retransmitir os dados, que continuam criptografados. E se a rede bloquear os relays do pareamento por palavras, o modo Zero terceiros resolve. Fora isso, para quem pode ficar online junto, enviar direto costuma ser o caminho mais simples.
 
 ## Resumindo
 
 - Sem limite de tamanho definido pelo app
 - Sem upload para nuvem e sem cadastro
+- Pareamento com 6 palavras, ou link de convite no modo Zero terceiros
 - Retomada de onde parou ao reconectar
 - Verificação de integridade com SHA-256
 - Funciona entre qualquer par: Android, iPhone, Windows, Mac e Linux

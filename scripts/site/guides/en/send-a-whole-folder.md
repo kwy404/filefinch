@@ -11,9 +11,9 @@ time: PT5M
 howto: How to send a whole folder with filefinch
 steps:
   - name: Connect the two devices
-    text: Open filefinch on both devices, create an invite on one and open it on the other, then send the short reply code back.
-  - name: Check the fingerprint
-    text: Make sure both screens show the same short connection code before sending anything.
+    text: Open filefinch on both devices. Tap Show pairing code on one, then type the 6 words or scan the QR code on the other. An invite link and reply code also work if you prefer zero third parties.
+  - name: Confirm the 6 words
+    text: The receiving device shows 6 new confirmation words. Type them on the sending device before sending anything. With an invite link, check that both screens show the same 12 digit fingerprint instead.
   - name: Choose the folder on the sender
     text: Select the folder you want to send. filefinch reads every file inside it along with its relative path.
   - name: Pick where it lands on the receiver
@@ -61,13 +61,20 @@ The result is the same tree you started with, without an archive in the middle.
 
 ## Setting it up
 
-The connection takes one round trip and no account:
+There is no account and no server of ours to sign in to. By default, you connect with 6 words:
 
-1. Open [filefinch](app:) on the device that has the folder and create an invite. It shows a link and a QR code.
-2. On the receiving device, open the link or scan the code.
-3. Send the short reply code back through any messenger, or show it to the first device's camera.
-4. Compare the connection fingerprint on both screens. If it matches, you are connected directly.
-5. Choose the folder and start sending.
+1. Open [filefinch](app:) on the device that has the folder and tap Show pairing code. The screen shows 6 words and a QR code side by side.
+2. On the receiving device, type the 6 words in the "Have a pairing code?" box, or scan the QR code with the camera. The QR code holds the same words.
+3. The receiving device then shows 6 new confirmation words. Type them on the first device. When they match, you are connected directly, and no file moves before that.
+4. Choose the folder and start sending.
+
+The words come from the BIP39 English list, so the first four letters of each word are enough and a single typo is fixed. The code works once and expires after 10 minutes. To set up the connection, the 6-word handshake travels encrypted through public relays that cannot read it (public MQTT brokers run by third parties, not by filefinch), and both devices leave them as soon as they are connected. The folder itself never touches those relays: your files go device to device.
+
+### Zero third parties: use an invite link instead
+
+If you would rather have no relay involved in the setup, choose "Prefer zero third parties? Use a link or QR instead" and create an invite. Open the invite link or scan its QR code on the receiving device, then send the short reply code back through any messenger or show it to the first device's camera. That one round trip connects the two browsers, after which you compare the 12 digit connection fingerprint on both screens. It also works on a local network with no internet once the app is loaded. The 6 words, by contrast, need internet to reach the relays.
+
+### Where the folder lands
 
 > Choosing a destination folder on the receiver gives the cleanest result. On desktop Chromium browsers such as Chrome and Edge, filefinch can write the tree straight into a folder you pick. Other browsers save through a streamed download: the folder arrives as one .zip file in your downloads, with the tree kept inside it.
 

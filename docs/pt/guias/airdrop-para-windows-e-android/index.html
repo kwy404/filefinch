@@ -47,7 +47,7 @@
    "inLanguage": "pt-BR",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 916,
+   "wordCount": 1167,
    "keywords": "airdrop para windows e android",
    "author": {
     "@type": "Person",
@@ -96,22 +96,22 @@
     {
      "@type": "HowToStep",
      "position": 2,
-     "name": "Gere o convite em um deles",
-     "text": "Um dos aparelhos cria o convite, que aparece como QR code e como link.",
+     "name": "Mostre o código de pareamento em um deles",
+     "text": "Um dos aparelhos toca em Mostrar código de pareamento. Aparecem um QR code e 6 palavras lado a lado.",
      "url": "https://kwy404.github.io/filefinch/pt/guias/airdrop-para-windows-e-android/#step-2"
     },
     {
      "@type": "HowToStep",
      "position": 3,
-     "name": "Escaneie ou abra o link no outro",
-     "text": "O outro aparelho lê o QR code com a câmera ou abre o link recebido por mensagem.",
+     "name": "Escaneie ou digite as 6 palavras no outro",
+     "text": "O outro aparelho lê o QR code com a câmera ou digita as 6 palavras na caixa Tem um código de pareamento.",
      "url": "https://kwy404.github.io/filefinch/pt/guias/airdrop-para-windows-e-android/#step-3"
     },
     {
      "@type": "HowToStep",
      "position": 4,
-     "name": "Devolva o código de resposta",
-     "text": "O segundo aparelho mostra um código curto. Mostre para a câmera do primeiro ou mande por mensagem e cole.",
+     "name": "Ou use o modo Zero terceiros",
+     "text": "Se preferir que nenhum relay participe, crie um convite com link, abra no outro aparelho e devolva o código curto de resposta.",
      "url": "https://kwy404.github.io/filefinch/pt/guias/airdrop-para-windows-e-android/#step-4"
     },
     {
@@ -141,7 +141,7 @@
      "name": "Como passar fotos do iPhone para o Android?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Abra o filefinch nos dois celulares, escaneie o QR code do convite com um deles e devolva o código de resposta. Depois escolha as fotos no iPhone e envie. Elas chegam na qualidade original."
+      "text": "Abra o filefinch nos dois celulares, toque em Mostrar código de pareamento em um deles e escaneie o QR code ou digite as 6 palavras no outro. Depois escolha as fotos no iPhone e envie. Elas chegam na qualidade original."
      }
     },
     {
@@ -149,7 +149,7 @@
      "name": "Como mandar arquivos do iPhone para um PC com Windows?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Abra o filefinch no PC e crie um convite. Escaneie o QR code com a câmera do iPhone, mostre o código de resposta para a webcam ou cole no PC, e envie os arquivos."
+      "text": "Abra o filefinch no PC e toque em Mostrar código de pareamento. Escaneie o QR code com a câmera do iPhone ou digite as 6 palavras. Depois digite no PC as 6 palavras de confirmação que aparecem no iPhone e envie os arquivos."
      }
     },
     {
@@ -157,7 +157,15 @@
      "name": "Precisa instalar algum aplicativo?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Não. O filefinch roda no navegador. Se quiser, você pode adicionar à tela inicial para abrir como um app e usar sem internet na mesma rede Wi-Fi."
+      "text": "Não. O filefinch roda no navegador. Se quiser, você pode adicionar à tela inicial para abrir como um app e usar sem internet na mesma rede Wi-Fi, no modo Zero terceiros."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Algum servidor vê meus arquivos?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Não. Nenhum servidor nosso participa. O handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo, e seus arquivos vão de aparelho para aparelho."
      }
     },
     {
@@ -227,7 +235,7 @@
     <p class="kicker">Guia: airdrop para windows e android</p>
     <h1>Um jeito de ter AirDrop no Windows e no Android</h1>
     <p class="lede">Procurando um AirDrop para Windows e Android? Envie arquivos entre iPhone, Android, PC e Mac direto pelo navegador, grátis, sem cadastro e sem instalar nada.</p>
-    <p class="guide-meta"><span>4 min de leitura</span><span>Atualizado em <time datetime="2026-10-14">2026-10-14</time></span><a href="../../../guides/airdrop-for-windows-and-android/" hreflang="en" lang="en">Read in English</a></p>
+    <p class="guide-meta"><span>5 min de leitura</span><span>Atualizado em <time datetime="2026-10-14">2026-10-14</time></span><a href="../../../guides/airdrop-for-windows-and-android/" hreflang="en" lang="en">Read in English</a></p>
   </div>
   <figure class="guide-art"><span class="art "><img class="art-l" src="../../../assets/art/android-iphone.svg" width="640" height="400" alt="Dois celulares diferentes trocando pacotes pelo navegador" fetchpriority="high"><img class="art-d" src="../../../assets/art/android-iphone-dark.svg" width="640" height="400" alt="" aria-hidden="true" fetchpriority="high"></span></figure>
 </header>
@@ -244,10 +252,12 @@
 <p>O navegador, por outro lado, existe em todo lugar. Todo navegador moderno sabe criar conexões WebRTC, que ligam dois aparelhos diretamente. O filefinch usa exatamente isso: em vez de depender de um recurso do sistema, ele usa um recurso que Chrome, Edge, Firefox e Safari já têm.</p>
 </section>
 <section id="como-funciona-na-pratica" class="prose-sec"><h2>Como funciona na prática</h2>
-<p>A conexão é feita com uma troca única de convite e resposta:</p>
-<ol><li>Um aparelho abre o <a href="../../../app/">filefinch</a> e cria um convite (QR code e link).</li><li>O outro aparelho lê o QR code com a câmera ou abre o link.</li><li>Aparece um código curto de resposta, que volta para o primeiro aparelho pela câmera ou por qualquer mensageiro.</li><li>Pronto: os dois estão conectados e podem enviar arquivos nos dois sentidos.</li></ol>
-<p>Não existe servidor de cadastro nem conta no meio. O convite carrega tudo o que o outro aparelho precisa para se conectar, compactado no próprio link.</p>
-<aside class="tip"><p>Se os dois aparelhos estiverem lado a lado, use só as câmeras. Se estiverem longe, mande o link por mensagem, e o código de resposta volta pelo mesmo caminho.</p></aside>
+<p>O jeito padrão é parear com 6 palavras, como se fosse um pareamento de Bluetooth:</p>
+<ol><li>Um aparelho abre o <a href="../../../app/">filefinch</a> e toca em Mostrar código de pareamento. Aparecem um QR code e 6 palavras.</li><li>O outro aparelho lê o QR code com a câmera ou digita as 6 palavras na caixa Tem um código de pareamento. As 4 primeiras letras de cada palavra bastam, e um erro de digitação isolado é corrigido.</li><li>O aparelho que entrou mostra 6 novas palavras de confirmação. Digite essas palavras no aparelho que mostrou o código. Elas provam que a outra tela é mesmo sua, e nenhum arquivo se move até elas conferirem.</li><li>Pronto: os dois estão conectados e podem enviar arquivos nos dois sentidos.</li></ol>
+<p>O código vale uma vez só e expira em 10 minutos. Nenhum servidor nosso entra no caminho: o handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo, e depois seus arquivos vão de aparelho para aparelho.</p>
+<aside class="tip"><p>Se os dois aparelhos estiverem lado a lado, use a câmera. Se estiverem longe, mande as 6 palavras por mensagem ou leia numa ligação.</p></aside>
+<h3 id="modo-zero-terceiros">Modo Zero terceiros</h3>
+<p>Se você prefere que nenhum terceiro participe nem do pareamento, toque na opção de usar um link ou QR e depois em Criar convite. O convite carrega tudo o que o outro aparelho precisa para se conectar, compactado no próprio link. O outro aparelho abre o link ou lê o QR code e mostra um código curto de resposta, que volta para o primeiro pela câmera ou por qualquer mensageiro. Depois de conectar, confira se o código de verificação de 12 dígitos é igual nas duas telas. Esse modo também funciona sem internet, na mesma rede local.</p>
 </section>
 <section id="combinacoes-que-funcionam" class="prose-sec"><h2>Combinações que funcionam</h2>
 <div class="table-wrap"><table><thead><tr><th scope="col">De</th><th scope="col">Para</th><th scope="col">Funciona?</th></tr></thead><tbody><tr><td>iPhone</td><td>Android</td><td>Sim</td></tr><tr><td>Android</td><td>PC com Windows</td><td>Sim</td></tr><tr><td>iPhone</td><td>PC com Windows</td><td>Sim</td></tr><tr><td>Android</td><td>Mac</td><td>Sim</td></tr><tr><td>iPad</td><td>Notebook com Linux</td><td>Sim</td></tr></tbody></table></div>
@@ -260,22 +270,22 @@
 </section>
 <section id="velocidade-e-uso-sem-internet" class="prose-sec"><h2>Velocidade e uso sem internet</h2>
 <p>Com os dois aparelhos no mesmo Wi-Fi, o tráfego fica na rede local e costuma ser bem rápido, parecido com a experiência de envio por perto que você já conhece. Pela internet, a velocidade depende do upload de quem envia.</p>
-<p>Depois de carregado uma vez, o filefinch funciona offline como app instalável. Dois aparelhos na mesma rede conseguem se conectar sem internet, usando os endereços locais. Vale carregar antes de viajar.</p>
+<p>Depois de carregado uma vez, o filefinch funciona offline como app instalável. Dois aparelhos na mesma rede conseguem se conectar sem internet, usando os endereços locais, no modo Zero terceiros. O pareamento por 6 palavras precisa de internet para alcançar os relays. Vale carregar o app antes de viajar.</p>
 <p>Para vídeos longos, deixe a tela ligada: navegadores de celular podem pausar abas em segundo plano. E se a conexão cair, basta reconectar que o envio continua de onde parou.</p>
 </section>
 <section id="privacidade-e-seguranca" class="prose-sec"><h2>Privacidade e segurança</h2>
-<p>A conexão é sempre criptografada com DTLS. Depois de conectar, as duas telas mostram um código curto de verificação. Se for igual nas duas, ninguém trocou o convite no caminho. Para arquivos sensíveis, existe uma senha opcional que os dois digitam, e cada pedaço do arquivo é lacrado de novo com AES-GCM de 256 bits.</p>
-<p>O filefinch não tem conta, não guarda seus arquivos em servidor e não usa rastreamento. Um cuidado: o link de convite inclui os endereços de rede do aparelho que o criou, então mande só para quem vai receber os arquivos.</p>
+<p>A conexão é sempre criptografada com DTLS. No pareamento por palavras, as 6 palavras de confirmação provam que o aparelho que entrou é seu, e não de alguém que viu o código, e três tentativas erradas fecham a conexão. No modo Zero terceiros, as duas telas mostram um código de verificação de 12 dígitos. Se for igual nas duas, ninguém trocou os dados de conexão no caminho. Para arquivos sensíveis, existe uma senha opcional que os dois digitam, e cada pedaço do arquivo é lacrado de novo com AES-GCM de 256 bits.</p>
+<p>O filefinch não tem conta, não guarda seus arquivos em servidor e não usa rastreamento. Os relays públicos do pareamento por palavras são mantidos por terceiros e só veem nomes aleatórios e texto cifrado. Um cuidado: os dados de conexão incluem os endereços de rede do aparelho, então mostre as 6 palavras ou mande o convite só para quem vai receber os arquivos.</p>
 </section>
 <section id="quando-o-filefinch-nao-e-a-melhor-opcao" class="prose-sec"><h2>Quando o filefinch não é a melhor opção</h2>
 <p>Se todos os aparelhos envolvidos são da Apple, o AirDrop já resolve muito bem e está a um toque de distância. O mesmo vale para o Quick Share entre aparelhos compatíveis. O filefinch brilha justamente quando as marcas são diferentes.</p>
-<p>Ele também exige que os dois aparelhos estejam online ao mesmo tempo com o app aberto. Se a pessoa só vai baixar o arquivo amanhã, um link de nuvem é mais adequado. E em algumas redes muito restritas, como certas redes móveis ou corporativas, a conexão direta pode falhar. O filefinch avisa quando isso acontece e permite adicionar seu próprio servidor TURN nas configurações.</p>
+<p>Ele também exige que os dois aparelhos estejam online ao mesmo tempo com o app aberto. Se a pessoa só vai baixar o arquivo amanhã, um link de nuvem é mais adequado. E em algumas redes muito restritas, como certas redes móveis ou corporativas, a conexão direta pode falhar. O filefinch avisa quando isso acontece e permite adicionar seu próprio servidor TURN nas configurações. Se a rede bloquear os relays do pareamento, use o modo Zero terceiros.</p>
 </section>
 <section id="experimente-agora" class="prose-sec"><h2>Experimente agora</h2>
 <p>Abra o <a href="../../../app/">filefinch</a> nos dois aparelhos e faça o primeiro envio. Se o objetivo é passar fotos do celular para o computador, o guia <a href="../../../pt/guias/transferir-arquivos-do-celular-para-o-pc-sem-cabo/">transferir arquivos do celular para o PC sem cabo</a> mostra o passo a passo. Para vídeos enormes, veja <a href="../../../pt/guias/enviar-arquivos-grandes-sem-limite/">como enviar arquivos grandes sem limite</a>.</p>
 </section>
-    <section id="steps" class="prose-sec steps-sec"><h2>Passo a passo</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Abra o filefinch nos dois aparelhos</h3><p>Em cada aparelho, abra o filefinch no navegador. Funciona no Safari do iPhone, no Chrome do Android e em qualquer navegador moderno no PC.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Gere o convite em um deles</h3><p>Um dos aparelhos cria o convite, que aparece como QR code e como link.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Escaneie ou abra o link no outro</h3><p>O outro aparelho lê o QR code com a câmera ou abre o link recebido por mensagem.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Devolva o código de resposta</h3><p>O segundo aparelho mostra um código curto. Mostre para a câmera do primeiro ou mande por mensagem e cole.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Envie nos dois sentidos</h3><p>Conectados, os dois podem mandar fotos, vídeos e documentos um para o outro na mesma conexão.</p></div></li></ol></section>
-    <section id="faq" class="prose-sec"><h2>Perguntas frequentes</h2><div class="faq"><details><summary>Existe AirDrop para Android?</summary><p>O AirDrop é um recurso da Apple e funciona entre aparelhos da Apple. Para trocar arquivos entre Android e iPhone, ou com um PC Windows, dá para usar uma ferramenta pelo navegador como o filefinch, que funciona em qualquer combinação.</p></details><details><summary>Como passar fotos do iPhone para o Android?</summary><p>Abra o filefinch nos dois celulares, escaneie o QR code do convite com um deles e devolva o código de resposta. Depois escolha as fotos no iPhone e envie. Elas chegam na qualidade original.</p></details><details><summary>Como mandar arquivos do iPhone para um PC com Windows?</summary><p>Abra o filefinch no PC e crie um convite. Escaneie o QR code com a câmera do iPhone, mostre o código de resposta para a webcam ou cole no PC, e envie os arquivos.</p></details><details><summary>Precisa instalar algum aplicativo?</summary><p>Não. O filefinch roda no navegador. Se quiser, você pode adicionar à tela inicial para abrir como um app e usar sem internet na mesma rede Wi-Fi.</p></details><details><summary>O filefinch tem relação com a Apple?</summary><p>Não. O filefinch é um projeto independente e de código aberto. AirDrop é só a referência que muita gente usa para descrever esse tipo de envio rápido entre aparelhos.</p></details></div></section>
+    <section id="steps" class="prose-sec steps-sec"><h2>Passo a passo</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Abra o filefinch nos dois aparelhos</h3><p>Em cada aparelho, abra o filefinch no navegador. Funciona no Safari do iPhone, no Chrome do Android e em qualquer navegador moderno no PC.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Mostre o código de pareamento em um deles</h3><p>Um dos aparelhos toca em Mostrar código de pareamento. Aparecem um QR code e 6 palavras lado a lado.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Escaneie ou digite as 6 palavras no outro</h3><p>O outro aparelho lê o QR code com a câmera ou digita as 6 palavras na caixa Tem um código de pareamento.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Ou use o modo Zero terceiros</h3><p>Se preferir que nenhum relay participe, crie um convite com link, abra no outro aparelho e devolva o código curto de resposta.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Envie nos dois sentidos</h3><p>Conectados, os dois podem mandar fotos, vídeos e documentos um para o outro na mesma conexão.</p></div></li></ol></section>
+    <section id="faq" class="prose-sec"><h2>Perguntas frequentes</h2><div class="faq"><details><summary>Existe AirDrop para Android?</summary><p>O AirDrop é um recurso da Apple e funciona entre aparelhos da Apple. Para trocar arquivos entre Android e iPhone, ou com um PC Windows, dá para usar uma ferramenta pelo navegador como o filefinch, que funciona em qualquer combinação.</p></details><details><summary>Como passar fotos do iPhone para o Android?</summary><p>Abra o filefinch nos dois celulares, toque em Mostrar código de pareamento em um deles e escaneie o QR code ou digite as 6 palavras no outro. Depois escolha as fotos no iPhone e envie. Elas chegam na qualidade original.</p></details><details><summary>Como mandar arquivos do iPhone para um PC com Windows?</summary><p>Abra o filefinch no PC e toque em Mostrar código de pareamento. Escaneie o QR code com a câmera do iPhone ou digite as 6 palavras. Depois digite no PC as 6 palavras de confirmação que aparecem no iPhone e envie os arquivos.</p></details><details><summary>Precisa instalar algum aplicativo?</summary><p>Não. O filefinch roda no navegador. Se quiser, você pode adicionar à tela inicial para abrir como um app e usar sem internet na mesma rede Wi-Fi, no modo Zero terceiros.</p></details><details><summary>Algum servidor vê meus arquivos?</summary><p>Não. Nenhum servidor nosso participa. O handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo, e seus arquivos vão de aparelho para aparelho.</p></details><details><summary>O filefinch tem relação com a Apple?</summary><p>Não. O filefinch é um projeto independente e de código aberto. AirDrop é só a referência que muita gente usa para descrever esse tipo de envio rápido entre aparelhos.</p></details></div></section>
   </article>
 </div>
 <section class="related" aria-labelledby="related-h"><h2 id="related-h">Continue lendo</h2><div class="cards"><a class="gcard" href="../../../pt/guias/transferir-arquivos-do-celular-para-o-pc-sem-cabo/"><span class="art "><img class="art-l" src="../../../assets/art/phone-to-pc.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../../assets/art/phone-to-pc-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transferir arquivos do celular para o pc sem cabo</span><span class="gcard-t">Como transferir arquivos do celular para o PC sem cabo</span><span class="gcard-more">Ler o guia <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../../pt/guias/enviar-arquivos-grandes-sem-limite/"><span class="art "><img class="art-l" src="../../../assets/art/big-file.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../../assets/art/big-file-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">enviar arquivos grandes sem limite</span><span class="gcard-t">Como enviar arquivos grandes sem limite de tamanho</span><span class="gcard-more">Ler o guia <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div></section>

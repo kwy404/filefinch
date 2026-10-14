@@ -11,21 +11,23 @@ alt: Photos and videos flying from a phone straight to a desktop computer
 time: PT3M
 howto: How to transfer files from a phone to a PC with filefinch
 steps:
-  - name: Open filefinch on the computer
-    text: Open the filefinch app in a browser on your PC or Mac and create an invite. A QR code appears on the screen.
-  - name: Scan the QR code with your phone
-    text: Point the phone camera at the QR code, or open the invite link if you sent it to yourself. filefinch opens in the phone browser.
-  - name: Send the reply back
-    text: The phone shows a short reply code. Hold it up to the computer camera or paste it on the computer to finish connecting.
-  - name: Check the fingerprint
-    text: Both screens show a short connection code. If they match, the two devices are talking directly to each other.
+  - name: Show the pairing code on the computer
+    text: Open the filefinch app in a browser on your PC or Mac and tap Show pairing code. 6 words and a QR code appear side by side.
+  - name: Scan the QR code or type the 6 words on your phone
+    text: Open filefinch on the phone, then scan the QR code with the camera or type the 6 words in the Have a pairing code? box. The QR code holds the same words.
+  - name: Or use a link for zero third parties
+    text: If you prefer no relay in the setup, create an invite link on the computer instead, open it on the phone and send the short reply code back.
+  - name: Type the confirmation words on the computer
+    text: The phone shows 6 new confirmation words. Type them on the computer. If they match, the two devices are talking directly to each other. With an invite link, compare the 12 digit fingerprint on both screens instead.
   - name: Pick photos, videos or files on the phone
     text: Choose what to send. Files go across byte for byte, and you can preview them on the computer before saving.
 faq:
   - q: Can I transfer files from iPhone to a Windows PC without a cable?
     a: Yes. filefinch runs in Safari on iPhone and in Chrome, Edge or Firefox on Windows, so any pair can connect. Both devices just need a modern browser and a network connection.
   - q: Do the phone and the PC need to be on the same Wi-Fi?
-    a: No, but it helps. On the same Wi-Fi the traffic stays local and is often much faster. Across different networks it still works, limited by the slower connection.
+    a: No, but it helps. On the same Wi-Fi the traffic stays local and is often much faster. Across different networks it still works, limited by the slower connection. Pairing with 6 words needs internet on both devices, while the invite link mode also works on a local network with no internet once the app is loaded.
+  - q: Do I have to type the 6 words on my phone?
+    a: No. You can scan the QR code shown next to the words, since it holds the same 6 words. If you do type them, the first four letters of each word are enough and a single typo is fixed for you.
   - q: Will my photos and videos lose quality?
     a: No. filefinch sends files byte for byte, with no recompression and with metadata kept as is. The file on the PC is identical to the one on the phone.
   - q: Do I need to install an app on my phone?
@@ -51,13 +53,23 @@ That is it. No cable, no Bluetooth pairing, no cloud account, and no sign up.
 
 ## Step by step: phone to PC in a few minutes
 
-1. On the computer, open [filefinch](app:) and create an invite. A QR code and a link appear.
-2. On the phone, scan the QR code with the camera app. The invite opens filefinch in the phone browser.
-3. The phone now shows a short reply code, both as a link and as a QR code. If the computer has a webcam, hold the phone up to it. If not, send the reply link to yourself through any messenger or notes app and open it on the computer, or copy and paste it.
-4. Both screens show a short connection fingerprint. Make sure they match.
+1. On the computer, open [filefinch](app:) and tap Show pairing code. The screen shows 6 words and a QR code side by side.
+2. On the phone, open filefinch and scan the QR code with the camera, or type the 6 words in the "Have a pairing code?" box. The QR code holds the same words, so either route works.
+3. Wait a moment while the two browsers find each other and connect. The code works once and expires after 10 minutes.
+4. The phone shows 6 new confirmation words. Type them on the computer. They prove the phone is really yours, and no file moves until they match.
 5. On the phone, pick the photos, videos or files you want to send. They appear on the computer as they arrive.
 
-Camera scanning uses the BarcodeDetector API where the browser supports it. When it is missing, pasting the code always works, so you are never stuck.
+Typing on a small keyboard is easier than it sounds. The words come from the BIP39 English list, so the first four letters of each word are enough, autocomplete suggests the rest, and a single typo is corrected. You can also paste the whole phrase into any box.
+
+### Prefer zero third parties? Use a link
+
+There is a second way to connect that keeps every relay out of the setup. Choose "Prefer zero third parties? Use a link or QR instead" on the computer and create an invite:
+
+1. The computer shows an invite link and QR code. Scan it with the phone or open the link if you sent it to yourself.
+2. The phone shows a short reply code, both as a link and as a QR code. If the computer has a webcam, hold the phone up to it. If not, send the reply link to yourself through any messenger or notes app and open it on the computer, or copy and paste it.
+3. The two devices connect after that single round trip. Compare the 12 digit connection fingerprint on both screens.
+
+Camera scanning of the reply uses the BarcodeDetector API where the browser supports it. When it is missing, pasting the code always works, so you are never stuck.
 
 > Tip: if you move files from your phone often, install filefinch on the computer as an app. It then opens like any other program and works offline once loaded.
 
@@ -65,9 +77,11 @@ Camera scanning uses the BarcodeDetector API where the browser supports it. When
 
 A cable gives the two devices a private, direct path. filefinch builds a similar direct path over the network using WebRTC, the browser technology behind video calls.
 
-The invite you scan contains everything the phone needs to reach the computer: its network addresses and the session details, compressed into a link. The reply code carries the same information back. After that single round trip, the two browsers open a data channel between them. There is no file server of ours in the middle, and the files are never uploaded anywhere.
+Before that path exists, the two browsers need a short introduction. With the 6 words, both devices turn the phrase into a private topic name and a key, then meet on several public MQTT brokers (servers run by third parties, not by filefinch) to swap their connection details. The 6-word handshake travels encrypted through public relays that cannot read it, and both devices leave the relays as soon as the connection opens. With the Zero third parties link instead, the invite itself carries the computer's network addresses and session details, compressed into the link, and the reply code carries the phone's details back, so no relay is involved in the setup.
 
-The data channel is encrypted with DTLS, and the keys are created inside the two browsers for that one connection. The matching fingerprint on both screens confirms that nobody swapped the invite or reply on the way. For a deeper look, read the guide on [whether WebRTC file sharing is safe](guide:is-webrtc-file-sharing-safe).
+Either way, the two browsers then open a data channel between them. There is no server of ours in the middle, nothing is uploaded, and your files go device to device.
+
+The data channel is encrypted with DTLS, and the keys are created inside the two browsers for that one connection. Matching confirmation words, or with an invite link a matching 12 digit fingerprint on both screens, confirm that nobody slipped into the middle while the devices were being introduced. For a deeper look, read the guide on [whether WebRTC file sharing is safe](guide:is-webrtc-file-sharing-safe).
 
 ## Same Wi-Fi or not
 
@@ -76,7 +90,7 @@ You do not have to be on the same network, but it makes a big difference.
 | Situation | What to expect |
 |---|---|
 | Phone and PC on the same Wi-Fi | Traffic stays inside your home or office network and is often much faster than uploading to the internet. |
-| Same network, no internet | Works once filefinch has loaded, because the invite includes local addresses. |
+| Same network, no internet | Works with the invite link once filefinch has loaded, because the invite includes local addresses. The 6 words need internet. |
 | Phone on mobile data, PC at home | Works in most cases, limited by the phone's upload speed. |
 | Strict mobile carrier or corporate firewall | A direct path may be impossible. filefinch explains this and lets you add a TURN relay in Settings. |
 

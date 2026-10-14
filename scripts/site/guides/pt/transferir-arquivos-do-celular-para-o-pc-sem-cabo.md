@@ -11,25 +11,25 @@ alt: Fotos e vídeos voando de um celular direto para um computador de mesa
 time: PT3M
 howto: Como passar fotos e vídeos do celular para o PC com o filefinch
 steps:
-  - name: Abra o filefinch no PC
-    text: No computador, abra o filefinch no Chrome, Edge, Firefox ou Safari e crie um convite. Aparece um QR code na tela.
+  - name: Mostre o código de pareamento no PC
+    text: No computador, abra o filefinch no Chrome, Edge, Firefox ou Safari e toque em Mostrar código de pareamento. Aparecem um QR code e 6 palavras.
   - name: Escaneie com o celular
-    text: Aponte a câmera do celular para o QR code. O convite abre no navegador do celular, sem instalar nenhum app.
-  - name: Mostre o código de resposta ao PC
-    text: O celular exibe um código de resposta. Mostre para a webcam do PC ou mande por mensagem e cole no computador.
-  - name: Confira a impressão digital
-    text: Com os dois conectados, veja se o código curto de verificação é igual nas duas telas.
+    text: Aponte a câmera do celular para o QR code, ou digite as 6 palavras no filefinch do celular. Não precisa instalar nenhum app.
+  - name: Digite as palavras de confirmação no PC
+    text: Com os dois conectados, o celular mostra 6 novas palavras de confirmação. Digite essas palavras no PC. No modo Zero terceiros, veja se o código de verificação de 12 dígitos é igual nas duas telas.
   - name: Escolha as fotos e envie
     text: No celular, selecione fotos, vídeos ou documentos e envie. No PC, confira a prévia e salve onde quiser.
+  - name: Sem internet, use o modo Zero terceiros
+    text: Se não houver internet, crie um convite no PC, escaneie com o celular e mostre o código de resposta para a webcam ou cole no computador.
 faq:
   - q: Como passar fotos do celular para o PC sem cabo USB?
-    a: Abra o filefinch no PC, escaneie o QR code com o celular e devolva o código de resposta. Depois é só escolher as fotos no celular e enviar. Tudo acontece pelo navegador.
+    a: Abra o filefinch no PC, toque em Mostrar código de pareamento e escaneie o QR code com o celular, ou digite as 6 palavras. Depois é só escolher as fotos no celular e enviar. Tudo acontece pelo navegador.
   - q: Funciona com iPhone e PC com Windows?
     a: Sim. O filefinch funciona em qualquer combinação, incluindo iPhone com Windows, Android com Mac e celular com Linux, desde que os dois tenham um navegador moderno.
   - q: As fotos e vídeos perdem qualidade?
     a: Não. Os arquivos vão byte por byte, sem recompressão. A resolução, a qualidade e os metadados como data e local da foto chegam como estavam no celular.
   - q: Preciso de internet para transferir?
-    a: Se o celular e o PC estiverem no mesmo Wi-Fi e o filefinch já tiver sido carregado antes nos dois, dá para transferir só pela rede local, sem internet.
+    a: Para o pareamento com 6 palavras, sim, porque ele usa relays públicos na internet. Sem internet, use o modo Zero terceiros com link de convite. Se o celular e o PC estiverem no mesmo Wi-Fi e o filefinch já tiver sido carregado antes nos dois, dá para transferir só pela rede local.
   - q: Por que a transferência parou quando bloqueei o celular?
     a: Navegadores de celular podem pausar abas em segundo plano. Deixe a tela ligada e o filefinch aberto até o envio terminar.
 related: [enviar-arquivos-grandes-sem-limite, airdrop-para-windows-e-android]
@@ -38,18 +38,23 @@ O cabo sumiu, a entrada do PC não é a mesma do celular ou o computador simples
 
 Não precisa instalar app no celular, criar conta ou subir nada para a nuvem. Funciona com Android e iPhone, e do lado do computador com Windows, Mac ou Linux. Abaixo está o passo a passo e algumas dicas para não ter dor de cabeça com vídeos longos.
 
-## O jeito mais rápido: QR code na tela do PC
+## O jeito mais rápido: QR code e 6 palavras na tela do PC
 
-O filefinch conecta os dois aparelhos diretamente, de navegador para navegador, usando WebRTC. Para isso, eles trocam um convite e uma resposta uma única vez. Com o PC e o celular lado a lado, essa troca é toda feita pela câmera:
+O filefinch conecta os dois aparelhos diretamente, de navegador para navegador, usando WebRTC. Para isso, eles pareiam uma única vez, mais ou menos como no Bluetooth. Com o PC e o celular lado a lado, basta a câmera:
 
-1. No PC, abra o [filefinch](app:) e crie um convite. Um QR code aparece na tela.
-2. No celular, aponte a câmera para o QR code e abra o link.
-3. O celular mostra um código de resposta, também em QR code.
-4. Mostre esse código para a webcam do PC. Se o computador não tiver webcam, mande o link de resposta para você mesmo por mensagem e abra no PC, ou copie e cole o código.
-5. Conectado! Confira se o código de verificação é igual nas duas telas.
-6. No celular, escolha os arquivos e envie.
+1. No PC, abra o [filefinch](app:) e toque em Mostrar código de pareamento. Aparecem na tela um QR code e 6 palavras.
+2. No celular, aponte a câmera para o QR code e abra o filefinch. O QR code carrega as mesmas 6 palavras.
+3. Se a câmera não ajudar, abra o filefinch no celular e digite as 6 palavras na caixa Tem um código de pareamento. As 4 primeiras letras de cada palavra bastam, e o preenchimento automático sugere as palavras.
+4. Conectado! O celular mostra 6 novas palavras de confirmação. Digite essas palavras no PC. Elas provam que o celular é mesmo seu, e nenhum arquivo se move até elas conferirem.
+5. No celular, escolha os arquivos e envie.
 
-> A leitura pela câmera usa um recurso que nem todo navegador tem. Quando não estiver disponível, colar o código sempre funciona.
+O código vale para uma conexão só e expira em 10 minutos. Durante o pareamento, o handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo. Assim que a conexão abre, os dois saem dos relays e seus arquivos vão de aparelho para aparelho.
+
+### Modo Zero terceiros: convite e código de resposta
+
+Prefere que nenhum relay participe, ou está sem internet? No PC, toque na opção de usar um link ou QR e depois em Criar convite. O celular escaneia esse QR code e mostra um código de resposta, também em QR code. Mostre esse código para a webcam do PC. Se o computador não tiver webcam, mande o link de resposta para você mesmo por mensagem e abra no PC, ou copie e cole o código. Depois de conectar, confira se o código de verificação de 12 dígitos é igual nas duas telas.
+
+> A leitura pela câmera usa um recurso que nem todo navegador tem. Quando não estiver disponível, digitar as palavras ou colar o código sempre funciona.
 
 ## Passando fotos e vídeos sem perder qualidade
 
@@ -88,13 +93,13 @@ No celular, o jeito de salvar varia conforme o sistema e o navegador. Em geral o
 
 ## Funciona sem internet?
 
-Funciona, com uma condição. O filefinch é um app web instalável (PWA) que, depois de carregado uma vez, abre mesmo offline. Se o celular e o PC estiverem na mesma rede Wi-Fi, eles se encontram pelos endereços locais e transferem sem internet. Então carregue o filefinch nos dois aparelhos enquanto ainda tem conexão e, se quiser, adicione à tela inicial do celular.
+Funciona, com duas condições. O filefinch é um app web instalável (PWA) que, depois de carregado uma vez, abre mesmo offline. E, sem internet, você usa o modo Zero terceiros, com convite e código de resposta, porque o pareamento por 6 palavras precisa alcançar os relays públicos na internet. Se o celular e o PC estiverem na mesma rede Wi-Fi, eles se encontram pelos endereços locais e transferem sem internet. Então carregue o filefinch nos dois aparelhos enquanto ainda tem conexão e, se quiser, adicione à tela inicial do celular.
 
 ## É seguro?
 
-A conexão WebRTC é sempre criptografada com DTLS, e o código de verificação igual nas duas telas mostra que ninguém trocou o convite no meio do caminho. Para arquivos sensíveis, você pode ativar uma senha extra que os dois lados digitam, e cada pedaço do arquivo é lacrado de novo com AES-GCM.
+A conexão WebRTC é sempre criptografada com DTLS. No pareamento por palavras, as 6 palavras de confirmação provam que o aparelho que entrou é seu, e não de alguém que viu o código. No modo Zero terceiros, o código de verificação igual nas duas telas mostra que ninguém trocou os dados de conexão no meio do caminho. Para arquivos sensíveis, você pode ativar uma senha extra que os dois lados digitam, e cada pedaço do arquivo é lacrado de novo com AES-GCM.
 
-O filefinch não tem servidor próprio, não pede cadastro e não usa rastreamento. Só lembre que o link de convite contém os endereços de rede do aparelho, então mande apenas para o seu outro aparelho ou para quem vai receber.
+Nenhum servidor nosso entra na história, o filefinch não pede cadastro e não usa rastreamento. No pareamento por palavras, os relays públicos que levam o handshake são de terceiros, mas só veem nomes aleatórios e texto cifrado, nunca seus arquivos. Só lembre que os dados de conexão contêm os endereços de rede do aparelho, então mostre as 6 palavras ou mande o convite apenas para o seu outro aparelho ou para quem vai receber.
 
 ## Quando o filefinch não é a melhor opção
 

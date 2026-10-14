@@ -18,7 +18,7 @@
   <a href="https://github.com/kwy404/filefinch/actions/workflows/ci.yml"><img src="https://github.com/kwy404/filefinch/actions/workflows/ci.yml/badge.svg" alt="CI status of filefinch"></a>
   <a href="https://github.com/kwy404/filefinch/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-2f6fed" alt="MIT license"></a>
   <a href="https://kwy404.github.io/filefinch/app/"><img src="https://img.shields.io/badge/open-the%20app-ff7a45" alt="Open the filefinch app in your browser"></a>
-  <img src="https://img.shields.io/badge/server-none-22b98a" alt="No server: peer to peer in the browser">
+  <img src="https://img.shields.io/badge/server%20of%20ours-none-22b98a" alt="No server of ours: peer to peer in the browser">
   <img src="https://img.shields.io/badge/account-none-22b98a" alt="No account needed">
   <img src="https://img.shields.io/badge/size%20limit-none-22b98a" alt="No size limit set by filefinch">
 </p>
@@ -31,7 +31,7 @@
   <a href="https://github.com/kwy404/filefinch/blob/main/i18n/README.pt-BR.md">Leia em Português (pt-BR)</a>
 </p>
 
-**filefinch is a free, serverless peer to peer file transfer web app.** It works like a personal drive between your own phone and computers, without the drive in the middle: open it on two devices, share an invite link or QR code, and send files and whole folders of any size straight from one device to the other. There is no account, no upload, no server of ours, and every connection is end to end encrypted by the browser.
+**filefinch is a free peer to peer file transfer web app with no server of ours.** It works like a personal drive between your own phone and computers, without the drive in the middle: open it on two devices, type 6 words or scan a QR code, and send files and whole folders of any size straight from one device to the other. There is no account and no upload; the 6-word handshake travels encrypted through public relays that cannot read it, and your files go device to device, end to end encrypted by the browser.
 
 ## Contents
 
@@ -61,7 +61,7 @@
 
 Moving a file to your own other device usually means uploading it somewhere first. filefinch takes the direct flight instead:
 
-- **100% serverless.** The site is static pages on GitHub Pages. No server of ours ever sees your files or messages.
+- **No server of ours.** The site is static pages on GitHub Pages. No server of ours ever sees your files or messages.
 - **No account.** Nothing to sign up for, nothing to log in to, no analytics and no tracking.
 - **No upload.** Files go device to device over WebRTC, never to a storage service.
 - **End to end encrypted.** WebRTC encrypts every connection with DTLS. An optional passphrase adds a second layer.
@@ -69,18 +69,18 @@ Moving a file to your own other device usually means uploading it somewhere firs
 
 ## Quick start
 
-1. Open [kwy404.github.io/filefinch/app/](https://kwy404.github.io/filefinch/app/) on the first device and create an invite. You get a link and a QR code.
-2. Open the link on the second device, or scan the QR code with its camera.
-3. The second device shows a short reply code. Send it back by any messenger, or show it to the first device's camera.
-4. Both screens show the same short fingerprint. Compare it, then drop files or a folder. They fly straight across.
+1. Open [kwy404.github.io/filefinch/app/](https://kwy404.github.io/filefinch/app/) on the first device and tap **Show pairing code**. A QR code and 6 words appear side by side.
+2. On the second device, type the 6 words (the first four letters of each are enough), or scan the QR code with the phone camera.
+3. Both screens show the same short fingerprint. Compare it, then drop files or a folder. They fly straight across.
 
-Install it as an app from the browser menu if you like. Once loaded, it also works offline on a local network.
+Prefer zero third parties? Choose **Use a link or QR instead**: the invite link carries the handshake itself and the other device answers with a short reply code. That mode also works offline on a local network once the app is loaded, and you can install filefinch as an app from the browser menu.
 
 ## Features
 
 | | |
 |---|---|
-| **Invite link and QR code** | One link or QR code to connect, one short reply to finish. Camera scanning where the browser supports it, paste everywhere else. |
+| **6 words or a QR code** | Type 6 words from a list of 2048, or scan the QR code next to them. The code works once and expires in 10 minutes. |
+| **Zero third parties mode** | An invite link (or its QR code) carries the whole handshake, answered by one short reply. No relay at all. |
 | **Whole folders** | The folder tree is rebuilt on the other side (or arrives as one .zip where the browser has no folder access). Incoming paths are sanitized so nothing can be written outside the folder you pick. |
 | **Resume** | If the connection drops, reconnect and the transfer continues from the last confirmed chunk. |
 | **Folder sync** | Two way, push or pull between two devices. You review the plan of changes before anything is written. |
@@ -102,7 +102,11 @@ Install it as an app from the browser menu if you like. Once loaded, it also wor
 
 ## How it works
 
-There is no signaling server. The invite itself carries what the second device needs:
+Two browsers need to swap a WebRTC offer and answer before they can talk directly. filefinch has no server of its own for that, so it offers two ways:
+
+**6 words (the default).** The first device shows 6 words from the BIP39 list and a QR code that holds the same words. Both devices derive a topic and a key from the words, meet on several public MQTT brokers and swap the offer and answer sealed with that key. The 6-word handshake travels encrypted through public relays that cannot read it; they only carry a random looking topic and ciphertext. The code works once, expires after 10 minutes, and both sides leave the brokers as soon as the connection opens. Your files never touch them: they go device to device.
+
+**Zero third parties (invite link).** No relay carries anything:
 
 1. The first device creates a WebRTC offer and waits until ICE gathering is complete (no trickle). The offer is reduced to the fields a data channel needs, compressed with `CompressionStream('deflate-raw')` and written as base64url into the link hash (`#i=...`) and into a QR code drawn by filefinch's own encoder.
 2. The second device opens the link, builds its answer the same way and shows it as a short reply code (`#r=...`), also as a link or QR code.
@@ -120,6 +124,7 @@ To find a route, the browsers use Google's public STUN servers (`stun.l.google.c
 </p>
 
 - No server of ours ever sees your files or messages. There is no filefinch server at all.
+- The 6-word handshake travels encrypted through public MQTT relays that cannot read it. They see that two devices exchange a few small sealed messages, never the content, and never your files. With an invite link, no relay is involved.
 - WebRTC encrypts every connection end to end with DTLS. The keys are made inside the two browsers.
 - A TURN relay, when one is used, only forwards encrypted packets and cannot read them. It can see the two IP addresses and how much data flows.
 - No account and nothing stored online. Received files stay on your device.
@@ -151,9 +156,9 @@ Both approaches are useful. A cloud upload is the right tool when the receiver i
 
 ## FAQ
 
-**How do I send large files without limits for free?** Open filefinch on both devices, connect with the invite link or QR code and drop the files. filefinch sets no size limit and streams files in chunks.
+**How do I send large files without limits for free?** Open filefinch on both devices, connect with the 6 words or the QR code and drop the files. filefinch sets no size limit and streams files in chunks.
 
-**How do I transfer files from my phone to my PC without a cable?** Open filefinch on the PC, scan the invite QR code with the phone, scan or paste the reply, then pick the photos and videos. They arrive in original quality.
+**How do I transfer files from my phone to my PC without a cable?** Open filefinch on the PC and show the pairing code, scan its QR code with the phone (or type the 6 words), then pick the photos and videos. They arrive in original quality.
 
 **Is there an AirDrop for Windows and Android?** filefinch works in any modern browser, so it can send between Windows, Android, iPhone, Mac and Linux. It is independent and not affiliated with Apple, Google or Microsoft.
 
@@ -161,7 +166,7 @@ Both approaches are useful. A cloud upload is the right tool when the receiver i
 
 **Can I send a whole folder?** Yes. The folder structure is rebuilt on the other side, and folder sync can keep two copies in step.
 
-**Does it work without internet?** Once the app is loaded it works offline, and two devices on the same local network can connect.
+**Does it work without internet?** Once the app is loaded, the invite link mode works offline and two devices on the same local network can connect. The 6 word mode needs internet to reach the public relays.
 
 ## Guides
 
@@ -199,7 +204,7 @@ WebRTC and the service worker need `localhost` or HTTPS. To test across two real
 
 | Path | What it holds |
 |---|---|
-| [`src/`](https://github.com/kwy404/filefinch/blob/main/src) | Shared modules: invite signaling, QR encoder, crypto, protocol, chunking, SHA-256, paths |
+| [`src/`](https://github.com/kwy404/filefinch/blob/main/src) | Shared modules: the 6 word rendezvous and invite signaling, QR encoder, crypto, protocol, chunking, SHA-256, paths |
 | [`docs/app/`](https://github.com/kwy404/filefinch/blob/main/docs/app) | The app served on GitHub Pages, with its manifest and service worker |
 | [`docs/`](https://github.com/kwy404/filefinch/blob/main/docs) | Landing page, guides, sitemap, robots and the 404 page |
 | [`scripts/site/`](https://github.com/kwy404/filefinch/blob/main/scripts/site) | Site builder, guide sources and the art generators (mascot, icons, illustrations) |

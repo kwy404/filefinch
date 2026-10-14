@@ -46,7 +46,7 @@
    "inLanguage": "en",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 1172,
+   "wordCount": 1409,
    "keywords": "send video in original quality",
    "author": {
     "@type": "Person",
@@ -95,29 +95,29 @@
     {
      "@type": "HowToStep",
      "position": 2,
-     "name": "Connect with an invite",
-     "text": "Create an invite on one device, then scan its QR code or open its link on the other device.",
+     "name": "Pair with 6 words",
+     "text": "On the device with the video, tap Show pairing code. On the other device, type the 6 words or scan the QR code next to them.",
      "url": "https://kwy404.github.io/filefinch/guides/send-video-in-original-quality/#step-2"
     },
     {
      "@type": "HowToStep",
      "position": 3,
-     "name": "Return the reply code",
-     "text": "Show the reply QR code to the first device's camera, or send the reply link back through any messenger.",
+     "name": "Or use an invite link",
+     "text": "If you prefer zero third parties, create an invite link instead, open it on the other device and send the short reply code back.",
      "url": "https://kwy404.github.io/filefinch/guides/send-video-in-original-quality/#step-3"
     },
     {
      "@type": "HowToStep",
      "position": 4,
-     "name": "Confirm the fingerprint",
-     "text": "Check that both screens show the same short connection fingerprint.",
+     "name": "Confirm the 6 words",
+     "text": "The receiving device shows 6 new confirmation words. Type them on the device with the video. With an invite link, check that both screens show the same 12 digit fingerprint instead.",
      "url": "https://kwy404.github.io/filefinch/guides/send-video-in-original-quality/#step-4"
     },
     {
      "@type": "HowToStep",
      "position": 5,
      "name": "Send the original video",
-     "text": "Choose the video files. They are sent byte for byte and checked with SHA-256 when they arrive.",
+     "text": "Choose the video files. They go device to device, byte for byte, and are checked with SHA-256 when they arrive.",
      "url": "https://kwy404.github.io/filefinch/guides/send-video-in-original-quality/#step-5"
     }
    ]
@@ -141,6 +141,14 @@
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "Send the original file instead of a re-encoded version. A USB cable, a cloud storage link or a direct browser transfer with filefinch all keep the original. filefinch sends the video byte for byte between two devices that are online at the same time."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does the video pass through a server when I use filefinch?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. To connect, the 6-word handshake travels encrypted through public relays that cannot read it, and then the video goes device to device. If you prefer zero third parties, an invite link carries the handshake instead, so no relay passes it along."
      }
     },
     {
@@ -226,7 +234,7 @@
     <p class="kicker">Guide: send video in original quality</p>
     <h1>How to send video in original quality, without compression</h1>
     <p class="lede">Send video in original quality, byte for byte. Learn why messaging apps often compress video and how to share full resolution clips with any device for free.</p>
-    <p class="guide-meta"><span>5 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
+    <p class="guide-meta"><span>6 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
   </div>
   <figure class="guide-art"><span class="art "><img class="art-l" src="../../assets/art/preview-gallery.svg" width="640" height="400" alt="Received photos and a video shown as previews on a tablet" fetchpriority="high"><img class="art-d" src="../../assets/art/preview-gallery-dark.svg" width="640" height="400" alt="" aria-hidden="true" fetchpriority="high"></span></figure>
 </header>
@@ -255,7 +263,10 @@
 </section>
 <section id="sending-the-original-with-filefinch" class="prose-sec"><h2>Sending the original with filefinch</h2>
 <p>filefinch sends files byte for byte. There is no recompression step anywhere, and metadata is kept as is. The video is read in small chunks on the sender's device and streamed straight to the receiving browser over an encrypted WebRTC connection. Each file is hashed with SHA-256 while it streams, and the receiver checks the hash at the end, so the copy you get matches the original.</p>
-<ol><li>Open <a href="../../app/">filefinch</a> on the device with the video and on the receiving device.</li><li>Create an invite on one device, then scan its QR code with the other or send the link.</li><li>Return the short reply code by showing its QR code to the first device's camera, or by sending the link back.</li><li>Confirm that both screens show the same connection fingerprint.</li><li>Pick the video files and send. You can send several clips at once, or a whole folder.</li></ol>
+<ol><li>Open <a href="../../app/">filefinch</a> on the device with the video and on the receiving device.</li><li>On the device with the video, tap <strong>Show pairing code</strong>. You will see 6 words and a QR code side by side.</li><li>On the receiving device, type the 6 words or scan the QR code. The first four letters of each word are enough, and autocomplete helps.</li><li>The receiving device shows 6 new confirmation words. Type them on the device with the video. No file moves until they match.</li><li>Pick the video files and send. You can send several clips at once, or a whole folder.</li></ol>
+<p>To connect, the 6-word handshake travels encrypted through public relays that cannot read it. Those relays are run by third parties, not by filefinch, and they only help the two devices find each other. The code works once, expires after 10 minutes, and both devices leave the relays as soon as the connection opens. Your files go device to device, and the video itself never passes through a relay of that kind.</p>
+<h3 id="prefer-zero-third-parties">Prefer zero third parties?</h3>
+<p>You can skip the relays entirely. Choose &quot;Prefer zero third parties? Use a link or QR instead&quot;, create an invite, and open the link or scan its QR code on the other device. That device shows a short reply code, which you send back through any messenger or show to the first device's camera. The link itself carries the handshake. Once connected, compare the 12 digit connection fingerprint on both screens. This mode also works offline between two devices on the same local network once the app is loaded, which is handy in a studio or on location with no internet.</p>
 <p>On the receiving side you can preview videos, photos and audio in the browser before saving them, which is a quick way to confirm you got the right clip. Received files also stay in a local library on that device, so you can save or clear them later.</p>
 </section>
 <section id="long-and-large-videos" class="prose-sec"><h2>Long and large videos</h2>
@@ -269,17 +280,17 @@
 <h3 id="between-an-iphone-and-an-android-phone">Between an iPhone and an Android phone</h3>
 <p>Both phones have a browser, so the same steps work regardless of brand. The <a href="../../guides/airdrop-for-windows-and-android/">guide for Windows and Android users looking for AirDrop</a> explains the cross platform options.</p>
 <h3 id="sharing-with-a-client-or-collaborator">Sharing with a client or collaborator</h3>
-<p>If they can be online at the same time, a direct transfer gives them the exact file you exported. Agree on a short passphrase by phone if you want an extra layer of encryption on top of the standard WebRTC encryption.</p>
+<p>If they can be online at the same time, a direct transfer gives them the exact file you exported. Read the 6 words to them over the phone, or send them by message, and they can connect from wherever they are. Agree on a short passphrase too if you want an extra layer of encryption on top of the standard WebRTC encryption.</p>
 </section>
 <section id="when-filefinch-is-not-the-right-tool" class="prose-sec"><h2>When filefinch is not the right tool</h2>
 <p>Direct transfer needs both devices online at the same time with filefinch open. If your client is in another time zone and will download tomorrow, a cloud storage link is the better tool. If you only want to share a quick clip for fun and the other person will watch it on a phone, the messaging app's compressed version may be all anyone needs. And if many people need to download the same video over several days, use a hosting or cloud service built for that.</p>
-<p>Some strict networks also block direct connections. filefinch explains when this happens and lets you add your own TURN relay in Settings.</p>
+<p>Some strict networks also block direct connections. filefinch explains when this happens and lets you add your own TURN relay in Settings. And if no public relay answers the 6 word pairing, an invite link still connects the two devices.</p>
 </section>
 <section id="summary" class="prose-sec"><h2>Summary</h2>
 <p>Compression is a reasonable default for chat, and a problem when the video itself matters. To send video in original quality, use a method that copies the file without re-encoding it, then verify the result with the file size, the metadata or a checksum. filefinch does this directly between two browsers, free and without an account. Open <a href="../../app/">the app</a> and try it with your next clip.</p>
 </section>
-    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Open filefinch on both devices</h3><p>Open the web app in a modern browser on the device with the video and on the receiving device.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Connect with an invite</h3><p>Create an invite on one device, then scan its QR code or open its link on the other device.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Return the reply code</h3><p>Show the reply QR code to the first device's camera, or send the reply link back through any messenger.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Confirm the fingerprint</h3><p>Check that both screens show the same short connection fingerprint.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Send the original video</h3><p>Choose the video files. They are sent byte for byte and checked with SHA-256 when they arrive.</p></div></li></ol></section>
-    <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>Why does my video look worse after sending it in a messaging app?</summary><p>Many messaging apps compress video by default to save data and storage, which lowers the resolution or bitrate. Some apps offer a higher quality option or a way to send the clip as a file. To keep the exact original, use a method that copies the file without re-encoding it.</p></details><details><summary>How can I send a video without losing quality?</summary><p>Send the original file instead of a re-encoded version. A USB cable, a cloud storage link or a direct browser transfer with filefinch all keep the original. filefinch sends the video byte for byte between two devices that are online at the same time.</p></details><details><summary>Does filefinch keep video metadata?</summary><p>Yes. Files are sent byte for byte, so the recording date, location and camera details stored in the file stay as they were.</p></details><details><summary>How do I know the video arrived unchanged?</summary><p>filefinch hashes each file with SHA-256 while it streams, and the receiver checks the hash at the end. You can also compare the file size, resolution and metadata with the original.</p></details><details><summary>Is there a size limit for sending videos?</summary><p>filefinch does not set one. The practical limits are free space on the receiving device and both devices staying online during the transfer. Interrupted transfers can resume from the last confirmed point.</p></details></div></section>
+    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Open filefinch on both devices</h3><p>Open the web app in a modern browser on the device with the video and on the receiving device.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Pair with 6 words</h3><p>On the device with the video, tap Show pairing code. On the other device, type the 6 words or scan the QR code next to them.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Or use an invite link</h3><p>If you prefer zero third parties, create an invite link instead, open it on the other device and send the short reply code back.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Confirm the 6 words</h3><p>The receiving device shows 6 new confirmation words. Type them on the device with the video. With an invite link, check that both screens show the same 12 digit fingerprint instead.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Send the original video</h3><p>Choose the video files. They go device to device, byte for byte, and are checked with SHA-256 when they arrive.</p></div></li></ol></section>
+    <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>Why does my video look worse after sending it in a messaging app?</summary><p>Many messaging apps compress video by default to save data and storage, which lowers the resolution or bitrate. Some apps offer a higher quality option or a way to send the clip as a file. To keep the exact original, use a method that copies the file without re-encoding it.</p></details><details><summary>How can I send a video without losing quality?</summary><p>Send the original file instead of a re-encoded version. A USB cable, a cloud storage link or a direct browser transfer with filefinch all keep the original. filefinch sends the video byte for byte between two devices that are online at the same time.</p></details><details><summary>Does the video pass through a server when I use filefinch?</summary><p>No. To connect, the 6-word handshake travels encrypted through public relays that cannot read it, and then the video goes device to device. If you prefer zero third parties, an invite link carries the handshake instead, so no relay passes it along.</p></details><details><summary>Does filefinch keep video metadata?</summary><p>Yes. Files are sent byte for byte, so the recording date, location and camera details stored in the file stay as they were.</p></details><details><summary>How do I know the video arrived unchanged?</summary><p>filefinch hashes each file with SHA-256 while it streams, and the receiver checks the hash at the end. You can also compare the file size, resolution and metadata with the original.</p></details><details><summary>Is there a size limit for sending videos?</summary><p>filefinch does not set one. The practical limits are free space on the receiving device and both devices staying online during the transfer. Interrupted transfers can resume from the last confirmed point.</p></details></div></section>
   </article>
 </div>
 <section class="related" aria-labelledby="related-h"><h2 id="related-h">Keep reading</h2><div class="cards"><a class="gcard" href="../../guides/send-large-files-without-limits/"><span class="art "><img class="art-l" src="../../assets/art/big-file.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/big-file-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">send large files without limits</span><span class="gcard-t">How to send large files without limits, straight from device to device</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/transfer-files-from-phone-to-pc-without-cable/"><span class="art "><img class="art-l" src="../../assets/art/phone-to-pc.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/phone-to-pc-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transfer files from phone to pc without cable</span><span class="gcard-t">How to transfer files from phone to PC without a cable</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/airdrop-for-windows-and-android/"><span class="art "><img class="art-l" src="../../assets/art/android-iphone.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/android-iphone-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">airdrop for windows and android</span><span class="gcard-t">AirDrop for Windows and Android, and a way that works on every device</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/transfer-files-on-the-same-wifi/"><span class="art "><img class="art-l" src="../../assets/art/same-wifi.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/same-wifi-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transfer files on the same wifi</span><span class="gcard-t">How to transfer files on the same Wi-Fi between any devices</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div></section>

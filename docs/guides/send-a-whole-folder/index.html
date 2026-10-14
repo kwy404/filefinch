@@ -46,7 +46,7 @@
    "inLanguage": "en",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 992,
+   "wordCount": 1223,
    "keywords": "send a whole folder",
    "author": {
     "@type": "Person",
@@ -89,14 +89,14 @@
      "@type": "HowToStep",
      "position": 1,
      "name": "Connect the two devices",
-     "text": "Open filefinch on both devices, create an invite on one and open it on the other, then send the short reply code back.",
+     "text": "Open filefinch on both devices. Tap Show pairing code on one, then type the 6 words or scan the QR code on the other. An invite link and reply code also work if you prefer zero third parties.",
      "url": "https://kwy404.github.io/filefinch/guides/send-a-whole-folder/#step-1"
     },
     {
      "@type": "HowToStep",
      "position": 2,
-     "name": "Check the fingerprint",
-     "text": "Make sure both screens show the same short connection code before sending anything.",
+     "name": "Confirm the 6 words",
+     "text": "The receiving device shows 6 new confirmation words. Type them on the sending device before sending anything. With an invite link, check that both screens show the same 12 digit fingerprint instead.",
      "url": "https://kwy404.github.io/filefinch/guides/send-a-whole-folder/#step-2"
     },
     {
@@ -226,7 +226,7 @@
     <p class="kicker">Guide: send a whole folder</p>
     <h1>How to send a whole folder, subfolders and all</h1>
     <p class="lede">How to send a whole folder with all its subfolders, free and without zipping. filefinch rebuilds the folder tree on the other device, from your browser.</p>
-    <p class="guide-meta"><span>5 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
+    <p class="guide-meta"><span>6 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
   </div>
   <figure class="guide-art"><span class="art "><img class="art-l" src="../../assets/art/folder-flock.svg" width="640" height="400" alt="A folder whose files fly out as a flock of small finches, each carrying one file" fetchpriority="high"><img class="art-d" src="../../assets/art/folder-flock-dark.svg" width="640" height="400" alt="" aria-hidden="true" fetchpriority="high"></span></figure>
 </header>
@@ -249,8 +249,12 @@
 <p>The result is the same tree you started with, without an archive in the middle.</p>
 </section>
 <section id="setting-it-up" class="prose-sec"><h2>Setting it up</h2>
-<p>The connection takes one round trip and no account:</p>
-<ol><li>Open <a href="../../app/">filefinch</a> on the device that has the folder and create an invite. It shows a link and a QR code.</li><li>On the receiving device, open the link or scan the code.</li><li>Send the short reply code back through any messenger, or show it to the first device's camera.</li><li>Compare the connection fingerprint on both screens. If it matches, you are connected directly.</li><li>Choose the folder and start sending.</li></ol>
+<p>There is no account and no server of ours to sign in to. By default, you connect with 6 words:</p>
+<ol><li>Open <a href="../../app/">filefinch</a> on the device that has the folder and tap Show pairing code. The screen shows 6 words and a QR code side by side.</li><li>On the receiving device, type the 6 words in the &quot;Have a pairing code?&quot; box, or scan the QR code with the camera. The QR code holds the same words.</li><li>The receiving device then shows 6 new confirmation words. Type them on the first device. When they match, you are connected directly, and no file moves before that.</li><li>Choose the folder and start sending.</li></ol>
+<p>The words come from the BIP39 English list, so the first four letters of each word are enough and a single typo is fixed. The code works once and expires after 10 minutes. To set up the connection, the 6-word handshake travels encrypted through public relays that cannot read it (public MQTT brokers run by third parties, not by filefinch), and both devices leave them as soon as they are connected. The folder itself never touches those relays: your files go device to device.</p>
+<h3 id="zero-third-parties-use-an-invite-link-instead">Zero third parties: use an invite link instead</h3>
+<p>If you would rather have no relay involved in the setup, choose &quot;Prefer zero third parties? Use a link or QR instead&quot; and create an invite. Open the invite link or scan its QR code on the receiving device, then send the short reply code back through any messenger or show it to the first device's camera. That one round trip connects the two browsers, after which you compare the 12 digit connection fingerprint on both screens. It also works on a local network with no internet once the app is loaded. The 6 words, by contrast, need internet to reach the relays.</p>
+<h3 id="where-the-folder-lands">Where the folder lands</h3>
 <aside class="tip"><p>Choosing a destination folder on the receiver gives the cleanest result. On desktop Chromium browsers such as Chrome and Edge, filefinch can write the tree straight into a folder you pick. Other browsers save through a streamed download: the folder arrives as one .zip file in your downloads, with the tree kept inside it.</p></aside>
 </section>
 <section id="safety-what-the-receiver-is-protected-from" class="prose-sec"><h2>Safety: what the receiver is protected from</h2>
@@ -274,7 +278,7 @@
 <ul><li><strong>The receiver cannot be online with you.</strong> Both devices must have filefinch open at the same time. A cloud upload works better for someone who will download later.</li><li><strong>You are sharing a folder with a large group.</strong> A hosted link is simpler than many separate connections.</li><li><strong>You need versioned backups.</strong> filefinch moves and syncs files, but it is not a backup system with history.</li><li><strong>Both networks block direct connections.</strong> filefinch detects this and lets you add a TURN relay in Settings, but a free relay is not always available.</li></ul>
 <p>When you just need a folder, with all of its subfolders, to arrive intact on another device, sending it directly is usually the shortest path. Open <a href="../../app/">filefinch</a> on both devices and send your next folder without zipping it.</p>
 </section>
-    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Connect the two devices</h3><p>Open filefinch on both devices, create an invite on one and open it on the other, then send the short reply code back.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Check the fingerprint</h3><p>Make sure both screens show the same short connection code before sending anything.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Choose the folder on the sender</h3><p>Select the folder you want to send. filefinch reads every file inside it along with its relative path.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Pick where it lands on the receiver</h3><p>On a desktop Chromium browser, choose a destination folder so the tree can be written straight into it. Other browsers save through a streamed download, and a whole folder arrives as one .zip file.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Let it finish and check</h3><p>Keep both devices online until every file arrives. Each file is verified with SHA-256, and name conflicts get a unique name instead of overwriting.</p></div></li></ol></section>
+    <section id="steps" class="prose-sec steps-sec"><h2>Step by step</h2><ol class="steps"><li id="step-1"><span class="step-n">1</span><div><h3>Connect the two devices</h3><p>Open filefinch on both devices. Tap Show pairing code on one, then type the 6 words or scan the QR code on the other. An invite link and reply code also work if you prefer zero third parties.</p></div></li><li id="step-2"><span class="step-n">2</span><div><h3>Confirm the 6 words</h3><p>The receiving device shows 6 new confirmation words. Type them on the sending device before sending anything. With an invite link, check that both screens show the same 12 digit fingerprint instead.</p></div></li><li id="step-3"><span class="step-n">3</span><div><h3>Choose the folder on the sender</h3><p>Select the folder you want to send. filefinch reads every file inside it along with its relative path.</p></div></li><li id="step-4"><span class="step-n">4</span><div><h3>Pick where it lands on the receiver</h3><p>On a desktop Chromium browser, choose a destination folder so the tree can be written straight into it. Other browsers save through a streamed download, and a whole folder arrives as one .zip file.</p></div></li><li id="step-5"><span class="step-n">5</span><div><h3>Let it finish and check</h3><p>Keep both devices online until every file arrives. Each file is verified with SHA-256, and name conflicts get a unique name instead of overwriting.</p></div></li></ol></section>
     <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>Can I send a folder without zipping it first?</summary><p>Yes. filefinch sends each file with its relative path and rebuilds the folder tree on the receiving side, so there is no need to create an archive and unpack it later.</p></details><details><summary>Are subfolders kept when sending a folder?</summary><p>Yes. The relative path of every file is sent, so nested subfolders are recreated in the same structure on the other device.</p></details><details><summary>What happens if a file with the same name already exists?</summary><p>filefinch gives the incoming file a unique name instead of overwriting the existing one, so nothing on the receiving device is replaced by surprise.</p></details><details><summary>Is it safe to receive a folder from someone else?</summary><p>Paths from the other device are treated as untrusted and cleaned up. Names cannot climb out of the folder you chose, and names Windows refuses or that contain control characters are fixed.</p></details><details><summary>How do I keep a folder up to date on two computers?</summary><p>Use folder sync instead of a one time send. It shows a plan of changes for approval and later only sends what changed.</p></details></div></section>
   </article>
 </div>

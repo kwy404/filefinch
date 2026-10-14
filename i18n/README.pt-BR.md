@@ -18,7 +18,7 @@
   <a href="https://github.com/kwy404/filefinch/actions/workflows/ci.yml"><img src="https://github.com/kwy404/filefinch/actions/workflows/ci.yml/badge.svg" alt="Status do CI do filefinch"></a>
   <a href="https://github.com/kwy404/filefinch/blob/main/LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-2f6fed" alt="Licença MIT"></a>
   <a href="https://kwy404.github.io/filefinch/app/"><img src="https://img.shields.io/badge/abrir-o%20app-ff7a45" alt="Abrir o app filefinch no navegador"></a>
-  <img src="https://img.shields.io/badge/servidor-nenhum-22b98a" alt="Sem servidor: ponto a ponto no navegador">
+  <img src="https://img.shields.io/badge/servidor%20nosso-nenhum-22b98a" alt="Nenhum servidor nosso: ponto a ponto no navegador">
   <img src="https://img.shields.io/badge/conta-nenhuma-22b98a" alt="Sem conta">
 </p>
 
@@ -30,7 +30,7 @@
   <a href="https://github.com/kwy404/filefinch/blob/main/README.md">Read in English</a>
 </p>
 
-**O filefinch é um app web gratuito e sem servidor para transferir arquivos ponto a ponto.** Funciona como um drive pessoal entre o seu celular e os seus computadores, só que sem o drive no meio: abra nos dois aparelhos, compartilhe um link de convite ou um QR code e envie arquivos e pastas inteiras de qualquer tamanho direto de um aparelho para o outro. Sem conta, sem upload, sem servidor nosso, e toda conexão é criptografada de ponta a ponta pelo navegador.
+**O filefinch é um app web gratuito para transferir arquivos ponto a ponto, sem nenhum servidor nosso.** Funciona como um drive pessoal entre o seu celular e os seus computadores, só que sem o drive no meio: abra nos dois aparelhos, digite 6 palavras ou escaneie um QR code e envie arquivos e pastas inteiras de qualquer tamanho direto de um aparelho para o outro. Sem conta e sem upload: o aperto de mão das 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo, e seus arquivos vão de aparelho para aparelho, criptografados de ponta a ponta pelo navegador.
 
 ## Sumário
 
@@ -48,7 +48,7 @@
 
 ## Por que o filefinch
 
-- **100% sem servidor.** O site é feito de páginas estáticas no GitHub Pages. Nenhum servidor nosso vê os seus arquivos ou mensagens.
+- **Nenhum servidor nosso.** O site é feito de páginas estáticas no GitHub Pages. Nenhum servidor nosso vê os seus arquivos ou mensagens.
 - **Sem conta.** Nada de cadastro, login, analytics ou rastreamento.
 - **Sem upload.** Os arquivos vão de aparelho para aparelho via WebRTC, nunca para um serviço de armazenamento.
 - **Criptografia de ponta a ponta.** O WebRTC criptografa toda conexão com DTLS. Uma senha opcional adiciona uma segunda camada.
@@ -56,18 +56,18 @@
 
 ## Começo rápido
 
-1. Abra [kwy404.github.io/filefinch/app/](https://kwy404.github.io/filefinch/app/) no primeiro aparelho e crie um convite. Aparecem um link e um QR code.
-2. Abra o link no segundo aparelho ou escaneie o QR code com a câmera.
-3. O segundo aparelho mostra um código de resposta curto. Mande de volta por qualquer mensageiro ou mostre para a câmera do primeiro aparelho.
-4. As duas telas mostram a mesma impressão digital curta. Compare, depois solte arquivos ou uma pasta. Eles voam direto.
+1. Abra [kwy404.github.io/filefinch/app/](https://kwy404.github.io/filefinch/app/) no primeiro aparelho e toque em **Mostrar código de pareamento**. Aparecem um QR code e 6 palavras lado a lado.
+2. No segundo aparelho, digite as 6 palavras (as 4 primeiras letras de cada uma bastam) ou escaneie o QR code com a câmera do celular.
+3. As duas telas mostram a mesma impressão digital curta. Compare, depois solte arquivos ou uma pasta. Eles voam direto.
 
-Se quiser, instale como app pelo menu do navegador. Depois de carregado, ele funciona offline em uma rede local.
+Prefere zero terceiros? Escolha **Use um link ou QR**: o link de convite leva o próprio aperto de mão e o outro aparelho responde com um código curto. Esse modo também funciona offline em uma rede local depois que o app é carregado, e você pode instalar o filefinch como app pelo menu do navegador.
 
 ## Recursos
 
 | | |
 |---|---|
-| **Link de convite e QR code** | Um link ou QR code para conectar e uma resposta curta para concluir. Leitura pela câmera onde o navegador permite, colar em todo lugar. |
+| **6 palavras ou um QR code** | Digite 6 palavras de uma lista de 2048 ou escaneie o QR code ao lado. O código funciona uma vez e expira em 10 minutos. |
+| **Modo zero terceiros** | Um link de convite (ou o QR dele) leva o aperto de mão inteiro, respondido com um código curto. Nenhum relay. |
 | **Pastas inteiras** | A árvore de pastas é recriada do outro lado (ou chega como um .zip quando o navegador não tem acesso a pastas). Caminhos recebidos são higienizados. |
 | **Retomada** | Se a conexão cair, reconecte e a transferência continua do último pedaço confirmado. |
 | **Sincronização de pastas** | Nos dois sentidos, só enviar ou só receber. Você revisa o plano de mudanças antes de qualquer gravação. |
@@ -81,7 +81,11 @@ Se quiser, instale como app pelo menu do navegador. Depois de carregado, ele fun
 
 ## Como funciona
 
-Não existe servidor de sinalização. O próprio convite leva o que o segundo aparelho precisa:
+Dois navegadores precisam trocar uma oferta e uma resposta WebRTC antes de conversar direto. O filefinch não tem servidor próprio para isso, então oferece dois caminhos:
+
+**6 palavras (o padrão).** O primeiro aparelho mostra 6 palavras da lista BIP39 e um QR code com as mesmas palavras. Os dois aparelhos derivam um tópico e uma chave das palavras, se encontram em vários brokers MQTT públicos e trocam a oferta e a resposta seladas com essa chave. O aperto de mão das 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo. O código funciona uma vez, expira em 10 minutos e os dois lados saem dos brokers assim que a conexão abre. Seus arquivos nunca passam por eles: vão de aparelho para aparelho.
+
+**Zero terceiros (link de convite).** Nenhum relay carrega nada:
 
 1. O primeiro aparelho cria uma oferta WebRTC e espera a coleta de ICE terminar (sem trickle). A oferta é reduzida, comprimida com `CompressionStream('deflate-raw')` e gravada em base64url no link (`#i=...`) e em um QR code desenhado pelo próprio codificador do filefinch.
 2. O segundo aparelho abre o link, monta a resposta do mesmo jeito e mostra um código de resposta curto (`#r=...`), também como link ou QR code.
@@ -92,6 +96,7 @@ Para achar uma rota, os navegadores usam os servidores STUN públicos do Google 
 ## Privacidade e segurança
 
 - Nenhum servidor nosso vê os seus arquivos ou mensagens. Não existe servidor do filefinch.
+- O aperto de mão das 6 palavras viaja criptografado por relays MQTT públicos que não conseguem lê-lo. Eles veem que dois aparelhos trocam algumas mensagens pequenas e seladas, nunca o conteúdo e nunca os seus arquivos. Com um link de convite, nenhum relay participa.
 - O WebRTC criptografa toda conexão de ponta a ponta com DTLS. As chaves nascem dentro dos dois navegadores.
 - Um relay TURN, quando usado, só repassa pacotes criptografados e não consegue lê-los. Ele vê os dois endereços IP e o volume de dados.
 - Sem conta e nada guardado online.
@@ -109,13 +114,13 @@ Notas honestas: o servidor STUN vê o seu endereço IP, como qualquer site. O li
 
 ## Perguntas frequentes
 
-**Como enviar arquivos grandes sem limite e de graça?** Abra o filefinch nos dois aparelhos, conecte com o link ou QR code e solte os arquivos. Não há limite de tamanho imposto pelo filefinch.
+**Como enviar arquivos grandes sem limite e de graça?** Abra o filefinch nos dois aparelhos, conecte com as 6 palavras ou o QR code e solte os arquivos. Não há limite de tamanho imposto pelo filefinch.
 
-**Como passar arquivos do celular para o PC sem cabo?** Abra o filefinch no PC, escaneie o QR code com o celular, mande a resposta de volta e escolha as fotos e vídeos. Eles chegam na qualidade original.
+**Como passar arquivos do celular para o PC sem cabo?** Abra o filefinch no PC e mostre o código de pareamento, escaneie o QR code com o celular (ou digite as 6 palavras) e escolha as fotos e vídeos. Eles chegam na qualidade original.
 
 **Existe AirDrop para Windows e Android?** O filefinch funciona em qualquer navegador moderno, então envia entre Windows, Android, iPhone, Mac e Linux. É um projeto independente, sem relação com Apple, Google ou Microsoft.
 
-**Funciona sem internet?** Depois de carregado, sim: dois aparelhos na mesma rede local conseguem se conectar.
+**Funciona sem internet?** Depois de carregado, o modo de link de convite funciona offline e dois aparelhos na mesma rede local conseguem se conectar. O modo de 6 palavras precisa de internet para chegar aos relays públicos.
 
 Guias em português: [arquivos grandes sem limite](https://kwy404.github.io/filefinch/pt/guias/enviar-arquivos-grandes-sem-limite/), [do celular para o PC sem cabo](https://kwy404.github.io/filefinch/pt/guias/transferir-arquivos-do-celular-para-o-pc-sem-cabo/) e [AirDrop para Windows e Android](https://kwy404.github.io/filefinch/pt/guias/airdrop-para-windows-e-android/).
 

@@ -10,19 +10,21 @@ alt: Finn the finch flying a parcel straight between a phone and a laptop with n
 time: PT3M
 howto: How to share a file without uploading it, using filefinch
 steps:
-  - name: Open filefinch on the sending device
-    text: Open the web app in any modern browser. There is nothing to install and no account to create.
-  - name: Create an invite
-    text: Create an invite on the device that has the files. It appears as a link and a QR code.
-  - name: Open the invite on the other device
-    text: Scan the QR code or open the link on the receiving device. It shows a short reply code.
-  - name: Send the reply back
-    text: Show the reply QR code to the first device's camera, or send the reply link back through any messenger.
-  - name: Check the fingerprint and send
-    text: Make sure both screens show the same connection fingerprint, then pick your files and send them directly.
+  - name: Open filefinch on both devices
+    text: Open the web app in any modern browser on the sending and the receiving device. There is nothing to install and no account to create.
+  - name: Show the pairing code
+    text: On the device that has the files, tap Show pairing code. The screen shows 6 words and a QR code that holds the same words.
+  - name: Type the words or scan the code
+    text: On the receiving device, type the 6 words or scan the QR code with the camera. The first four letters of each word are enough.
+  - name: Or use an invite link
+    text: If you prefer zero third parties, create an invite link instead. The other device opens it and sends back a short reply code.
+  - name: Confirm the words and send
+    text: The receiving device shows 6 new confirmation words. Type them on the device with the files, then pick your files. They go device to device. With an invite link, check that both screens show the same 12 digit fingerprint instead.
 faq:
   - q: Can I share a file without uploading it to the cloud?
     a: Yes. With a direct browser to browser transfer, the file goes from your device to the receiver's device over an encrypted WebRTC connection. filefinch does this for free with no account, and no copy is stored on a server.
+  - q: Does anything pass through a server when I connect?
+    a: No server of ours. When you pair with 6 words, the short handshake travels encrypted through public relays that cannot read it, and your files go device to device. If you prefer zero third parties, use an invite link, which carries the handshake itself.
   - q: Do both people need to be online at the same time?
     a: Yes. There is no mailbox in the middle, so both devices must be online with filefinch open while the transfer runs. If the receiver cannot be online, a cloud upload or an email attachment is the better choice.
   - q: Is there a file size limit when sharing without uploading?
@@ -48,29 +50,38 @@ When people say they want to share a file without uploading it, they usually mea
 
 A direct, peer to peer transfer covers all four. The sender's browser reads the file in small chunks and hands each chunk straight to the receiver's browser over a WebRTC data channel. Nothing is parked in the middle waiting to be picked up. When the transfer ends, the only copies are the one you started with and the one the receiver saved.
 
-## How filefinch connects two devices with no server
+## How filefinch connects two devices
 
-Most direct transfer tools still rely on a signaling server, a small service that introduces the two devices to each other. filefinch skips that too. The site is static, hosted on GitHub Pages, and no backend of ours takes part in the connection.
+Two browsers cannot find each other on their own. Before any file moves, they need a short introduction: a few lines of setup details that say how to reach each device and how to secure the connection. filefinch gives you two ways to make that introduction, and neither runs through a server of ours. The site is static, hosted on GitHub Pages, and no backend of ours takes part in the connection.
 
-Instead, the introduction happens through a link or a QR code:
+### The default: 6 words
 
-1. The first device creates an invite. The browser gathers the network details it needs, compresses them and packs them into a link and a QR code.
-2. The second device opens that link or scans the QR code. It produces a short reply code, also shown as a link or QR code.
-3. The reply goes back to the first device, either through any messenger you like or by showing the QR code to the first device's camera.
+1. On the device with the files, tap **Show pairing code**. The screen shows 6 words and a QR code side by side.
+2. On the other device, type the words into the "Have a pairing code?" box, or scan the QR code with the camera. The QR code holds the same words, so both routes lead to the same handshake.
+3. Both devices turn the words into a meeting point and a key, swap their setup details, and connect.
+4. The receiving device shows 6 new confirmation words. Type them on the device with the files. They prove the other screen is really yours, and no file moves until they match.
 
-That single round trip is enough. From then on the two browsers talk directly. If camera scanning is not available in your browser, you can always paste the codes by hand.
+The words come from a standard list of 2048 simple English words. The first four letters of each word are enough, a single typo gets corrected, and autocomplete suggests words as you type. You can also paste the whole phrase into any box.
 
-> The invite contains the network addresses of the device that made it. Share it only with your own device or the person you are sending to, and use each invite for one connection.
+Behind the scenes, the 6-word handshake travels encrypted through public relays that cannot read it. These relays are public MQTT brokers run by third parties, not by filefinch, and all they carry is a random looking topic name and scrambled data. A code works once and expires after 10 minutes, and both devices leave the relays as soon as the connection opens. Your files go device to device and never pass through them.
+
+### Zero third parties: an invite link
+
+If you would rather no relay carry anything at all, choose "Prefer zero third parties? Use a link or QR instead", then create an invite. The link and its QR code hold the whole handshake. The other device opens it and answers with a short reply code, which goes back through any messenger you like or by showing it to the first device's camera. That single round trip is enough, and pasting the codes by hand always works. Once connected, compare the 12 digit connection fingerprint on both screens.
+
+Like every mode, each browser still asks a public STUN server for its own public address, and a TURN relay may step in when both networks block a direct route. This mode also works fully offline on a local network once the app is loaded.
+
+> An invite link contains the network addresses of the device that made it. Share it only with your own device or the person you are sending to, and use each invite for one connection.
 
 ## Step by step: share a file without uploading
 
-1. Open [filefinch](app:) on the device that has the file. There is nothing to install, though you can add it to your home screen if you like.
-2. Create an invite and send the link to the other device, or let the other device scan the QR code.
-3. On the receiving device, open the link. A reply code appears.
-4. Send the reply back, or point the first device's camera at the reply QR code.
-5. Check that both screens show the same short connection fingerprint, then pick your files and send.
+1. Open [filefinch](app:) on both devices. There is nothing to install, though you can add it to your home screen if you like.
+2. On the device that has the file, tap Show pairing code.
+3. On the receiving device, type the 6 words or scan the QR code.
+4. Type the 6 confirmation words that the receiving device shows into the device with the file, then pick your files and send.
+5. Prefer the Zero third parties mode? Create an invite link instead, open it on the other device, send the reply back and compare the 12 digit fingerprint on both screens.
 
-Both devices can send in either direction over the same connection, so once you are connected, the receiver can send files back without creating a new invite.
+Both devices can send in either direction over the same connection, so once you are connected, the receiver can send files back without pairing again.
 
 ## Why skipping the upload helps
 
@@ -113,6 +124,7 @@ Being direct has a cost: there is no mailbox in the middle. Both devices must be
 A few other honest limits:
 
 - On phones, mobile browsers may pause a tab in the background. Keep the screen on during long transfers.
+- The 6 word mode needs internet access to reach the public relays. If no relay answers, or you are on a local network without internet, use an invite link instead.
 - Some networks block direct connections, for example strict corporate firewalls or carrier grade NAT on some mobile networks. In that case a TURN relay is needed. filefinch explains when this happens and lets you add your own TURN servers in Settings. A relay forwards only encrypted packets, but it can see both IP addresses and how much data flows.
 - If you need a link that many people can open over several days, that is a publishing job, and a hosting or cloud service fits it better.
 
@@ -120,8 +132,8 @@ A few other honest limits:
 
 - Both devices have filefinch open and are online.
 - The receiver has enough free disk space for everything you are sending.
-- You shared the invite only with the intended device or person.
-- Both screens show the same connection fingerprint.
+- You shared the 6 words or the invite only with the intended device or person.
+- The confirmation words matched, or with an invite link, both screens show the same connection fingerprint.
 - For long transfers on a phone, the screen stays on.
 
 When all five are true, open [the app](app:) and send. For a closer look at how the connection itself works, read [peer to peer file transfer explained](guide:peer-to-peer-file-transfer-explained), or see the [privacy section](home:#privacy) on the home page.

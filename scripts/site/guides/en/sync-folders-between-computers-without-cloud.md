@@ -11,7 +11,7 @@ time: PT5M
 howto: How to sync a folder between two computers with filefinch
 steps:
   - name: Connect the two computers
-    text: Open filefinch on both computers and pair them with an invite link or QR code and the short reply code.
+    text: Open filefinch on both computers. Tap Show pairing code on one and type the 6 words on the other, or use the Zero third parties invite link instead.
   - name: Choose the folder on each side
     text: Pick the folder you want to keep in step on each computer. A desktop browser that can write into a chosen folder works best.
   - name: Pick a sync mode
@@ -22,7 +22,7 @@ steps:
     text: Approve the plan and let it finish. Next time, only files that changed since the last sync are sent.
 faq:
   - q: Can I sync folders between two computers without the cloud?
-    a: Yes. filefinch connects the two computers directly in the browser and compares the chosen folders, then sends only what is needed. No files are stored on any server along the way.
+    a: Yes. filefinch connects the two computers directly in the browser and compares the chosen folders, then sends only what is needed. Only the short pairing handshake passes, encrypted, through public relays that cannot read it, and your files go device to device.
   - q: What happens if the same file changed on both computers?
     a: That is a conflict. filefinch keeps both versions as separate copies instead of overwriting one with the other, so you can decide which to keep.
   - q: Does filefinch sync automatically in the background?
@@ -39,7 +39,9 @@ filefinch does that in the browser, for free, with no account. You pick the fold
 
 ## How folder sync without a cloud works
 
-Both computers open [filefinch](app:) and connect with an invite and a short reply code, the same way as any other transfer. The connection is a WebRTC data channel between the two browsers, encrypted with DTLS.
+Both computers open [filefinch](app:) and pair the same way as for any other transfer. By default one computer taps Show pairing code and shows a QR code next to 6 words, and the other types the words (the first four letters of each are enough) or scans the code. The 6-word handshake travels encrypted through public relays that cannot read it, the code works once and expires after 10 minutes, and from then on your files go device to device. Once connected, the computer that joined shows 6 new confirmation words, and you type them on the first computer. No file moves until they match.
+
+If you would rather no third party carry even the handshake, use the **Zero third parties** mode: create an invite link on one computer, open it on the other, and send back the short reply code. Either way, the connection is a WebRTC data channel between the two browsers, encrypted with DTLS. With 6 words, matching confirmation words show that nobody tampered with the pairing. In the link mode, compare the 12 digit fingerprint instead, which is the same on both screens when nobody tampered with it.
 
 Once connected, one side proposes a sync. filefinch compares the two folders and builds a list of changes. That list is shown before a single byte is written. After you approve it, the needed files stream across and the receiver checks each one with a SHA-256 hash. On later syncs, only files that changed since the last time are sent, so a big folder with a few edits finishes quickly.
 
@@ -86,7 +88,7 @@ This also makes syncing between Windows, macOS and Linux practical, since a file
 
 Folder sync works best on desktop browsers that can write directly into a folder you pick, through the File System Access API. Chromium based browsers such as Chrome and Edge on Windows, macOS and Linux support that. Other browsers save received files through a streamed download, which is fine for one off transfers but less suited to keeping a folder in step.
 
-For speed, put both computers on the same network. Traffic then stays local and is often much faster than going through the internet, and it even works with no internet once filefinch is loaded. The [same Wi-Fi guide](guide:transfer-files-on-the-same-wifi) has tips. Across the internet, speed is limited by the slower upload of the two connections.
+For speed, put both computers on the same network. Traffic then stays local and is often much faster than going through the internet. It even works with no internet once filefinch is loaded, using the Zero third parties link mode, since the 6 word pairing needs internet to reach its relays. The [same Wi-Fi guide](guide:transfer-files-on-the-same-wifi) has tips. Across the internet, speed is limited by the slower upload of the two connections.
 
 If the connection drops in the middle, reconnect and the current file resumes from the last confirmed point rather than starting over.
 

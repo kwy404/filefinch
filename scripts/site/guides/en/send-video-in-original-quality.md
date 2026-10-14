@@ -12,19 +12,21 @@ howto: How to send a video in original quality with filefinch
 steps:
   - name: Open filefinch on both devices
     text: Open the web app in a modern browser on the device with the video and on the receiving device.
-  - name: Connect with an invite
-    text: Create an invite on one device, then scan its QR code or open its link on the other device.
-  - name: Return the reply code
-    text: Show the reply QR code to the first device's camera, or send the reply link back through any messenger.
-  - name: Confirm the fingerprint
-    text: Check that both screens show the same short connection fingerprint.
+  - name: Pair with 6 words
+    text: On the device with the video, tap Show pairing code. On the other device, type the 6 words or scan the QR code next to them.
+  - name: Or use an invite link
+    text: If you prefer zero third parties, create an invite link instead, open it on the other device and send the short reply code back.
+  - name: Confirm the 6 words
+    text: The receiving device shows 6 new confirmation words. Type them on the device with the video. With an invite link, check that both screens show the same 12 digit fingerprint instead.
   - name: Send the original video
-    text: Choose the video files. They are sent byte for byte and checked with SHA-256 when they arrive.
+    text: Choose the video files. They go device to device, byte for byte, and are checked with SHA-256 when they arrive.
 faq:
   - q: Why does my video look worse after sending it in a messaging app?
     a: Many messaging apps compress video by default to save data and storage, which lowers the resolution or bitrate. Some apps offer a higher quality option or a way to send the clip as a file. To keep the exact original, use a method that copies the file without re-encoding it.
   - q: How can I send a video without losing quality?
     a: Send the original file instead of a re-encoded version. A USB cable, a cloud storage link or a direct browser transfer with filefinch all keep the original. filefinch sends the video byte for byte between two devices that are online at the same time.
+  - q: Does the video pass through a server when I use filefinch?
+    a: No. To connect, the 6-word handshake travels encrypted through public relays that cannot read it, and then the video goes device to device. If you prefer zero third parties, an invite link carries the handshake instead, so no relay passes it along.
   - q: Does filefinch keep video metadata?
     a: Yes. Files are sent byte for byte, so the recording date, location and camera details stored in the file stay as they were.
   - q: How do I know the video arrived unchanged?
@@ -80,10 +82,16 @@ If any of these differ, you are not looking at the original.
 filefinch sends files byte for byte. There is no recompression step anywhere, and metadata is kept as is. The video is read in small chunks on the sender's device and streamed straight to the receiving browser over an encrypted WebRTC connection. Each file is hashed with SHA-256 while it streams, and the receiver checks the hash at the end, so the copy you get matches the original.
 
 1. Open [filefinch](app:) on the device with the video and on the receiving device.
-2. Create an invite on one device, then scan its QR code with the other or send the link.
-3. Return the short reply code by showing its QR code to the first device's camera, or by sending the link back.
-4. Confirm that both screens show the same connection fingerprint.
+2. On the device with the video, tap **Show pairing code**. You will see 6 words and a QR code side by side.
+3. On the receiving device, type the 6 words or scan the QR code. The first four letters of each word are enough, and autocomplete helps.
+4. The receiving device shows 6 new confirmation words. Type them on the device with the video. No file moves until they match.
 5. Pick the video files and send. You can send several clips at once, or a whole folder.
+
+To connect, the 6-word handshake travels encrypted through public relays that cannot read it. Those relays are run by third parties, not by filefinch, and they only help the two devices find each other. The code works once, expires after 10 minutes, and both devices leave the relays as soon as the connection opens. Your files go device to device, and the video itself never passes through a relay of that kind.
+
+### Prefer zero third parties?
+
+You can skip the relays entirely. Choose "Prefer zero third parties? Use a link or QR instead", create an invite, and open the link or scan its QR code on the other device. That device shows a short reply code, which you send back through any messenger or show to the first device's camera. The link itself carries the handshake. Once connected, compare the 12 digit connection fingerprint on both screens. This mode also works offline between two devices on the same local network once the app is loaded, which is handy in a studio or on location with no internet.
 
 On the receiving side you can preview videos, photos and audio in the browser before saving them, which is a quick way to confirm you got the right clip. Received files also stay in a local library on that device, so you can save or clear them later.
 
@@ -111,13 +119,13 @@ Both phones have a browser, so the same steps work regardless of brand. The [gui
 
 ### Sharing with a client or collaborator
 
-If they can be online at the same time, a direct transfer gives them the exact file you exported. Agree on a short passphrase by phone if you want an extra layer of encryption on top of the standard WebRTC encryption.
+If they can be online at the same time, a direct transfer gives them the exact file you exported. Read the 6 words to them over the phone, or send them by message, and they can connect from wherever they are. Agree on a short passphrase too if you want an extra layer of encryption on top of the standard WebRTC encryption.
 
 ## When filefinch is not the right tool
 
 Direct transfer needs both devices online at the same time with filefinch open. If your client is in another time zone and will download tomorrow, a cloud storage link is the better tool. If you only want to share a quick clip for fun and the other person will watch it on a phone, the messaging app's compressed version may be all anyone needs. And if many people need to download the same video over several days, use a hosting or cloud service built for that.
 
-Some strict networks also block direct connections. filefinch explains when this happens and lets you add your own TURN relay in Settings.
+Some strict networks also block direct connections. filefinch explains when this happens and lets you add your own TURN relay in Settings. And if no public relay answers the 6 word pairing, an invite link still connects the two devices.
 
 ## Summary
 
