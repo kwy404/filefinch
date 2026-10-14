@@ -1035,3 +1035,30 @@ main {
     max-width: 52vw;
   }
 }
+
+/* Keep dialog buttons in reach on short screens while the content scrolls. */
+dialog .modal-actions {
+  position: sticky;
+  bottom: -1.5rem;
+  z-index: 1;
+  margin: 1rem -1.5rem -1.5rem;
+  padding: 0.75rem 1.5rem 1.5rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.ff-toast {
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 40rem) {
+  .ff-history th:nth-child(3),
+  .ff-history td:nth-child(3),
+  .ff-history th:nth-child(5),
+  .ff-history td:nth-child(5) {
+    display: none;
+  }
+  .ff-history td:nth-child(2) {
+    min-width: 7rem;
+  }
+}

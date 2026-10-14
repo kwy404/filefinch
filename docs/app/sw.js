@@ -2,7 +2,7 @@
 // streamed downloads, so a large file goes to disk as it arrives instead of filling memory.
 
 // precache:start
-const CACHE_VERSION = '9e61c0fd18e2';
+const CACHE_VERSION = '358096574027';
 const PRECACHE = [
   './',
   'app.css',
