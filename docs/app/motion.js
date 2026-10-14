@@ -54,7 +54,7 @@ function burst(x, y, count = 18) {
   const colors = ['var(--primary)', '#ff7a45', '#ffae3d', '#4c86f5', 'var(--success)'];
   for (let i = 0; i < count; i++) {
     const feather = i % 3 === 0;
-    const el = particle(feather ? FEATHER : PARCEL, colors[i % colors.length], feather ? 16 : 14 + (i % 3) * 3);
+    const el = particle(feather ? FEATHER : PARCEL, colors[i % colors.length], feather ? 22 : 18 + (i % 3) * 4);
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
     box.append(el);
@@ -102,11 +102,11 @@ function chirp() {
 }
 
 /** A parcel that flies from one element to another, leaving a light trail. */
-function fly(from, to, { trail = true, path = PARCEL, size = 22 } = {}) {
+function fly(from, to, { trail = true, path = PARCEL, size = 34 } = {}) {
   const a = center(from);
   const b = center(to);
   const box = layer();
-  const el = particle(path, 'var(--primary)', size);
+  const el = particle(path, 'var(--primary-foreground)', size);
   el.classList.add('ff-flyer');
   el.style.left = `${a.x}px`;
   el.style.top = `${a.y}px`;
@@ -120,7 +120,7 @@ function fly(from, to, { trail = true, path = PARCEL, size = 22 } = {}) {
     { transform: `translate(calc(-50% + ${dx * 0.7}px), calc(-50% + ${dy * 0.7 + lift * 0.6}px)) scale(0.9)`, opacity: 1, offset: 0.7 },
     { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.35)`, opacity: 0 },
   ];
-  const anim = el.animate(frames, { duration: 950, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'forwards' });
+  const anim = el.animate(frames, { duration: 1100, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'forwards' });
   anim.onfinish = () => el.remove();
   if (trail) {
     for (let i = 1; i <= 5; i++) {
@@ -131,7 +131,7 @@ function fly(from, to, { trail = true, path = PARCEL, size = 22 } = {}) {
       box.append(dot);
       dot.animate(
         frames.map((f) => ({ ...f, opacity: f.opacity * (0.5 - i * 0.08) })),
-        { duration: 950, delay: i * 45, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'forwards' },
+        { duration: 1100, delay: i * 45, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'forwards' },
       ).onfinish = () => dot.remove();
     }
   }
