@@ -9,7 +9,7 @@ import { randomId } from './lib/bytes.js';
 import { ZipWriter, zipSize } from './lib/zip.js';
 import { splitExt } from './lib/paths.js';
 
-export const MEMORY_LIMIT = 256 * 1024 * 1024;
+export const MEMORY_LIMIT = 64 * 1024 * 1024;
 
 export const canSaveFile = () => typeof globalThis.showSaveFilePicker === 'function';
 export const canPickFolder = () => typeof globalThis.showDirectoryPicker === 'function';

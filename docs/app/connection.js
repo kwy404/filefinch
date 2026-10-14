@@ -6,6 +6,7 @@ import { Emitter } from './lib/transfer.js';
 import { connectionFingerprint } from './lib/crypto.js';
 import { decodeSignal, encodeSignal } from './lib/invite.js';
 import { randomId } from './lib/bytes.js';
+import { diagnose } from './lib/ice.js';
 
 const GATHER_TIMEOUT_MS = 7000;
 const CONNECT_TIMEOUT_MS = 30000;
@@ -24,26 +25,6 @@ export function waitForGathering(pc, timeout = GATHER_TIMEOUT_MS) {
     }
     pc.addEventListener('icegatheringstatechange', check);
   });
-}
-
-/** Candidate types found in an SDP blob: { host, srflx, relay, prflx }. */
-export function candidateTypes(sdp) {
-  const types = { host: 0, srflx: 0, relay: 0, prflx: 0 };
-  for (const m of String(sdp || '').matchAll(/a=candidate:\S+ \d+ \S+ \d+ \S+ \d+ typ (\w+)/g)) if (m[1] in types) types[m[1]]++;
-  return types;
-}
-
-/** Why a connection failed, as a key the UI turns into plain words. */
-export function diagnose(localSdp, remoteSdp, config) {
-  const local = candidateTypes(localSdp);
-  const remote = candidateTypes(remoteSdp);
-  const hasTurn = (config.iceServers || []).some((s) => [].concat(s.urls).some((u) => /^turns?:/i.test(u)));
-  if (config.iceTransportPolicy === 'relay' && !local.relay) return 'relay-unreachable';
-  if (hasTurn && !local.relay) return 'turn-unreachable';
-  if (!local.srflx && !local.relay) return 'stun-blocked';
-  if (!remote.srflx && !remote.relay) return 'peer-stun-blocked';
-  if (!local.relay && !remote.relay) return 'strict-nat';
-  return 'relay-failed';
 }
 
 export class Connection extends Emitter {

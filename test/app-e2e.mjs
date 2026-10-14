@@ -94,13 +94,60 @@ async function makeFixtures() {
 const stubPickers = () => {
   window.showDirectoryPicker = async () => {
     const root = await navigator.storage.getDirectory();
-    return root.getDirectoryHandle('e2e-received', { create: true });
+    return root.getDirectoryHandle(window.e2ePickDir || 'e2e-received', { create: true });
   };
 };
+
+/** Writes files into a folder of the private file system. */
+const seedFolder = async ({ dir, files }) => {
+  const root = await (await navigator.storage.getDirectory()).getDirectoryHandle(dir, { create: true });
+  for (const [path, text] of Object.entries(files)) {
+    const parts = path.split('/');
+    let d = root;
+    for (const p of parts.slice(0, -1)) d = await d.getDirectoryHandle(p, { create: true });
+    const w = await (await d.getFileHandle(parts.at(-1), { create: true })).createWritable();
+    await w.write(text);
+    await w.close();
+  }
+};
+
+/** Reads every file in a private file system folder as text. */
+const readFolder = async (dir) => {
+  const root = await (await navigator.storage.getDirectory()).getDirectoryHandle(dir);
+  const out = {};
+  async function walk(d, prefix) {
+    for await (const [name, h] of d.entries()) {
+      if (h.kind === 'directory') await walk(h, `${prefix}${name}/`);
+      else out[prefix + name] = await (await h.getFile()).text();
+    }
+  }
+  await walk(root, '');
+  return out;
+};
+
+async function runSync(pageA, pageB) {
+  await pageA.click('[data-go="sync"]');
+  await pageA.evaluate(() => (window.e2ePickDir = 'sync-a'));
+  await pageB.evaluate(() => (window.e2ePickDir = 'sync-b'));
+  await pageA.click('#sync-pick');
+  await pageA.locator('#sync-start:not([disabled])').waitFor();
+  await pageA.click('#sync-start');
+  await pageB.locator('#sync-dialog').waitFor({ state: 'visible', timeout: 30000 });
+  await pageB.click('#sync-dialog-yes');
+  await pageA.locator('#sync-plan').waitFor({ state: 'visible', timeout: 60000 });
+  const stats = await pageA.$$eval('#sync-plan-stats .stat', (els) => els.map((e) => Number(e.querySelector('.stat-value').textContent)));
+  await pageA.click('#sync-apply');
+  await pageB.locator('#sync-dialog').waitFor({ state: 'visible', timeout: 30000 });
+  await pageB.click('#sync-dialog-yes');
+  await pageA.waitForFunction(() => /finished|conclu/i.test(document.querySelector('#sync-status').textContent), null, { timeout: 120000 });
+  await pageB.waitForFunction(() => /finished|conclu/i.test(document.querySelector('#sync-status').textContent), null, { timeout: 120000 });
+  return { send: stats[0], receive: stats[1], deletes: stats[2], conflicts: stats[3], same: stats[4] };
+}
 
 async function connect(pageA, pageB, ctxA, { passphrase } = {}) {
   await pageA.click('[data-go="connect"]');
   if (await pageA.locator('#connect-lost').isVisible()) await pageA.click('#connect-lost [data-action="restart-connect"]');
+  if (await pageA.locator('#connect-failed').isVisible()) await pageA.click('#connect-failed [data-action="restart-connect"]');
   await pageA.locator('#connect-start').waitFor({ state: 'visible' });
   if (passphrase) {
     await pageA.check('#use-pass');
@@ -174,6 +221,7 @@ async function main() {
   const pageB = await ctxB.newPage();
   watch(pageA, 'A');
   watch(pageB, 'B');
+  await pageA.addInitScript(stubPickers);
   await pageB.addInitScript(stubPickers);
   await pageA.goto(base);
   await pageB.goto(base);
@@ -182,12 +230,56 @@ async function main() {
   await pageB.evaluate(() => navigator.serviceWorker.ready);
 
   try {
+    // 0. A connection that cannot work says why in plain words and offers the relay setting.
+    await pageA.evaluate(() => (window.filefinch.settings.relayOnly = true));
+    await pageA.click('#host-btn');
+    await pageA.locator('#connect-invite').waitFor({ state: 'visible', timeout: 30000 });
+    await pageB.goto(await pageA.inputValue('#invite-link'));
+    await pageB.locator('#connect-reply').waitFor({ state: 'visible', timeout: 30000 });
+    await pageA.fill('#reply-input', await pageB.inputValue('#reply-link'));
+    await pageA.click('#reply-btn');
+    await pageA.locator('#connect-failed').waitFor({ state: 'visible', timeout: 60000 });
+    const failText = await pageA.textContent('#fail-text');
+    const turnButton = await pageA.locator('#connect-failed [data-action="open-ice"]').isVisible();
+    check('an impossible connection is explained', /Relay only is on/.test(failText) && turnButton, failText.trim().slice(0, 80));
+    await pageA.evaluate(() => (window.filefinch.settings.relayOnly = false));
+
     // 1. Connect through the invite flow.
     const c = await connect(pageA, pageB, ctxA);
     check('invite and reply connect two browser contexts', true, `${c.ms} ms, invite QR version ${c.qrVersion}`);
     check('reply link opened in another tab reaches the waiting tab', /delivered/i.test(c.delivered), c.delivered.trim());
     check('both sides show the same fingerprint', c.fpA === c.fpB && /^\d{4} \d{4} \d{4}$/.test(c.fpA), c.fpA);
     check('invite link is short', c.invite.length < 700, `${c.invite.length} characters`);
+
+    // The ceiling: raw 64 KB messages on the same data channel with no app logic, for comparison.
+    const RAW_MB = 16;
+    const rawDone = pageB.evaluate(
+      (mb) =>
+        new Promise((resolve) => {
+          const dc = window.filefinch.connection().dc;
+          let got = 0;
+          let t0 = 0;
+          dc.addEventListener('message', (m) => {
+            if (typeof m.data === 'string') return;
+            t0 ||= performance.now();
+            got += m.data.byteLength;
+            if (got >= mb * 1048576) resolve(mb / ((performance.now() - t0) / 1000));
+          });
+        }),
+      RAW_MB,
+    );
+    await pageA.evaluate(async (mb) => {
+      const dc = window.filefinch.connection().dc;
+      const frame = new Uint8Array(65536 + 13);
+      frame[0] = 1;
+      frame.fill(255, 1, 5); // a file key nobody uses, so the engine ignores these frames
+      for (let sent = 0; sent < mb * 1048576; sent += 65536) {
+        if (dc.bufferedAmount > 4 << 20) await new Promise((r) => dc.addEventListener('bufferedamountlow', r, { once: true }));
+        dc.send(frame);
+      }
+    }, RAW_MB);
+    const rawSpeed = await rawDone;
+    check('raw data channel ceiling measured', rawSpeed > 0, `${rawSpeed.toFixed(1)} MB/s`);
 
     // 2. A large generated file, streamed to the Downloads folder through the service worker.
     const bigName = fx.big.split(/[\\/]/).pop();
@@ -275,12 +367,42 @@ async function main() {
     }, resumeName);
     check('resumed file in the library matches the original', libHash.hash === fx.resumeHash && libHash.stored === fx.resumeHash, libHash.backend);
 
-    // 5. History and console.
+    // 5. Folder sync: only changes move, an edit on both sides becomes a kept conflict copy.
+    await pageA.evaluate(seedFolder, { dir: 'sync-a', files: { 'a.txt': 'alpha', 'docs/b.txt': 'bravo', 'shared.txt': 'same', 'plan.md': 'plan from A' } });
+    await pageB.evaluate(seedFolder, { dir: 'sync-b', files: { 'c.txt': 'charlie', 'shared.txt': 'same', 'plan.md': 'plan from B' } });
+    const first = await runSync(pageA, pageB);
+    check('sync plan: 2 to send, 1 to receive, 1 conflict, 1 unchanged', first.send === 2 && first.receive === 1 && first.conflicts === 1 && first.same === 1, JSON.stringify(first));
+    const folderA = await pageA.evaluate(readFolder, 'sync-a');
+    const folderB = await pageB.evaluate(readFolder, 'sync-b');
+    const copyName = Object.keys(folderA).find((k) => k.startsWith('plan (conflict'));
+    check(
+      'both folders hold every file after sync, conflict kept as a copy',
+      folderA['c.txt'] === 'charlie' && folderB['a.txt'] === 'alpha' && folderB['docs/b.txt'] === 'bravo' && folderA['plan.md'] === 'plan from A' && folderB['plan.md'] === 'plan from B' && !!copyName && folderA[copyName] === 'plan from B' && folderB[copyName] === 'plan from A',
+      copyName,
+    );
+    await pageA.evaluate(seedFolder, { dir: 'sync-a', files: { 'a.txt': 'alpha, edited on A' } });
+    const second = await runSync(pageA, pageB);
+    const folderB2 = await pageB.evaluate(readFolder, 'sync-b');
+    check('second sync sends only the edited file', second.send === 1 && second.receive === 0 && second.conflicts === 0 && folderB2['a.txt'] === 'alpha, edited on A', JSON.stringify(second));
+
+    // 6. History and console.
     await pageB.click('[data-go="history"]');
     const rows = await pageB.locator('#history-body tr').count();
     check('history lists the transfers', rows >= 3, `${rows} rows`);
     check('no console errors in either browser', errors.length === 0, errors.slice(0, 5).join(' | '));
-    writeFileSync(join(work, 'result.json'), JSON.stringify({ browser: exe, bigMB: BIG_MB, seconds, speedMBs, results }, null, 2));
+
+    // 7. Offline: after the first visit the app shell comes from the service worker cache.
+    await ctxB.setOffline(true);
+    await pageB.reload();
+    const offline = await pageB
+      .locator('.ff-brand')
+      .waitFor({ timeout: 10000 })
+      .then(() => true)
+      .catch(() => false);
+    const styled = await pageB.evaluate(() => getComputedStyle(document.querySelector('.btn')).borderRadius !== '0px');
+    check('app loads offline with its styles', offline && styled);
+    await ctxB.setOffline(false);
+    writeFileSync(join(work, 'result.json'), JSON.stringify({ browser: exe, bigMB: BIG_MB, seconds, speedMBs, rawSpeed, results }, null, 2));
   } catch (err) {
     check('end to end run', false, err.stack || err.message);
     await pageA.screenshot({ path: join(work, 'fail-A.png') }).catch(() => {});
