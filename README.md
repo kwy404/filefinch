@@ -1,14 +1,14 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/mascot-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/mascot.svg" width="168" alt="Finn, the filefinch mascot: a small finch courier with a cap, a messenger bag and a tiny parcel">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/mascot-dark.svg">
+    <img src="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/mascot.svg" width="168" alt="Finn, the filefinch mascot: a small finch courier with a cap, a messenger bag and a tiny parcel">
   </picture>
 </p>
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/banner-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/banner.svg" width="820" alt="filefinch banner: send files and whole folders straight between your devices, no cloud, no account, no upload, end to end encrypted">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/banner-dark.svg">
+    <img src="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/banner.svg" width="820" alt="filefinch banner: send files and whole folders straight between your devices, no cloud, no account, no upload, end to end encrypted">
   </picture>
 </p>
 
@@ -54,8 +54,8 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/direct-flight-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/direct-flight.svg" width="560" alt="Finn the finch flying a parcel straight between a phone and a laptop across an open sky with no cloud">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/direct-flight-dark.svg">
+    <img src="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/direct-flight.svg" width="560" alt="Finn the finch flying a parcel straight between a phone and a laptop across an open sky with no cloud">
   </picture>
 </p>
 
@@ -95,8 +95,8 @@ Prefer zero third parties? Choose **Use a link or QR instead**: the invite link 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/folder-flock-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/folder-flock.svg" width="560" alt="A folder whose files fly out as a flock of small finches, each carrying one file">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/folder-flock-dark.svg">
+    <img src="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/folder-flock.svg" width="560" alt="A folder whose files fly out as a flock of small finches, each carrying one file">
   </picture>
 </p>
 
@@ -118,8 +118,8 @@ To find a route, the browsers use Google's public STUN servers (`stun.l.google.c
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/lock-line-dark.svg">
-    <img src="https://cdn.jsdelivr.net/gh/kwy404/filefinch@54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/lock-line.svg" width="560" alt="Two devices joined by one direct line with a padlock in the middle">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/lock-line-dark.svg">
+    <img src="https://raw.githubusercontent.com/kwy404/filefinch/54913341b0dae51546e67d4cc69f8b70f5221e53/assets/illustrations/lock-line.svg" width="560" alt="Two devices joined by one direct line with a padlock in the middle">
   </picture>
 </p>
 
