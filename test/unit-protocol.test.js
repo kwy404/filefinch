@@ -64,8 +64,8 @@ describe('control messages', () => {
       { t: 'cancel', id: 'x' },
       { t: 'frag', i: 0, n: 2, d: 'abc' },
       { t: 'sync-request', sync: 's1', label: 'Docs', mode: 'two-way' },
-      { t: 'sync-ready', sync: 's1', entries: [{ path: 'a.txt', size: 1, mtime: 2, hash: 'b'.repeat(64) }] },
-      { t: 'sync-plan', sync: 's1', plan: { push: [] } },
+      { t: 'sync-ready', sync: 's1', label: 'Docs', entries: [{ path: 'a.txt', size: 1, mtime: 2, hash: 'b'.repeat(64) }] },
+      { t: 'sync-plan', sync: 's1', plan: { push: [{ path: 'a', as: 'a' }], pull: [], deleteLocal: [], deleteRemote: ['b'] } },
       { t: 'sync-approve', sync: 's1', ok: true },
       { t: 'sync-pull', sync: 's1', items: [{ path: 'a.txt', as: 'a.txt' }] },
       { t: 'sync-delete', sync: 's1', paths: ['old.txt'] },
@@ -98,6 +98,8 @@ describe('control messages', () => {
       JSON.stringify({ t: 'sync-request', sync: 's', label: 'x', mode: 'delete-everything' }),
       JSON.stringify({ t: 'sync-ready', sync: 's', entries: [{ path: 'a', size: 1, mtime: 1, hash: 'x' }] }),
       JSON.stringify({ t: 'hello', name: 'x'.repeat(200), device: 'd', v: 1 }),
+      JSON.stringify({ t: 'sync-plan', sync: 's', plan: { push: [{ path: 1 }], pull: [], deleteLocal: [], deleteRemote: [] } }),
+      JSON.stringify({ t: 'sync-plan', sync: 's', plan: { push: [], pull: [], deleteLocal: 'all' } }),
     ];
     for (const text of bad) expect(() => decodeControl(text), text).toThrow(ProtocolError);
     expect(() => encodeControl({ t: 'nope' })).toThrow(ProtocolError);

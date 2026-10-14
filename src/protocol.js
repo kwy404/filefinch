@@ -63,6 +63,23 @@ function manifestEntry(e) {
   return e && typeof e === 'object' && isStr(e.path, 4096) && isUint(e.size) && isUint(e.mtime) && (e.hash === null || isHash(e.hash));
 }
 
+const copyItem = (i) => i && typeof i === 'object' && isStr(i.path, 4096) && isStr(i.as, 4096);
+const pathList = (a) => Array.isArray(a) && a.length <= MAX_FILES_PER_OFFER && a.every((p) => isStr(p, 4096));
+
+function syncPlan(p) {
+  return (
+    p &&
+    typeof p === 'object' &&
+    Array.isArray(p.push) &&
+    p.push.every(copyItem) &&
+    Array.isArray(p.pull) &&
+    p.pull.every(copyItem) &&
+    pathList(p.deleteLocal) &&
+    pathList(p.deleteRemote) &&
+    p.push.length + p.pull.length <= MAX_FILES_PER_OFFER
+  );
+}
+
 const SCHEMAS = {
   hello: (m) => isStr(m.name, 80) && isId(m.device) && isUint(m.v) && (m.check === undefined || isStr(m.check, 400)),
   offer: (m) =>
@@ -86,8 +103,8 @@ const SCHEMAS = {
   resume: (m) => isId(m.id),
   cancel: (m) => isId(m.id) && (m.reason === undefined || isStr(m.reason, 300)),
   'sync-request': (m) => isId(m.sync) && isStr(m.label, 300) && (m.mode === 'two-way' || m.mode === 'push' || m.mode === 'pull'),
-  'sync-ready': (m) => isId(m.sync) && Array.isArray(m.entries) && m.entries.length <= MAX_FILES_PER_OFFER && m.entries.every(manifestEntry),
-  'sync-plan': (m) => isId(m.sync) && m.plan && typeof m.plan === 'object',
+  'sync-ready': (m) => isId(m.sync) && (m.label === undefined || isStr(m.label, 300)) && Array.isArray(m.entries) && m.entries.length <= MAX_FILES_PER_OFFER && m.entries.every(manifestEntry),
+  'sync-plan': (m) => isId(m.sync) && syncPlan(m.plan),
   'sync-approve': (m) => isId(m.sync) && typeof m.ok === 'boolean',
   'sync-pull': (m) => isId(m.sync) && Array.isArray(m.items) && m.items.every((i) => i && isStr(i.path, 4096) && isStr(i.as, 4096)),
   'sync-delete': (m) => isId(m.sync) && Array.isArray(m.paths) && m.paths.every((p) => isStr(p, 4096)),
