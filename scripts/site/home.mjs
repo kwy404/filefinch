@@ -152,7 +152,7 @@ function duo(step, cls, qr) {
 
 function hero(R, qr) {
   return `<section class="hx" aria-labelledby="hero-h" data-hero>
-  <div class="hx-bg" aria-hidden="true"><span class="hx-grid"></span><span class="hx-glow g1"></span><span class="hx-glow g2"></span><span class="hx-spot"></span></div>
+  <div class="hx-bg" aria-hidden="true" data-season-fx data-season-slot="accent"><span class="hx-grid"></span><span class="hx-glow g1"></span><span class="hx-glow g2"></span><span class="hx-spot"></span></div>
   <div class="hx-in">
     <div class="hx-copy">
       <a class="pill" href="#features"><span class="pill-new">New</span>Send text and links too<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -166,6 +166,7 @@ function hero(R, qr) {
     </div>
     <div class="hx-side">
       ${duo('done', 'duo-loop', qr)}
+      <span class="season-slot" data-season-slot="finn"></span>
       <p class="sr-only">Animation: a computer shows six words, a phone types them, both confirm with six more words, then three files fly from the phone to the computer and arrive checked.</p>
     </div>
   </div>
@@ -310,7 +311,7 @@ ${stories(R, { shots })}
     <h2 id="final-h">Your files, on a <span class="grad">direct flight.</span></h2>
     <p>Open filefinch on two devices and send your first file in under a minute. Free, open source, no account.</p>
     <p class="hx-cta"><a class="btn btn-lg btn-solid" href="${R}app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Start sending</a><a class="btn btn-lg btn-line" href="${REPO}" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg>Source on GitHub</a></p>
-    <span class="art close-finn"><img class="art-l" src="${R}assets/art/finn.svg" width="120" height="120" alt="Finn the finch courier" loading="lazy"><img class="art-d" src="${R}assets/art/finn-dark.svg" width="120" height="120" alt="" aria-hidden="true" loading="lazy"></span>
+    <span class="art close-finn"><img class="art-l" src="${R}assets/art/finn.svg" width="120" height="120" alt="Finn the finch courier" loading="lazy" data-season-finn><img class="art-d" src="${R}assets/art/finn-dark.svg" data-season-finn width="120" height="120" alt="" aria-hidden="true" loading="lazy"></span>
   </div>
 </section>`;
 }

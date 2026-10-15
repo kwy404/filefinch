@@ -89,6 +89,7 @@ export const SPRITE = `<svg width="0" height="0" style="position:absolute" aria-
   ic('link', '<path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1"/><path d="M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/>'),
   ic('external', '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'),
   ic('plus', '<path d="M12 5v14M5 12h14"/>'),
+  ic('close', '<path d="M6 6l12 12M18 6 6 18"/>'),
 ].join('')}</svg>`;
 
 /** Relative prefix from a page path (like 'guides/x/') to the site root. */
@@ -134,6 +135,7 @@ export function page(o, body) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 ${themeHead()}
+<script src="${R}assets/site/seasons.js"></script>
 <title>${esc(o.title)}</title>
 <meta name="description" content="${esc(o.description)}">
 ${o.noindex ? '<meta name="robots" content="noindex">\n' : ''}<link rel="canonical" href="${url}">
@@ -161,6 +163,7 @@ ${Object.entries(alts).map(([l, u]) => `<link rel="alternate" hreflang="${l}" hr
 <link rel="stylesheet" href="${R}assets/site/site.css">
 <script src="${VOODOO}" data-manual defer></script>
 <script type="module" src="${R}assets/site/site.js"></script>
+<script type="module" src="${R}assets/site/season-fx.js"></script>
 ${o.head || ''}${(o.jsonld || []).length ? `<script type="application/ld+json">\n${JSON.stringify({ '@context': 'https://schema.org', '@graph': o.jsonld }, null, 1)}\n</script>` : ''}
 </head>
 <body class="${o.bodyClass || ''}">

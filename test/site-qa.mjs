@@ -2,7 +2,7 @@
 // every page in a headless Edge or Chrome, fails on console errors or broken
 // internal links, and saves screenshots of the key pages at several sizes in
 // light and dark to tmp/qa/.
-// Usage: node test/site-qa.mjs [--shots] [--only=path]
+// Usage: node test/site-qa.mjs [--shots] [--seasons] [--only=path]
 import { createServer } from 'node:http';
 import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
@@ -96,6 +96,39 @@ if (shots) {
         if (wide) problems.push(`${t || 'home'}: horizontal scroll at ${w}px ${scheme}`);
         const name = `${(t || 'home').replace(/[/.]+/g, '-').replace(/-$/, '')}-${w}-${scheme}.png`;
         await page.screenshot({ path: join(out, name), fullPage: !process.argv.includes('--fold') });
+        await page.close();
+      }
+      await ctx.close();
+    }
+  }
+}
+
+// Special dates: the home page with each season forced, at 1440 and 375, light and dark.
+if (process.argv.includes('--seasons')) {
+  const out = join(root, 'tmp', 'qa', 'seasons');
+  mkdirSync(out, { recursive: true });
+  for (const scheme of ['light', 'dark']) {
+    for (const [w, h] of [[1440, 900], [375, 812]]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, deviceScaleFactor: 1 });
+      for (const id of ['newyear', 'carnival', 'easter', 'valentine', 'junina', 'halloween', 'christmas']) {
+        const page = await ctx.newPage();
+        const errors = [];
+        page.on('console', (m) => {
+          if (m.type() === 'error') errors.push(m.text());
+        });
+        page.on('pageerror', (e) => errors.push(e.message));
+        await page.goto(`${origin}${BASE}?season=${id}`, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(1500);
+        const state = await page.evaluate(() => ({
+          season: document.documentElement.dataset.season,
+          chip: !!document.querySelector('.season-chip'),
+          finn: !!document.querySelector('.season-finn'),
+          wide: document.documentElement.scrollWidth > window.innerWidth + 1,
+        }));
+        if (state.season !== id || !state.chip || !state.finn) problems.push(`season ${id}: not applied ${JSON.stringify(state)}`);
+        if (state.wide) problems.push(`season ${id}: horizontal scroll at ${w}px ${scheme}`);
+        for (const e of errors) problems.push(`season ${id}: console ${e}`);
+        await page.screenshot({ path: join(out, `${id}-${w}-${scheme}.png`) });
         await page.close();
       }
       await ctx.close();
