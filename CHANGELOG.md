@@ -2,6 +2,23 @@
 
 All notable changes to filefinch are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Files first: pick or drop files on the start screen and the pairing code appears right away. The files are counted under the code and go by themselves once the devices are confirmed, and the sender moves to the Send tab to watch them leave.
+- Text and links between devices, like a shared clipboard: a box on the Send tab (Ctrl + Enter sends, a Paste button where the browser allows it), and the texts that arrived on the Received tab with Copy and, for a single http or https address, Open. Each text is marked Waiting, Sent or Delivered; texts typed while disconnected go out on the next connection, and with a passphrase they are sealed with it like file chunks. Ctrl + V on the Send tab sends pasted files or puts pasted text in the box.
+- Known devices: after the confirmation words match, the two devices agree on a fresh random secret over the confirmed channel and remember each other (a switch on the status screen turns it off). Next time each taps the other under "Your devices": they meet on the relays with a topic and key derived from that secret, so there are no pairing words to type, only the confirmation words. Devices can be forgotten at any time.
+
+### Changed
+
+- Invites are a QR code and six words only: the app shows no invite address, copy link or share link button. The QR code still carries the words for a phone camera.
+- The link mode left Settings and the start screen. It stays as "Connect with no relays (advanced)" under Options: each side shows a QR code with a Copy code button, and the other side scans it or pastes the code.
+
+### Fixed
+
+- The passphrase prompt showed its text keys instead of its title and explanation.
+
 ## [0.2.0] - 2026-10-14
 
 ### Added
