@@ -6,13 +6,14 @@
 // nonce and a timestamp, so relays only ever see a random topic and ciphertext, and replayed,
 // stale or altered messages are rejected.
 
-import { fromUtf8, randomBytes, randomId, toBase64Url, utf8 } from './bytes.js';
+import { fromBase64Url, fromUtf8, randomBytes, randomId, toBase64Url, utf8 } from './bytes.js';
 import { phraseOf } from './words.js';
 
 export const RENDEZVOUS_ITERATIONS = 100000;
 export const MAX_AGE_MS = 11 * 60 * 1000;
 export const MAX_SKEW_MS = 2 * 60 * 1000;
 const SALT = 'filefinch rendezvous v1';
+const KNOWN_SALT = 'filefinch known devices v1';
 const VERSION = 1;
 
 const subtle = () => globalThis.crypto.subtle;
@@ -26,6 +27,21 @@ export async function deriveRendezvous(words, iterations = RENDEZVOUS_ITERATIONS
   const params = (info) => ({ name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: utf8(info) });
   const topicBits = new Uint8Array(await subtle().deriveBits(params('filefinch topic'), hkdf, 128));
   const key = await subtle().deriveKey(params('filefinch handshake key'), hkdf, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  return { topic: `filefinch/v1/${toBase64Url(topicBits)}`, key };
+}
+
+/**
+ * { topic, key } for two known devices: from the 32 byte secret they agreed on when they were
+ * first paired (sent over the confirmed channel), so they meet again with no words to type.
+ * HKDF straight from the secret: it is already random, so no slow PBKDF2 step is needed.
+ */
+export async function deriveKnownRendezvous(secret) {
+  const bytes = typeof secret === 'string' ? fromBase64Url(secret) : secret;
+  if (!(bytes instanceof Uint8Array) || bytes.length < 16) throw new Error('A known device secret needs at least 16 bytes');
+  const hkdf = await subtle().importKey('raw', bytes, 'HKDF', false, ['deriveBits', 'deriveKey']);
+  const params = (info) => ({ name: 'HKDF', hash: 'SHA-256', salt: utf8(KNOWN_SALT), info: utf8(info) });
+  const topicBits = new Uint8Array(await subtle().deriveBits(params('filefinch known topic'), hkdf, 128));
+  const key = await subtle().deriveKey(params('filefinch known handshake key'), hkdf, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
   return { topic: `filefinch/v1/${toBase64Url(topicBits)}`, key };
 }
 

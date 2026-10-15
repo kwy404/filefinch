@@ -72,6 +72,10 @@ describe('control messages', () => {
       { t: 'sync-done', sync: 's1', base: {} },
       { t: 'sync-cancel', sync: 's1' },
       { t: 'pair', ok: true },
+      { t: 'pair', ok: true, key: 'k'.repeat(43) },
+      { t: 'clip', id: 'c1', text: 'https://example.com/a?b=1' },
+      { t: 'clip', id: 'c2', sealed: 'AAAA' },
+      { t: 'clip-ok', id: 'c1' },
       { t: 'ping' },
       { t: 'bye' },
     ];
@@ -101,6 +105,14 @@ describe('control messages', () => {
       JSON.stringify({ t: 'hello', name: 'x'.repeat(200), device: 'd', v: 1 }),
       JSON.stringify({ t: 'sync-plan', sync: 's', plan: { push: [{ path: 1 }], pull: [], deleteLocal: [], deleteRemote: [] } }),
       JSON.stringify({ t: 'sync-plan', sync: 's', plan: { push: [], pull: [], deleteLocal: 'all' } }),
+      JSON.stringify({ t: 'pair', ok: true, key: 'short' }),
+      JSON.stringify({ t: 'pair', ok: true, key: 'k'.repeat(42) + '!' }),
+      JSON.stringify({ t: 'clip', id: 'c', text: 'a', sealed: 'b' }),
+      JSON.stringify({ t: 'clip', id: 'c' }),
+      JSON.stringify({ t: 'clip', id: 'c', text: 5 }),
+      JSON.stringify({ t: 'clip', id: 'c', text: 'x'.repeat(100001) }),
+      JSON.stringify({ t: 'clip', id: '../c', text: 'hi' }),
+      JSON.stringify({ t: 'clip-ok' }),
     ];
     for (const text of bad) expect(() => decodeControl(text), text).toThrow(ProtocolError);
     expect(() => encodeControl({ t: 'nope' })).toThrow(ProtocolError);

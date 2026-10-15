@@ -2,7 +2,7 @@
 // streamed downloads, so a large file goes to disk as it arrives instead of filling memory.
 
 // precache:start
-const CACHE_VERSION = '1529d2fa3e0f';
+const CACHE_VERSION = 'f9288be7afd5';
 const PRECACHE = [
   './',
   'app.css',
@@ -19,10 +19,12 @@ const PRECACHE = [
   'index.html',
   'lib/bytes.js',
   'lib/chunker.js',
+  'lib/clip.js',
   'lib/crypto.js',
   'lib/format.js',
   'lib/ice.js',
   'lib/invite.js',
+  'lib/known.js',
   'lib/mqtt.js',
   'lib/paths.js',
   'lib/protocol.js',

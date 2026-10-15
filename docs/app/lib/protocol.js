@@ -13,6 +13,7 @@ export const HEADER_BYTES = 13;
 export const CHUNK_SIZE = 64 * 1024;
 export const MAX_FILES_PER_OFFER = 100000;
 export const MAX_CONTROL_BYTES = 16 * 1024 * 1024;
+export const MAX_CLIP_CHARS = 100000;
 
 export function encodeChunk(fileKey, offset, payload) {
   const out = new Uint8Array(HEADER_BYTES + payload.length);
@@ -111,7 +112,9 @@ const SCHEMAS = {
   'sync-delete': (m) => isId(m.sync) && Array.isArray(m.paths) && m.paths.every((p) => isStr(p, 4096)),
   'sync-done': (m) => isId(m.sync) && (m.base === undefined || typeof m.base === 'object'),
   'sync-cancel': (m) => isId(m.sync) && (m.reason === undefined || isStr(m.reason, 300)),
-  pair: (m) => typeof m.ok === 'boolean',
+  pair: (m) => typeof m.ok === 'boolean' && (m.key === undefined || (typeof m.key === 'string' && /^[A-Za-z0-9_-]{43,86}$/.test(m.key))),
+  clip: (m) => isId(m.id) && (typeof m.text === 'string') !== (typeof m.sealed === 'string') && (m.text === undefined || isStr(m.text, MAX_CLIP_CHARS)) && (m.sealed === undefined || isStr(m.sealed, MAX_CLIP_CHARS * 4 + 64)),
+  'clip-ok': (m) => isId(m.id),
   ping: () => true,
   bye: () => true,
 };
