@@ -15,17 +15,17 @@ steps:
     text: Open the filefinch app in a browser on your PC or Mac and tap Show pairing code. 6 words and a QR code appear side by side.
   - name: Scan the QR code or type the 6 words on your phone
     text: Open filefinch on the phone, then scan the QR code with the camera or type the 6 words in the Have a pairing code? box. The QR code holds the same words.
-  - name: Or use a link for zero third parties
-    text: If you prefer no relay in the setup, create an invite link on the computer instead, open it on the phone and send the short reply code back.
+  - name: Or connect with no relays
+    text: If the network blocks the public relays, open Options and choose Connect with no relays (advanced). Each device shows a QR code and a Copy code button, so scan the QR code each way or copy and paste the codes.
   - name: Type the confirmation words on the computer
-    text: The phone shows 6 new confirmation words. Type them on the computer. If they match, the two devices are talking directly to each other. With an invite link, compare the 12 digit fingerprint on both screens instead.
+    text: The phone shows 6 new confirmation words. Type them on the computer. If they match, the two devices are talking directly to each other. In the no relay mode, compare the 12 digit fingerprint on both screens instead.
   - name: Pick photos, videos or files on the phone
     text: Choose what to send. Files go across byte for byte, and you can preview them on the computer before saving.
 faq:
   - q: Can I transfer files from iPhone to a Windows PC without a cable?
     a: Yes. filefinch runs in Safari on iPhone and in Chrome, Edge or Firefox on Windows, so any pair can connect. Both devices just need a modern browser and a network connection.
   - q: Do the phone and the PC need to be on the same Wi-Fi?
-    a: No, but it helps. On the same Wi-Fi the traffic stays local and is often much faster. Across different networks it still works, limited by the slower connection. Pairing with 6 words needs internet on both devices, while the invite link mode also works on a local network with no internet once the app is loaded.
+    a: No, but it helps. On the same Wi-Fi the traffic stays local and is often much faster. Across different networks it still works, limited by the slower connection. Pairing with 6 words needs internet on both devices, while Connect with no relays (advanced) also works on a local network with no internet once the app is loaded.
   - q: Do I have to type the 6 words on my phone?
     a: No. You can scan the QR code shown next to the words, since it holds the same 6 words. If you do type them, the first four letters of each word are enough and a single typo is fixed for you.
   - q: Will my photos and videos lose quality?
@@ -61,15 +61,15 @@ That is it. No cable, no Bluetooth pairing, no cloud account, and no sign up.
 
 Typing on a small keyboard is easier than it sounds. The words come from the BIP39 English list, so the first four letters of each word are enough, autocomplete suggests the rest, and a single typo is corrected. You can also paste the whole phrase into any box.
 
-### Prefer zero third parties? Use a link
+### Advanced: connect with no relays
 
-There is a second way to connect that keeps every relay out of the setup. Choose "Prefer zero third parties? Use a link or QR instead" on the computer and create an invite:
+There is a fallback that keeps every relay out of the setup, useful when a network blocks the public relays. On the computer, open Options and choose Connect with no relays (advanced):
 
-1. The computer shows an invite link and QR code. Scan it with the phone or open the link if you sent it to yourself.
-2. The phone shows a short reply code, both as a link and as a QR code. If the computer has a webcam, hold the phone up to it. If not, send the reply link to yourself through any messenger or notes app and open it on the computer, or copy and paste it.
+1. The computer shows a QR code and a Copy code button. Scan the QR code with filefinch on the phone, or paste the code there.
+2. The phone then shows its own QR code and code. If the computer has a webcam, hold the phone up to it and scan. If not, tap Copy code on the phone, get the text to the computer any way you like, such as a note to yourself, and paste it.
 3. The two devices connect after that single round trip. Compare the 12 digit connection fingerprint on both screens.
 
-Camera scanning of the reply uses the BarcodeDetector API where the browser supports it. When it is missing, pasting the code always works, so you are never stuck.
+Camera scanning in the browser uses the BarcodeDetector API where the browser supports it. When it is missing, pasting the code always works, so you are never stuck.
 
 > Tip: if you move files from your phone often, install filefinch on the computer as an app. It then opens like any other program and works offline once loaded.
 
@@ -77,11 +77,11 @@ Camera scanning of the reply uses the BarcodeDetector API where the browser supp
 
 A cable gives the two devices a private, direct path. filefinch builds a similar direct path over the network using WebRTC, the browser technology behind video calls.
 
-Before that path exists, the two browsers need a short introduction. With the 6 words, both devices turn the phrase into a private topic name and a key, then meet on several public MQTT brokers (servers run by third parties, not by filefinch) to swap their connection details. The 6-word handshake travels encrypted through public relays that cannot read it, and both devices leave the relays as soon as the connection opens. With the Zero third parties link instead, the invite itself carries the computer's network addresses and session details, compressed into the link, and the reply code carries the phone's details back, so no relay is involved in the setup.
+Before that path exists, the two browsers need a short introduction. With the 6 words, both devices turn the phrase into a private topic name and a key, then meet on several public MQTT brokers (servers run by third parties, not by filefinch) to swap their connection details. The 6 word handshake travels encrypted through public relays that cannot read it, and both devices leave the relays as soon as the connection opens. With Connect with no relays (advanced) instead, the computer's QR code itself carries its network addresses and session details, compressed, and the phone's QR code carries the phone's details back, so no relay is involved in the setup.
 
 Either way, the two browsers then open a data channel between them. There is no server of ours in the middle, nothing is uploaded, and your files go device to device.
 
-The data channel is encrypted with DTLS, and the keys are created inside the two browsers for that one connection. Matching confirmation words, or with an invite link a matching 12 digit fingerprint on both screens, confirm that nobody slipped into the middle while the devices were being introduced. For a deeper look, read the [security guide](guide:is-webrtc-file-sharing-safe).
+The data channel is encrypted with DTLS, and the keys are created inside the two browsers for that one connection. Matching confirmation words, or in the no relay mode a matching 12 digit fingerprint on both screens, confirm that nobody slipped into the middle while the devices were being introduced. For a deeper look, read the [security guide](guide:is-webrtc-file-sharing-safe).
 
 ## Same Wi-Fi or not
 
@@ -90,7 +90,7 @@ You do not have to be on the same network, but it makes a big difference.
 | Situation | What to expect |
 |---|---|
 | Phone and PC on the same Wi-Fi | Traffic stays inside your home or office network and is often much faster than uploading to the internet. |
-| Same network, no internet | Works with the invite link once filefinch has loaded, because the invite includes local addresses. The 6 words need internet. |
+| Same network, no internet | Works with Connect with no relays (advanced) once filefinch has loaded, because its QR codes include local addresses. The 6 words need internet. |
 | Phone on mobile data, PC at home | Works in most cases, limited by the phone's upload speed. |
 | Strict mobile carrier or corporate firewall | A direct path may be impossible. filefinch explains this and lets you add a TURN relay in Settings. |
 

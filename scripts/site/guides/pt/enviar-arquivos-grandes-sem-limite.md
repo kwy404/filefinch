@@ -15,7 +15,7 @@ steps:
   - name: Mostre o código de pareamento
     text: No primeiro aparelho, toque em Mostrar código de pareamento. Aparecem um QR code e 6 palavras lado a lado.
   - name: Digite as 6 palavras no outro aparelho
-    text: Quem recebe digita as palavras na caixa Tem um código de pareamento ou escaneia o QR code. Se preferir zero terceiros, use um link de convite com código de resposta.
+    text: Quem recebe digita as palavras na caixa Tem um código de pareamento ou escaneia o QR code. Se a rede bloquear os relays públicos, abra Opções e escolha Conectar sem relays (avançado), em que cada lado escaneia um QR code ou cola o código do outro.
   - name: Escolha o arquivo e envie
     text: Selecione o arquivo grande ou uma pasta inteira. Ele vai em pedaços direto de um navegador para o outro.
   - name: Mantenha os dois online até o fim
@@ -56,9 +56,9 @@ O jeito padrão de conectar é parear com 6 palavras, mais ou menos como no Blue
 
 O código vale para uma conexão só e expira em 10 minutos. Para o pareamento acontecer, o handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo. Depois disso, seus arquivos vão de aparelho para aparelho e nunca passam por esses relays.
 
-### Modo Zero terceiros: link de convite
+### Avançado: conectar sem relays
 
-Se você prefere que nenhum relay participe da conexão, use o modo Zero terceiros. Toque na opção de usar um link ou QR e depois em Criar convite. Mande o link para quem vai receber pelo WhatsApp, Telegram, e-mail ou o que preferir. Ao abrir o convite, aparece um código curto de resposta, que volta para você pelo mesmo mensageiro ou pela câmera. É uma única ida e volta. Depois de conectar, confira se a impressão digital da conexão, um código de 12 dígitos, é igual nas duas telas.
+Se a rede bloquear os relays públicos, ou se você prefere que nenhum relay participe da conexão, abra Opções e escolha Conectar sem relays (avançado). O primeiro aparelho mostra um QR code e um botão Copiar código. Quem recebe escaneia esse QR code ou cola o código, e o aparelho dele mostra o próprio QR code e código, que voltam para você do mesmo jeito: pela câmera ou copiando e colando. É uma única ida e volta, feita à mão. Depois de conectar, confira se a impressão digital da conexão, um código de 12 dígitos, é igual nas duas telas.
 
 > Dica: se a câmera não conseguir ler o código, copiar e colar sempre funciona.
 
@@ -81,7 +81,7 @@ Sobre esse último ponto: navegadores baseados em Chromium no computador consegu
 
 A velocidade é sempre a da conexão mais lenta entre as duas, e quase sempre isso significa a velocidade de upload de quem envia. Muita internet residencial no Brasil tem upload bem menor que o download, então vale saber disso antes de mandar um arquivo enorme pela internet.
 
-Quando os dois aparelhos estão na mesma rede, a história muda. O tráfego fica dentro do roteador e não depende do seu plano de internet, por isso costuma ser bem mais rápido. Depois que o filefinch carregou uma vez, dá até para transferir sem internet nenhuma, só com a rede local, usando o modo Zero terceiros. O pareamento por 6 palavras precisa de internet para alcançar os relays.
+Quando os dois aparelhos estão na mesma rede, a história muda. O tráfego fica dentro do roteador e não depende do seu plano de internet, por isso costuma ser bem mais rápido. Depois que o filefinch carregou uma vez, dá até para transferir sem internet nenhuma, só com a rede local, usando Conectar sem relays (avançado), que não precisa de relay nenhum. O pareamento por 6 palavras precisa de internet para alcançar os relays.
 
 ### Se a conexão cair, nada se perde
 
@@ -95,7 +95,7 @@ Nenhum servidor nosso participa da transferência. No pareamento por palavras, o
 
 A conexão WebRTC é sempre criptografada com DTLS, com chaves criadas nos dois navegadores a cada conexão. Para arquivos sensíveis, dá para ativar uma senha extra: os dois digitam a mesma frase, que vira uma chave AES-GCM de 256 bits em cada aparelho, e cada pedaço é lacrado de novo. A senha em si nunca trafega pela rede.
 
-Um cuidado importante: os dados de conexão contêm os endereços de rede do aparelho. Mostre as 6 palavras ou mande o link de convite só para o seu outro aparelho ou para a pessoa que vai receber, e use um código novo a cada conexão. Mais detalhes na seção de [privacidade](home:#privacy).
+Um cuidado importante: os dados de conexão contêm os endereços de rede do aparelho. Mostre o QR code e as 6 palavras só para o seu outro aparelho ou para a pessoa que vai receber, e use um código novo a cada conexão. Mais detalhes na seção de [privacidade](home:#privacy).
 
 ## Vídeos e fotos na qualidade original
 
@@ -107,13 +107,13 @@ Se o arquivo estiver no celular, veja também o guia [do celular para o computad
 
 Seja honesto com a sua situação. Se quem vai receber não pode ficar online ao mesmo tempo que você, um link de nuvem é a ferramenta certa, porque ele guarda o arquivo até a pessoa baixar. O filefinch não tem caixa postal no meio.
 
-Também pode acontecer de os dois aparelhos estarem atrás de redes muito restritas, como algumas operadoras móveis ou firewalls de empresa. Nesse caso a conexão direta pode falhar, e o filefinch avisa e explica o motivo. Você pode adicionar seu próprio servidor TURN nas configurações para retransmitir os dados, que continuam criptografados. E se a rede bloquear os relays do pareamento por palavras, o modo Zero terceiros resolve. Fora isso, para quem pode ficar online junto, enviar direto costuma ser o caminho mais simples.
+Também pode acontecer de os dois aparelhos estarem atrás de redes muito restritas, como algumas operadoras móveis ou firewalls de empresa. Nesse caso a conexão direta pode falhar, e o filefinch avisa e explica o motivo. Você pode adicionar seu próprio servidor TURN nas configurações para retransmitir os dados, que continuam criptografados. E se a rede bloquear os relays do pareamento por palavras, a opção Conectar sem relays (avançado), em Opções, resolve. Fora isso, para quem pode ficar online junto, enviar direto costuma ser o caminho mais simples.
 
 ## Resumindo
 
 - Sem limite de tamanho definido pelo app
 - Sem upload para nuvem e sem cadastro
-- Pareamento com 6 palavras, ou link de convite no modo Zero terceiros
+- Pareamento com QR code e 6 palavras, ou sem relays nenhum na opção avançada
 - Retomada de onde parou ao reconectar
 - Verificação de integridade com SHA-256
 - Funciona entre qualquer par: Android, iPhone, Windows, Mac e Linux

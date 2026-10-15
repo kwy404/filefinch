@@ -41,14 +41,14 @@ Devices you have paired before are remembered, so next time you pick the device 
 - **Folder sync.** Two way, push or pull, with a plan of changes you approve first.
 - **Previews and a local library.** Look at photos, video, audio, PDF and text before saving.
 - **Optional passphrase.** A second AES-GCM layer on top of the browser encryption.
-- **Installable and offline.** Once loaded, invite links work on a local network without internet.
+- **Installable.** Once loaded, the app opens without internet.
 
 ## How it works
 
 Two browsers need to exchange a small WebRTC offer and answer before they can talk directly.
 
 - **Six words (default).** Both devices turn the words into a topic and a key, meet on a few public MQTT relays and swap the offer and answer sealed with that key. The relays only see random names and ciphertext, and both devices leave them as soon as they connect.
-- **Invite link (zero third parties).** The link or its QR code carries the whole offer, and the other device answers with a short reply code. No relay is used.
+- **No relays (advanced).** For networks that block the relays, each device shows a QR code with its part of the handshake. Scan one each way, or copy and paste the codes. No relay is used.
 
 After that, files go device to device over a WebRTC data channel encrypted with DTLS. To find a route, the browsers ask a public STUN server for their public address. If both networks block direct routes, you can add your own TURN relay in Settings; it only forwards encrypted packets.
 
@@ -87,7 +87,7 @@ WebRTC and the service worker need `localhost` or HTTPS.
 
 | Path | What it holds |
 |---|---|
-| `src/` | Shared modules: pairing, invite links, QR encoder, crypto, protocol, chunking, SHA-256 |
+| `src/` | Shared modules: pairing, QR encoder, crypto, protocol, chunking, SHA-256 |
 | `docs/app/` | The app, with its manifest and service worker |
 | `docs/` | Website, guides, sitemap and the 404 page |
 | `scripts/site/` | Website builder, guide sources and art generators |

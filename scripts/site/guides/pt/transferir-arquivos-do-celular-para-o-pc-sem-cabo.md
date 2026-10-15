@@ -16,11 +16,11 @@ steps:
   - name: Escaneie com o celular
     text: Aponte a câmera do celular para o QR code, ou digite as 6 palavras no filefinch do celular. Não precisa instalar nenhum app.
   - name: Digite as palavras de confirmação no PC
-    text: Com os dois conectados, o celular mostra 6 novas palavras de confirmação. Digite essas palavras no PC. No modo Zero terceiros, veja se o código de verificação de 12 dígitos é igual nas duas telas.
+    text: Com os dois conectados, o celular mostra 6 novas palavras de confirmação. Digite essas palavras no PC. No modo sem relays, veja se a impressão digital da conexão, de 12 dígitos, é igual nas duas telas.
   - name: Escolha as fotos e envie
     text: No celular, selecione fotos, vídeos ou documentos e envie. No PC, confira a prévia e salve onde quiser.
-  - name: Sem internet, use o modo Zero terceiros
-    text: Se não houver internet, crie um convite no PC, escaneie com o celular e mostre o código de resposta para a webcam ou cole no computador.
+  - name: Sem internet, conecte sem relays
+    text: Se não houver internet, abra Opções no PC e escolha Conectar sem relays (avançado). Escaneie o QR code do PC com o celular e depois mostre o QR code do celular para a webcam, ou use Copiar código e cole no outro aparelho.
 faq:
   - q: Como passar fotos do celular para o PC sem cabo USB?
     a: Abra o filefinch no PC, toque em Mostrar código de pareamento e escaneie o QR code com o celular, ou digite as 6 palavras. Depois é só escolher as fotos no celular e enviar. Tudo acontece pelo navegador.
@@ -29,7 +29,7 @@ faq:
   - q: As fotos e vídeos perdem qualidade?
     a: Não. Os arquivos vão byte por byte, sem recompressão. A resolução, a qualidade e os metadados como data e local da foto chegam como estavam no celular.
   - q: Preciso de internet para transferir?
-    a: Para o pareamento com 6 palavras, sim, porque ele usa relays públicos na internet. Sem internet, use o modo Zero terceiros com link de convite. Se o celular e o PC estiverem no mesmo Wi-Fi e o filefinch já tiver sido carregado antes nos dois, dá para transferir só pela rede local.
+    a: Para o pareamento com 6 palavras, sim, porque ele usa relays públicos na internet. Sem internet, use a opção Conectar sem relays (avançado), em Opções, que não precisa de relay nenhum. Se o celular e o PC estiverem no mesmo Wi-Fi e o filefinch já tiver sido carregado antes nos dois, dá para transferir só pela rede local.
   - q: Por que a transferência parou quando bloqueei o celular?
     a: Navegadores de celular podem pausar abas em segundo plano. Deixe a tela ligada e o filefinch aberto até o envio terminar.
 related: [enviar-arquivos-grandes-sem-limite]
@@ -50,9 +50,9 @@ O filefinch conecta os dois aparelhos diretamente, de navegador para navegador, 
 
 O código vale para uma conexão só e expira em 10 minutos. Durante o pareamento, o handshake de 6 palavras viaja criptografado por relays públicos que não conseguem lê-lo. Assim que a conexão abre, os dois saem dos relays e seus arquivos vão de aparelho para aparelho.
 
-### Modo Zero terceiros: convite e código de resposta
+### Avançado: conectar sem relays
 
-Prefere que nenhum relay participe, ou está sem internet? No PC, toque na opção de usar um link ou QR e depois em Criar convite. O celular escaneia esse QR code e mostra um código de resposta, também em QR code. Mostre esse código para a webcam do PC. Se o computador não tiver webcam, mande o link de resposta para você mesmo por mensagem e abra no PC, ou copie e cole o código. Depois de conectar, confira se o código de verificação de 12 dígitos é igual nas duas telas.
+Prefere que nenhum relay participe, ou está sem internet? No PC, abra Opções e escolha Conectar sem relays (avançado). O PC mostra um QR code e um botão Copiar código. O celular escaneia esse QR code e mostra o próprio QR code, com o seu botão Copiar código. Mostre esse QR code para a webcam do PC. Se o computador não tiver webcam, toque em Copiar código no celular, leve o texto até o PC do jeito que preferir, como uma nota para você mesmo, e cole lá. Depois de conectar, confira se a impressão digital da conexão, de 12 dígitos, é igual nas duas telas.
 
 > A leitura pela câmera usa um recurso que nem todo navegador tem. Quando não estiver disponível, digitar as palavras ou colar o código sempre funciona.
 
@@ -93,13 +93,13 @@ No celular, o jeito de salvar varia conforme o sistema e o navegador. Em geral o
 
 ## Funciona sem internet?
 
-Funciona, com duas condições. O filefinch é um app web instalável (PWA) que, depois de carregado uma vez, abre mesmo offline. E, sem internet, você usa o modo Zero terceiros, com convite e código de resposta, porque o pareamento por 6 palavras precisa alcançar os relays públicos na internet. Se o celular e o PC estiverem na mesma rede Wi-Fi, eles se encontram pelos endereços locais e transferem sem internet. Então carregue o filefinch nos dois aparelhos enquanto ainda tem conexão e, se quiser, adicione à tela inicial do celular.
+Funciona, com duas condições. O filefinch é um app web instalável (PWA) que, depois de carregado uma vez, abre mesmo offline. E, sem internet, você usa a opção Conectar sem relays (avançado), escaneando um QR code em cada sentido ou colando os códigos, porque o pareamento por 6 palavras precisa alcançar os relays públicos na internet. Se o celular e o PC estiverem na mesma rede Wi-Fi, eles se encontram pelos endereços locais e transferem sem internet. Então carregue o filefinch nos dois aparelhos enquanto ainda tem conexão e, se quiser, adicione à tela inicial do celular.
 
 ## É seguro?
 
-A conexão WebRTC é sempre criptografada com DTLS. No pareamento por palavras, as 6 palavras de confirmação provam que o aparelho que entrou é seu, e não de alguém que viu o código. No modo Zero terceiros, o código de verificação igual nas duas telas mostra que ninguém trocou os dados de conexão no meio do caminho. Para arquivos sensíveis, você pode ativar uma senha extra que os dois lados digitam, e cada pedaço do arquivo é lacrado de novo com AES-GCM.
+A conexão WebRTC é sempre criptografada com DTLS. No pareamento por palavras, as 6 palavras de confirmação provam que o aparelho que entrou é seu, e não de alguém que viu o código. No modo sem relays, a impressão digital de 12 dígitos igual nas duas telas mostra que ninguém trocou os dados de conexão no meio do caminho. Para arquivos sensíveis, você pode ativar uma senha extra que os dois lados digitam, e cada pedaço do arquivo é lacrado de novo com AES-GCM.
 
-Nenhum servidor nosso entra na história, o filefinch não pede cadastro e não usa rastreamento. No pareamento por palavras, os relays públicos que levam o handshake são de terceiros, mas só veem nomes aleatórios e texto cifrado, nunca seus arquivos. Só lembre que os dados de conexão contêm os endereços de rede do aparelho, então mostre as 6 palavras ou mande o convite apenas para o seu outro aparelho ou para quem vai receber.
+Nenhum servidor nosso entra na história, o filefinch não pede cadastro e não usa rastreamento. No pareamento por palavras, os relays públicos que levam o handshake são de terceiros, mas só veem nomes aleatórios e texto cifrado, nunca seus arquivos. Só lembre que os dados de conexão contêm os endereços de rede do aparelho, então mostre o QR code e as 6 palavras apenas para o seu outro aparelho ou para quem vai receber.
 
 ## Quando o filefinch não é a melhor opção
 

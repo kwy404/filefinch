@@ -12,14 +12,14 @@ howto: How to make a filefinch transfer as safe as possible
 steps:
   - name: Pair with the 6 words, privately
     text: Tap Show pairing code on one device, then type the 6 words or scan the QR code on the other. Show the words only to your own device or the one person receiving the files.
-  - name: Or use the Zero third parties link mode
-    text: If you prefer that no relay carries the handshake, create an invite link instead and send it through a channel you trust. The other device answers with a short reply code.
+  - name: Or connect with no relays
+    text: If you prefer that no relay carries the handshake, open Options and choose Connect with no relays (advanced). Each device shows a QR code and a Copy code button, and you scan the QR code each way or copy and paste the codes by hand.
   - name: Confirm the words or compare the fingerprint
-    text: After a 6 word pairing, type the 6 confirmation words shown on the device that joined into the device that showed the code. In the link mode, check that both screens show the same 12 digit fingerprint. If anything differs, disconnect and start over.
+    text: After a 6 word pairing, type the 6 confirmation words shown on the device that joined into the device that showed the code. In the no relay mode, check that both screens show the same 12 digit fingerprint. If anything differs, disconnect and start over.
   - name: Add a passphrase for sensitive files
     text: Agree on a passphrase in person or by phone, and have both people type it in filefinch before sending. Let the transfer finish so every file passes its SHA-256 check.
   - name: Close the session when done
-    text: Close filefinch on both devices. A pairing code works once and an invite is meant for one connection, so make a fresh one for the next transfer.
+    text: Close filefinch on both devices. A pairing code works once and expires after 10 minutes, so make a fresh one for the next transfer.
 faq:
   - q: Is WebRTC encrypted?
     a: Yes. WebRTC data channels are always encrypted with DTLS, and browsers do not let a web page turn that off. The keys are created in the two browsers for each connection.
@@ -28,14 +28,14 @@ faq:
   - q: Can a TURN server read my files?
     a: No. A TURN relay only forwards packets that are already encrypted between the two browsers. It can see both IP addresses, the timing and roughly how much data moved, but not the content.
   - q: Does WebRTC leak my IP address?
-    a: To build a direct connection, each device has to learn the other device's network address, and the STUN server sees your public IP. That is how peer to peer works. Share pairing codes and invites only with people you would give your address to.
+    a: To build a direct connection, each device has to learn the other device's network address, and the STUN server sees your public IP. That is how peer to peer works. Share pairing codes only with people you would give your address to.
   - q: What does the connection fingerprint protect against?
-    a: It protects against someone swapping the connection details during the handshake, whether that handshake went through the relays or through an invite link. In the link mode you compare the 12 digit code on both screens. After a 6 word pairing, the 6 confirmation words are built from the same certificate fingerprints plus a session nonce, so typing them checks the same thing and also proves the device that joined is yours. If they match, the two browsers are talking directly to each other.
+    a: It protects against someone swapping the connection details during the handshake, whether that handshake went through the relays or was carried by hand as QR codes in the no relay mode. In the no relay mode you compare the 12 digit code on both screens. After a 6 word pairing, the 6 confirmation words are built from the same certificate fingerprints plus a session nonce, so typing them checks the same thing and also proves the device that joined is yours. If they match, the two browsers are talking directly to each other.
   - q: Is filefinch safe on a computer with malware?
     a: No browser app can fully protect you if one of the devices is compromised. Malware on either end can read files before they are encrypted or after they are decrypted. Keep both devices updated and trusted.
 related: [transfer-files-from-phone-to-pc-without-cable, send-a-whole-folder]
 ---
-Short answer: WebRTC file sharing is safe for most everyday needs, as long as you understand what the encryption covers and handle the pairing code or invite link with a little care. Every WebRTC data channel is encrypted, nobody in the middle can read the bytes, and the files never sit on a server. That still leaves a few honest caveats about IP addresses, relays and the devices themselves.
+Short answer: WebRTC file sharing is safe for most everyday needs, as long as you understand what the encryption covers and handle the pairing code with a little care. Every WebRTC data channel is encrypted, nobody in the middle can read the bytes, and the files never sit on a server. That still leaves a few honest caveats about IP addresses, relays and the devices themselves.
 
 This guide walks through each layer that filefinch uses, explains the trade offs in plain words, and ends with the things no browser based tool can protect you from. No promises of perfect security here, just how it actually works.
 
@@ -43,9 +43,9 @@ This guide walks through each layer that filefinch uses, explains the trade offs
 
 There is no server of ours and no filefinch backend, but two browsers still need to swap a small bundle of connection details (the WebRTC offer and answer) before they can talk. There are two ways to do that.
 
-By default you pair with 6 words. One device taps Show pairing code and displays a QR code next to 6 words. The other device types the words or scans the code. Behind the scenes, the 6-word handshake travels encrypted through public relays that cannot read it, and then your files go device to device over a WebRTC data channel.
+By default you pair with 6 words. One device taps Show pairing code and displays a QR code next to 6 words. The other device types the words, or a phone camera scans the QR code, which opens filefinch with those words. Behind the scenes, the 6 word handshake travels encrypted through public relays that cannot read it, and then your files go device to device over a WebRTC data channel.
 
-The alternative is the **Zero third parties** mode. The first device creates an invite, which is the full WebRTC offer, compressed and packed into a link and a QR code. The second device opens that link or scans the code, then shows a short reply code that goes back to the first device. After that single round trip, the two browsers talk directly, and no relay carried the handshake.
+The fallback is an advanced option inside Options called **Connect with no relays (advanced)**. The first device shows a QR code that holds the full WebRTC offer, compressed, along with a Copy code button. The second device scans that QR code or pastes the code, then shows its own QR code and code, which go back to the first device the same way. After that single round trip by hand, the two browsers talk directly, and no relay carried the handshake. Because it needs no relay at all, this is also how two devices on the same local network can connect without internet once the app is loaded.
 
 Either way there is no account, no upload, no copy of your files on anyone else's machine, and no analytics watching what you send.
 
@@ -62,7 +62,7 @@ Here is an honest breakdown of what those relays are in a position to see:
 | A random looking topic name | Your files, file names or messages |
 | How big the sealed handshake messages were | Your passphrase, if you use one |
 
-A relay could also fail or refuse to pass messages along. That would stop the pairing rather than expose anything, and the fix is simple: use the link mode instead.
+A relay could also fail or refuse to pass messages along. That would stop the pairing rather than expose anything, and the fix is simple: use the no relay option instead.
 
 ### Why a short code is acceptable here
 
@@ -73,7 +73,7 @@ Six words is far shorter than a password you would use for an account, so it is 
 - **It only protects the handshake.** Files and messages never pass through the relays, and the DTLS keys that encrypt the transfer are generated inside the two browsers.
 - **The confirmation words catch a stolen code.** If someone saw the words over your shoulder and joined with them, the confirmation words appear on their screen, not on yours. Each device has its own certificate, so your own device would show different words or none at all. No file moves until the right words are typed, and three wrong tries close the connection.
 
-None of this makes the 6 word mode perfect. Someone who sees your screen could read the words, and the relays do learn some metadata. Treat the words like an invite link: show them only to your own device or the person you are sending to. If you would rather no third party carry the handshake at all, the Zero third parties mode is always one tap away.
+None of this makes the 6 word mode perfect. Someone who sees your screen could read the words, and the relays do learn some metadata. Treat the words as private: show them only to your own device or the person you are sending to. If you would rather no third party carry the handshake at all, Connect with no relays (advanced) is always available under Options.
 
 ## Encryption in transit: DTLS
 
@@ -91,11 +91,11 @@ The details are standardized in IETF documents such as [RFC 8827](https://www.rf
 
 Encryption only helps if you are encrypting to the right device. The weak spot in any pairing scheme is the exchange of connection details. If someone could intercept that exchange and swap in their own, each side would happily set up an encrypted channel with the attacker, who could then pass the data along while reading it. That is a man in the middle.
 
-filefinch adds a check for this. Each session description contains a DTLS certificate fingerprint, and filefinch derives a 12 digit code from both of them. In the Zero third parties link mode, both devices display that code after connecting, and you compare it on both screens.
+filefinch adds a check for this. Each session description contains a DTLS certificate fingerprint, and filefinch derives a 12 digit code from both of them. In the no relay mode, both devices display that code after connecting, and you compare it on both screens.
 
 After a 6 word pairing, filefinch goes one step further. It hashes both certificate fingerprints and a session nonce with SHA-256 and turns the result into 6 confirmation words. The device that joined shows them, and you type them on the device that showed the pairing code. A device that joined with a code someone saw over your shoulder has its own certificate, so it gets different words. Three wrong tries close the connection, and the 12 digit code is still there under "Details: connection fingerprint" if you want it.
 
-> If the confirmation words match, or the two screens show the same fingerprint, nobody swapped the connection details on the way. If they differ, disconnect and start again with a fresh pairing code or invite.
+> If the confirmation words match, or the two screens show the same fingerprint, nobody swapped the connection details on the way. If they differ, disconnect and start again with a fresh pairing code.
 
 Typing the words or comparing the code takes a few seconds when both devices are in front of you. For a remote friend, read them to each other on a phone call. This is the single most useful habit for sensitive transfers.
 
@@ -107,10 +107,10 @@ A direct connection needs each side to know where to find the other. Two helpers
 
 To find a direct path through home routers, filefinch asks public STUN servers from Google what your public address looks like from the outside. The STUN server learns your IP address at that moment. It never sees your files, file names or anything else from the transfer.
 
-The connection details also carry network addresses, called ICE candidates. In the 6 word mode they travel sealed through the relays; in the link mode they sit inside the invite link itself. Either way the other device learns them, because it has to know where to reach you. So treat a pairing code or invite the way you would treat your home address:
+The connection details also carry network addresses, called ICE candidates. In the 6 word mode they travel sealed through the relays; in the no relay mode they sit inside the QR codes and codes you carry by hand. Either way the other device learns them, because it has to know where to reach you. So treat a pairing code the way you would treat your home address:
 
 - Share it only with your own device or the specific person receiving files.
-- Do not post codes or invites in public chats, forums or social media.
+- Do not post pairing words or codes in public chats, forums or social media.
 - Use a fresh one for each connection.
 
 If hiding your IP address from the other person is a hard requirement, a direct peer to peer tool is simply not the right fit for that situation.
@@ -127,14 +127,14 @@ DTLS already encrypts everything. The optional passphrase adds a second, indepen
 
 Every 64 KiB chunk is then sealed again with a fresh random 12 byte IV and bound to its file and offset as additional authenticated data. That means a chunk cannot be reordered, swapped into another file or edited without the receiver noticing. On top of that, every file is hashed with SHA-256 while it streams, and the receiver checks the hash at the end.
 
-Pick a passphrase that is long and not reused elsewhere, and share it through a different channel than the pairing code or invite, ideally out loud.
+Pick a passphrase that is long and not reused elsewhere, and share it through a different channel than the pairing code, ideally out loud.
 
 ## What a browser app cannot protect you from
 
 Honesty matters more than marketing here. filefinch, like any browser based tool, cannot defend against:
 
 - **A compromised device.** Malware, a malicious browser extension or someone with access to either computer can read files before encryption or after decryption.
-- **Sending to the wrong person.** If you hand the words or the invite to someone you should not trust, encryption faithfully delivers your files to them.
+- **Sending to the wrong person.** If you hand the words or the code to someone you should not trust, encryption faithfully delivers your files to them.
 - **What the receiver does next.** Once saved, a file is out of your hands.
 - **Metadata visible to the network.** Your provider, the STUN server, the pairing relays and any TURN relay can see that a connection happened, and some of them roughly how big it was.
 - **A tampered copy of the app.** Only open filefinch from its real address, and keep your browser updated so the WebRTC and crypto code inside it gets security fixes.
@@ -147,10 +147,10 @@ If the receiver cannot be online at the same time, if you need to hide your IP a
 
 ## A short safety checklist
 
-1. Show the 6 words or share the invite privately, and only once.
-2. Type the confirmation words after a 6 word pairing, or compare the fingerprint on both screens in the link mode.
+1. Show the QR code and the 6 words privately, and use each code only once.
+2. Type the confirmation words after a 6 word pairing, or compare the fingerprint on both screens in the no relay mode.
 3. Use a passphrase for anything sensitive, shared by voice.
-4. Prefer the Zero third parties link mode if you want no relay involved in the handshake.
+4. Choose Connect with no relays (advanced) under Options if you want no relay involved in the handshake.
 5. Keep browsers and operating systems updated, and clear the local library on shared devices.
 
 Ready to try it? Open [filefinch](app:) on two devices, see [how connecting works](home:#connect), or read more about [privacy on the home page](home:#privacy).

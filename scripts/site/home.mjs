@@ -36,7 +36,7 @@ const FEATURES = [
   ['key', 'blue', 'Six words to connect', 'Type six simple words on the other device. The handshake travels encrypted through public relays that cannot read it.'],
   ['clipboard', 'sun', 'Text and links', 'Send a note or a link to your other device, like a shared clipboard. Texts typed while offline go out on the next connection.'],
   ['desktop', 'coral', 'Known devices', 'Paired once? Next time pick the device and type only the confirmation words. Forget it whenever you like.'],
-  ['qr', 'mint', 'Zero third parties mode', 'Prefer no relay at all? The invite link or QR code carries the whole handshake, answered with one reply.'],
+  ['qr', 'mint', 'No relay option', 'For networks that block the relays, an advanced option connects by scanning a QR code each way, or by pasting the codes.'],
   ['folder-flock', 'sun', 'Whole folders', 'The tree arrives intact. Incoming paths are sanitized, so nothing lands outside the folder you pick.'],
   ['resume', 'coral', 'Resume after a drop', 'Reconnect and the transfer continues from the last confirmed chunk instead of starting over.'],
   ['sync', 'blue', 'Two way sync', 'Two way, push or pull. You review the plan of changes before anything is written.'],
@@ -45,7 +45,7 @@ const FEATURES = [
   ['lock', 'sun', 'Optional passphrase', 'PBKDF2 with 600,000 rounds to an AES-GCM key on each device. Every chunk is sealed again.'],
   ['preview', 'blue', 'Safe previews', 'Photos, video, audio, PDF and text, drawn so a received page or script never runs.'],
   ['library', 'mint', 'Local library', 'Keep received files in this browser on your own device, to save or send again later.'],
-  ['install', 'sun', 'Installable, offline', 'Install it as an app. Once loaded, invite links work without internet on a local network.'],
+  ['install', 'sun', 'Installable, offline', 'Install it as an app. Once loaded, it opens without internet.'],
   ['relay', 'coral', 'Help on strict networks', 'When a direct route is blocked, filefinch explains why and lets you add your own TURN relay.'],
 ];
 
@@ -53,13 +53,13 @@ const FAQ = [
   ['Is filefinch really free?', 'Yes. It is free and open source under the MIT license. There are no plans, no ads, no account and no tracking. Since there is no server of ours carrying your files, there is nothing to pay for.'],
   ['How do the 6 words work?', 'The first device shows six words from a list of 2048 simple English words, plus a QR code that holds the same words. Type them on the other device: the first four letters of each word are enough. The short handshake the two browsers need to find each other travels encrypted through public relays that cannot read it. The code works once and expires in 10 minutes. Once the devices meet, one shows six new confirmation words to type on the other, so a device that only saw your code cannot join. Your files then go straight from device to device.'],
   ['Do my files go through a server?', 'No. Files travel over a direct WebRTC connection between your two browsers. The 6 word handshake passes through public relays as ciphertext, and when both networks block direct routes a TURN relay can forward the encrypted traffic. No server of ours is ever involved.'],
-  ['What is the Zero third parties mode?', 'Instead of six words, share an invite link or show its QR code. The link itself carries the handshake, the other device answers with a short reply code, and no relay passes anything along. Like every mode, the browsers still ask a public STUN server for their public address.'],
+  ['What if a network blocks the relays?', 'Open Options and choose Connect with no relays (advanced). Each device shows a QR code: scan one each way, or copy and paste the codes. Nothing passes through a relay. Like every mode, the browsers still ask a public STUN server for their public address.'],
   ['Is there a file size limit?', 'filefinch sets none. Files are read and sent in 64 KiB chunks and written to disk as they arrive, so a 50 GB video works like a photo. The real limits are free space on the receiving device and both devices staying connected.'],
   ['Do both devices need to be online at the same time?', 'Yes. There is no storage in the middle, so the sender and the receiver must both have filefinch open while the files fly. If one closes the tab, the transfer can resume when you reconnect.'],
   ['Can I send a whole folder?', 'Yes. Pick or drop a folder and filefinch sends every file with its relative path. In browsers with folder access the tree is written straight into a folder you pick; elsewhere the folder arrives as one streamed .zip download.'],
   ['Does it work between Android and iPhone, or Windows and Mac?', 'Yes. filefinch runs in the browser, so any pair of modern browsers can connect: Android to iPhone, Windows to Mac, phone to PC or laptop to laptop.'],
   ['What happens if the connection fails?', 'Usually one network is very strict (symmetric NAT or a corporate firewall). filefinch detects the failed connection, explains it in plain words and offers the TURN setting. Trying another network, like a phone hotspot, often works too.'],
-  ['Does filefinch work without internet?', 'Once the app is loaded or installed, the invite link mode works offline: two devices on the same local network can connect. The 6 word mode needs internet to reach the public relays.'],
+  ['Does filefinch work without internet?', 'Once loaded or installed, the app opens offline, and the advanced no relay option can connect two devices on the same local network. Pairing with 6 words needs internet to reach the public relays.'],
 ];
 
 const COMPARE = [
@@ -67,16 +67,16 @@ const COMPARE = [
   ['Waiting time', 'Upload first, then the download can start', 'The receiver gets data as soon as it is sent'],
   ['Account', 'Usually needed, at least for large files', 'None'],
   ['Size limits', 'Set by the plan you are on', 'None set by filefinch'],
-  ['Copies left online', 'Until a link expires or you delete them', 'None, nothing is stored online'],
+  ['Copies left online', 'Until you delete them or they expire', 'None, nothing is stored online'],
   ['Who can read the files', 'The service can, unless it offers client side encryption', 'Only the two devices (DTLS, plus an optional passphrase)'],
   ['Both devices online', 'Not needed, the receiver can download later', 'Needed while the files fly'],
-  ['Works without internet', 'No', 'Yes, with an invite link on the same local network'],
+  ['Works without internet', 'No', 'Yes, with the no relay option on the same local network'],
 ];
 
 const LIMITS = [
   ['Both devices must be online', 'There is no mailbox in the middle. Keep filefinch open on both devices until the transfer finishes. If one side drops, resume picks it up later.'],
   ['Strict networks can block a direct route', 'When both devices sit behind strict NAT (common on some mobile carriers and office networks), a direct connection may be impossible. filefinch says so and offers a TURN relay setting. A relay forwards only encrypted packets.'],
-  ['The 6 words need a public relay to answer', 'The word handshake travels through public MQTT relays. If none answers, use an invite link instead.'],
+  ['The 6 words need a public relay to answer', 'The word handshake travels through public MQTT relays. If none answers, the advanced no relay option still works.'],
   ['Speed follows the slower side', 'A direct connection is as fast as the slower of the two links. On the same Wi-Fi that is usually far faster than any upload; across the internet it depends on the upload speed of the sender.'],
   ['Phones sleep', 'Mobile browsers may pause a tab in the background. Keep the screen on for long transfers, or let resume continue when you come back.'],
 ];
@@ -191,7 +191,7 @@ function howSteps(R, qr) {
       <div class="hiw-tools"><button type="button" class="btn btn-sm btn-line hiw-play" data-play hidden><svg class="ic i-pause" aria-hidden="true"><use href="#i-pause"/></svg><svg class="ic i-play" aria-hidden="true"><use href="#i-play"/></svg><span>Pause</span></button><a class="btn btn-sm btn-solid" href="${R}app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Try it now</a></div>
     </div>
   </div>
-  <p class="hiw-note"><span class="dot dot-m"></span>Prefer zero third parties? Use an invite link or its QR code instead. It carries the handshake itself, so no relay passes anything along.</p>
+  <p class="hiw-note"><span class="dot dot-m"></span>Network blocks the relays? Under Options, Connect with no relays (advanced) scans a QR code each way instead.</p>
 </section>`;
 }
 
@@ -207,7 +207,7 @@ function stories(R, { shots }) {
   const folderVis = `<div class="vis-stack"><div class="unfold" data-unfold aria-hidden="true"><span class="uf-folder"><svg viewBox="0 0 48 48"><path d="M5 13a3 3 0 0 1 3-3h10l4 5h18a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3Z"/></svg><b>Project</b></span>${['index.html', 'photos/', 'notes.md', 'video.mp4', 'data.csv', 'logo.svg'].map((f, i) => `<span class="uf-file" style="--i:${i}"><i class="c${i % 4}"></i>${f}</span>`).join('')}</div>${shotFrame(R, shots, 'sync', 'The sync plan listing the files that will be copied, updated or kept', 'window')}</div>`;
   const privacyVis = `<div class="vis-duo">${lit(R, 'fingerprint-lit', 'A fingerprint of light and a short matching code')}${shotFrame(R, shots, 'confirm', 'A phone showing the six confirmation words to type on the other device', 'phone')}</div>`;
   const libraryVis = `<div class="vis-stack vis-glow">${lit(R, 'preview-lit', 'Previews of a photo, a video and audio before saving', 'vis-bg')}${shotFrame(R, shots, 'library', 'The local library with received photos, a video and documents', 'window')}</div>`;
-  const honest = `<div class="honest-note"><p><strong>The honest part.</strong> The 6 word handshake travels through public MQTT relays, which see that two devices exchange a few small encrypted messages, never what they say. Your files never touch them. When both networks block every direct route, a TURN relay you configure can forward the encrypted traffic. To find a route, each browser asks a public STUN server for its public address, which sees your IP address like any website. With an invite link instead of the words, nothing relays the handshake at all.</p></div>`;
+  const honest = `<div class="honest-note"><p><strong>The honest part.</strong> The 6 word handshake travels through public MQTT relays, which see that two devices exchange a few small encrypted messages, never what they say. Your files never touch them. When both networks block every direct route, a TURN relay you configure can forward the encrypted traffic. To find a route, each browser asks a public STUN server for its public address, which sees your IP address like any website. With the advanced no relay option, nothing relays the handshake at all.</p></div>`;
   return [
     story('stream', 'Any size', 'Any size. Never held in memory.', 'Files are read in small chunks and written to disk as they arrive, so a 50 GB video flies the same way as a photo.', [
       ['Small 64 KiB pieces,', 'read only a few ahead of the network.'],
@@ -227,7 +227,7 @@ function stories(R, { shots }) {
     story('privacy', 'Private by design', 'Your files take the direct line.', 'filefinch is a web page that connects two browsers to each other. After that, it steps out of the way.', [
       ['No server of ours', 'ever sees your files or messages.'],
       ['DTLS on every connection,', 'with keys created inside the two browsers.'],
-      ['Confirm with six words.', 'No file moves until the words typed on one screen match the other. With an invite link, compare the 12 digit fingerprint instead.'],
+      ['Confirm with six words.', 'No file moves until the words typed on one screen match the other.'],
       ['Add a passphrase', 'for a second AES-GCM layer. It never travels.'],
     ], privacyVis, true, honest),
     story('library', 'Library and previews', 'See it before you keep it.', 'Preview photos, video, audio, PDF and text right in the browser, and keep what you want in a local library on your own device.', [

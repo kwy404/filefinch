@@ -36,14 +36,14 @@ Aparelhos já pareados ficam guardados: da próxima vez você escolhe o aparelho
 - **Sincronizar pastas.** Nos dois sentidos, só enviar ou só receber, com um plano de mudanças que você aprova antes.
 - **Prévias e biblioteca local.** Veja fotos, vídeos, áudio, PDF e texto antes de salvar.
 - **Senha opcional.** Uma segunda camada AES-GCM além da criptografia do navegador.
-- **Instalável e offline.** Depois de carregado, o link de convite funciona numa rede local sem internet.
+- **Instalável.** Depois de carregado, o app abre sem internet.
 
 ## Como funciona
 
 Dois navegadores precisam trocar uma pequena oferta e resposta WebRTC antes de conversar direto.
 
 - **6 palavras (padrão).** Os dois aparelhos transformam as palavras num tópico e numa chave, se encontram em alguns relays MQTT públicos e trocam a oferta e a resposta seladas com essa chave. Os relays só veem nomes aleatórios e texto cifrado, e os aparelhos saem deles assim que se conectam.
-- **Link de convite (zero terceiros).** O link ou o QR code leva a oferta inteira, e o outro aparelho responde com um código curto. Nenhum relay é usado.
+- **Sem relays (avançado).** Para redes que bloqueiam os relays, cada aparelho mostra um QR code com a sua parte do aperto de mão. Escaneie um em cada sentido, ou copie e cole os códigos. Nenhum relay é usado.
 
 Depois disso, os arquivos vão de aparelho para aparelho por um canal de dados WebRTC criptografado com DTLS. Para achar um caminho, os navegadores perguntam o próprio endereço público a um servidor STUN público. Se as duas redes bloquearem rotas diretas, dá para adicionar o seu próprio relay TURN nas Configurações; ele só repassa pacotes criptografados.
 
