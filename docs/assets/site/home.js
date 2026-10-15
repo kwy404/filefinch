@@ -161,6 +161,7 @@ function stepper() {
   const steps = [...root.querySelectorAll('.hiw-step')];
   const btn = root.querySelector('[data-play]');
   const label = btn?.querySelector('span');
+  const cap = root.querySelector('.hiw-cap');
   let i = 0;
   let playing = !reduced;
   let seen = false;
@@ -172,6 +173,10 @@ function stepper() {
     clearTimeout(sub);
     steps.forEach((b, k) => (k === n ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
     const step = steps[n].dataset.go;
+    if (cap) {
+      cap.querySelector('b').textContent = String(n + 1);
+      cap.querySelector('span').textContent = steps[n].querySelector('.hiw-tx b').textContent;
+    }
     duo.dataset.step = step;
     if (step === 'send') {
       sub = setTimeout(() => {

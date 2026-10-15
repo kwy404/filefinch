@@ -187,6 +187,7 @@ function howSteps(R, qr) {
     <ol class="hiw-steps">${HOW.map(([id, t, d, ms], i) => `<li><button type="button" class="hiw-step" data-go="${id}" style="--dur:${ms}ms"${i ? '' : ' aria-current="step"'}><span class="hiw-n">${i + 1}</span><span class="hiw-tx"><b>${t}</b><span>${d}</span></span><span class="hiw-bar" aria-hidden="true"><s></s></span></button></li>`).join('')}</ol>
     <div class="hiw-stage">
       ${duo('open', 'duo-big', qr)}
+      <p class="hiw-cap" aria-hidden="true"><b>1</b><span>${HOW[0][1]}</span></p>
       <div class="hiw-tools"><button type="button" class="btn btn-sm btn-line hiw-play" data-play hidden><svg class="ic i-pause" aria-hidden="true"><use href="#i-pause"/></svg><svg class="ic i-play" aria-hidden="true"><use href="#i-play"/></svg><span>Pause</span></button><a class="btn btn-sm btn-solid" href="${R}app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Try it now</a></div>
     </div>
   </div>

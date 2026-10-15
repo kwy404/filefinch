@@ -374,6 +374,8 @@ body.home { background: var(--bg-deep); }
 .hiw.is-playing .hiw-step[aria-current] .hiw-bar s { animation: hiw-bar var(--dur) linear both; }
 @keyframes hiw-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .hiw-stage { position: relative; display: grid; gap: 1.2rem; padding: clamp(1rem, 2.5vw, 2rem); border-radius: 28px; border: 1px solid var(--hair-2); background: radial-gradient(70% 60% at 50% 0%, color-mix(in oklab, var(--lx-blue) 14%, transparent), transparent), var(--surface); box-shadow: var(--shadow-lg); }
+.hiw-cap { display: none; margin: 0; align-items: center; justify-content: center; gap: .6rem; font-weight: 750; text-align: center; }
+.hiw-cap b { display: grid; place-items: center; flex: none; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--grad); color: #fff; font-size: .9rem; }
 .hiw-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; }
 .hiw-play .i-play { display: none; }
 .hiw-play.is-paused .i-play { display: inline; }
@@ -384,6 +386,7 @@ body.home { background: var(--bg-deep); }
 @media (max-width: 960px) {
   .hiw { grid-template-columns: 1fr; }
   .hiw-stage { order: -1; }
+  .hiw-cap { display: flex; }
   .hiw-step { padding: .8rem .9rem 1rem; }
 }
 
