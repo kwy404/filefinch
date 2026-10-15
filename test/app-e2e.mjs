@@ -1,7 +1,8 @@
 // End to end test of the real app in a real browser: two separate browser contexts (two
-// "devices") connect through the invite and reply flow, send a large generated file and a nested
-// folder, verify SHA-256 hashes on disk, then drop the connection mid transfer, reconnect with a
-// passphrase and resume from the confirmed offset.
+// "devices") connect through the advanced no relay invite and reply flow, send a large
+// generated file and a nested folder, verify SHA-256 hashes on disk, send text and links both
+// ways (sealed with the passphrase too, and queued while offline), then drop the connection
+// mid transfer, reconnect with a passphrase and resume from the confirmed offset.
 //
 // Usage: node test/app-e2e.mjs
 // Env: FILEFINCH_BROWSER (path to Chrome or Edge), FILEFINCH_E2E_MB (size of the big file, default 300)
@@ -144,13 +145,20 @@ async function runSync(pageA, pageB) {
   return { send: stats[0], receive: stats[1], deletes: stats[2], conflicts: stats[3], same: stats[4] };
 }
 
+/** Opens the advanced no relay mode, which sits under Options on the start screen. */
+async function openNoRelay(page) {
+  if (await page.locator('#connect-link').isVisible()) return;
+  if (!(await page.locator('#mode-link').isVisible())) await page.click('.ff-options summary');
+  await page.click('#mode-link');
+  await page.locator('#connect-link').waitFor({ state: 'visible' });
+}
+
 async function connect(pageA, pageB, ctxA, { passphrase, race = false } = {}) {
   await pageA.click('[data-go="connect"]');
   if (await pageA.locator('#connect-lost').isVisible()) await pageA.click('#connect-lost [data-action="restart-connect"]');
   if (await pageA.locator('#connect-failed').isVisible()) await pageA.click('#connect-failed [data-action="restart-connect"]');
-  // This test covers the zero third party link mode; app-e2e-words.mjs covers pairing words.
-  if (await pageA.locator('#mode-link').isVisible()) await pageA.click('#mode-link');
-  await pageA.locator('#connect-link').waitFor({ state: 'visible' });
+  // This test covers the advanced no relay mode; app-e2e-words.mjs covers pairing words.
+  await openNoRelay(pageA);
   if (passphrase) {
     if (!(await pageA.locator('#use-pass').isVisible())) await pageA.click('.ff-options summary');
     await pageA.check('#use-pass');
@@ -171,11 +179,13 @@ async function connect(pageA, pageB, ctxA, { passphrase, race = false } = {}) {
   await pageB.locator('#connect-reply').waitFor({ state: 'visible', timeout: 30000 });
   const reply = await pageB.inputValue('#reply-link');
   // The reply link is opened on the host device in a new tab and handed to the waiting tab.
+  // The paste happens before that tab opens: a background tab may not paint, and Playwright
+  // waits for paints before it types.
+  if (race) await pageA.fill('#reply-input', reply);
   const helper = await ctxA.newPage();
   if (race) {
     // The same reply arrives twice at once: pasted by hand and handed over from another tab.
-    await pageA.fill('#reply-input', reply);
-    await Promise.all([pageA.click('#reply-btn'), helper.goto(reply)]);
+    await Promise.all([pageA.evaluate(() => document.querySelector('#reply-btn').click()), helper.goto(reply)]);
   } else await helper.goto(reply);
   await helper.locator('#connect-failed').waitFor({ state: 'visible' });
   const delivered = await helper.textContent('#fail-text');
@@ -187,6 +197,18 @@ async function connect(pageA, pageB, ctxA, { passphrase, race = false } = {}) {
   const fpA = (await pageA.textContent('#peer-fp')).trim();
   const fpB = (await pageB.textContent('#peer-fp')).trim();
   return { invite, reply, qrVersion: Number(qrVersion), delivered, fpA, fpB, ms: Date.now() - started };
+}
+
+/** Sends a text from one page and waits until it shows on the other and is marked delivered. */
+async function sendText(from, to, text, { connected = true } = {}) {
+  await from.click('[data-go="send"]');
+  await from.fill('#clip-input', text);
+  await from.press('#clip-input', 'Control+Enter');
+  const waiting = await from.$eval('#clips-out li', (li) => li.dataset.state);
+  if (!connected) return waiting;
+  await to.waitForFunction((t) => [...document.querySelectorAll('#clips-in .ff-clip-text')].some((e) => e.textContent === t), text, { timeout: 30000 });
+  await from.waitForFunction(() => document.querySelector('#clips-out li')?.dataset.state === 'delivered', null, { timeout: 30000 });
+  return 'delivered';
 }
 
 async function acceptOffer(page, dest) {
@@ -241,7 +263,7 @@ async function main() {
   try {
     // 0. A connection that cannot work says why in plain words and offers the relay setting.
     await pageA.evaluate(() => (window.filefinch.settings.relayOnly = true));
-    await pageA.click('#mode-link');
+    await openNoRelay(pageA);
     await pageA.click('#host-btn');
     await pageA.locator('#connect-invite').waitFor({ state: 'visible', timeout: 30000 });
     await pageB.goto(await pageA.inputValue('#invite-link'));
@@ -260,6 +282,19 @@ async function main() {
     check('reply link opened in another tab reaches the waiting tab', /delivered/i.test(c.delivered), c.delivered.trim());
     check('both sides show the same fingerprint', c.fpA === c.fpB && /^\d{4} \d{4} \d{4}$/.test(c.fpA), `${c.fpA} / ${c.fpB}`);
     check('invite link is short', c.invite.length < 700, `${c.invite.length} characters`);
+
+    // Text and links, like a shared clipboard: a link arrives ready to open, a note ready to copy.
+    const link = 'https://example.com/trip?day=2#map';
+    await sendText(pageA, pageB, link);
+    const linkCard = await pageB.$eval('#clips-in .ff-clip', (card) => ({ href: card.querySelector('a.ff-clip-text')?.getAttribute('href'), rel: card.querySelector('a.ff-clip-text')?.rel, open: !!card.querySelector('a.btn') }));
+    check('a link sent as text arrives as a safe link with Copy and Open', linkCard.href === link && /noopener/.test(linkCard.rel) && linkCard.open, JSON.stringify(linkCard));
+    const note = 'Gate 14\nSeat 22A\ncaf\u00e9 at 9';
+    await sendText(pageB, pageA, note);
+    check('a multi line note goes the other way and is marked delivered', true);
+    const unsafe = await pageA.evaluate(() => window.filefinch.app.send({ t: 'clip', id: 'evil1', text: 'javascript:alert(1)' }));
+    await pageB.waitForFunction(() => document.querySelector('#clips-in .ff-clip[data-id="evil1"]'), null, { timeout: 10000 });
+    const unsafeLink = await pageB.$eval('#clips-in .ff-clip[data-id="evil1"]', (card) => !!card.querySelector('a'));
+    check('a javascript: text never becomes a link', unsafe && !unsafeLink);
 
     // The ceiling: raw 64 KB messages on the same data channel with no app logic, for comparison.
     const RAW_MB = 16;
@@ -353,8 +388,16 @@ async function main() {
     await pageB.locator('#connect-lost').waitFor({ state: 'visible', timeout: 20000 });
     const writtenAtDrop = await pageB.evaluate((name) => [...window.filefinch.engine.incoming.values()].find((x) => x.label === name).files[0].written, resumeName);
     check('dropped connection is detected on both sides', true, `${(writtenAtDrop / MB).toFixed(1)} MB written before the drop`);
+    const offlineText = 'Typed while the connection was down';
+    check('a text typed while disconnected waits', (await sendText(pageA, pageB, offlineText, { connected: false })) === 'waiting');
     const c2 = await connect(pageA, pageB, ctxA, { passphrase: 'correct horse battery' });
     check('reconnected with a passphrase layer', c2.fpA === c2.fpB);
+    await pageB.waitForFunction((t) => [...document.querySelectorAll('#clips-in .ff-clip-text')].some((e) => e.textContent === t), offlineText, { timeout: 30000 });
+    check('the waiting text goes out by itself on the new connection, sealed with the passphrase', true);
+    await sendText(pageB, pageA, 'Sealed with the passphrase');
+    const plainRefused = await pageA.evaluate(() => window.filefinch.app.send({ t: 'clip', id: 'plain1', text: 'not sealed' }));
+    await pageB.waitForFunction(() => [...document.querySelectorAll('#toasts .alert-danger')].some((e) => /could not be read/.test(e.textContent)), null, { timeout: 10000 });
+    check('with a passphrase, an unsealed text is refused', plainRefused && !(await pageB.$('#clips-in .ff-clip[data-id="plain1"]')));
     const resumed = await waitTransfer(pageB, 'in', resumeName, 5 * 60000);
     const resumeInfo = await pageB.evaluate((name) => {
       const tr = [...window.filefinch.engine.incoming.values()].find((x) => x.label === name);

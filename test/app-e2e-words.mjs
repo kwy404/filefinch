@@ -1,9 +1,13 @@
 // End to end test of pairing with six words through the real public MQTT brokers.
-//   1. A (the PC) shows a QR code and six words. B (the phone) opens the QR link, as a camera
-//      scan would, and joins through the encrypted relay handshake with nothing typed.
+//   1. A (the PC) picks a file on the start screen, and the QR code and six words appear right
+//      away. B (the phone) opens the QR link, as a camera scan would, and joins through the
+//      encrypted relay handshake with nothing typed.
 //   2. B shows six confirmation words. Wrong words typed on A are rejected and nothing can be
-//      sent; the right words connect, and a file goes from A to B with its hash checked.
-//   3. The reverse: B shows a code, A types B's words (prefixes, one typo), A shows the
+//      sent; the right words connect, and the file picked first goes to B by itself, hash checked.
+//   3. Both devices remember each other. After a disconnect each taps the other under "Your
+//      devices": they meet again with no pairing words, only the confirmation words, and a text
+//      goes across.
+//   4. The reverse: B shows a code, A types B's words (prefixes, one typo), A shows the
 //      confirmation words and B types them. Then a file goes from B to A.
 // Needs network access to the public brokers. If none answers, the test says so and fails.
 //
@@ -44,13 +48,21 @@ async function typeWords(page, prefix, list) {
   for (let i = 0; i < 6; i++) await page.fill(`#${prefix}-${i}`, list[i]);
 }
 
-async function sendAndCheck(from, to, name, size) {
+function makeFile(name, size) {
   const data = randomBytes(size);
   const path = join(work, name);
   writeFileSync(path, data);
-  const hash = createHash('sha256').update(data).digest('hex');
+  return { path, hash: createHash('sha256').update(data).digest('hex') };
+}
+
+async function sendAndCheck(from, to, name, size) {
+  const { path, hash } = makeFile(name, size);
   await from.click('[data-go="send"]');
   await from.setInputFiles('#pick-files', path);
+  return receiveAndCheck(to, name, hash);
+}
+
+async function receiveAndCheck(to, name, hash) {
   await to.locator('#offer-dialog').waitFor({ state: 'visible', timeout: 30000 });
   await to.check('#offer-dests input[value="memory"]');
   await to.click('#offer-accept');
@@ -100,9 +112,11 @@ async function main() {
     await A.goto(base);
     await B.goto(base);
 
-    // 1. A shows the code: a small QR with the words link, and the six words.
+    // 1. A picks a file before anything else: the code shows at once, a small QR with the
+    //    words link and the six words, and the file waits for the connection.
     let t0 = Date.now();
-    await A.click('#code-btn');
+    const first = makeFile('words-a-to-b.bin', 3 * 1024 * 1024 + 7);
+    await A.setInputFiles('#start-files', first.path);
     const shown = await Promise.race([
       A.locator('#connect-code').waitFor({ state: 'visible', timeout: 45000 }).then(() => 'code'),
       A.locator('#connect-failed').waitFor({ state: 'visible', timeout: 45000 }).then(() => 'failed'),
@@ -116,6 +130,8 @@ async function main() {
     const version = Number(await A.getAttribute('#code-qr', 'data-version'));
     const relays = (await A.textContent('#code-relays')).trim();
     check('A shows six words and a small QR code', codeWords.length === 6 && version <= 6 && link.includes(`#w=${codeWords.join('-')}`), `QR version ${version}, ${relays}`);
+    const pending = (await A.textContent('#connect-code .ff-pending')).trim();
+    check('picking a file first shows the code right away, with the file counted under it', (await A.isVisible('#connect-code .ff-pending')) && /1 file/.test(pending), pending);
 
     // B "scans": it opens the link from the QR code. Nothing is typed on B.
     await B.goto(link);
@@ -138,13 +154,53 @@ async function main() {
     // The right words, typed as four letter prefixes, connect both sides.
     await typeWords(A, 'confirm-word', confirm.map((w) => w.slice(0, 4)));
     await A.click('#confirm-btn');
+    // A has a file waiting, so it shows the Send tab with the file going out.
+    await A.locator('#view-send').waitFor({ state: 'visible', timeout: 15000 });
+    await B.locator('#connect-status').waitFor({ state: 'visible', timeout: 15000 });
+    const paired = await A.$eval('#paired-note', (n) => !n.hidden);
+    check('the right words pair the devices, and the PC moves to the Send tab', paired && (await B.isVisible('#paired-note')) && (await A.evaluate(() => window.filefinch.app.isConnected())));
+    check('the file picked first goes from the PC to the phone by itself, hash verified', await receiveAndCheck(B, 'words-a-to-b.bin', first.hash));
+
+    // 3. Known devices: both remember each other with the same secret.
+    const knownA = await A.evaluate(() => window.filefinch.settings.known);
+    const knownB = await B.evaluate(() => window.filefinch.settings.known);
+    const idA = await A.evaluate(() => window.filefinch.settings.deviceId);
+    const idB = await B.evaluate(() => window.filefinch.settings.deviceId);
+    await A.click('[data-go="connect"]');
+    check(
+      'both devices remember each other with one shared secret',
+      knownA.length === 1 && knownB.length === 1 && knownA[0].device === idB && knownB[0].device === idA && knownA[0].key === knownB[0].key && (await A.isChecked('#remember')),
+    );
+    await B.click('[data-go="connect"]');
+    await B.click('#disconnect-btn');
+    await A.locator('#connect-start').waitFor({ state: 'visible', timeout: 15000 });
+    await B.locator('#connect-start').waitFor({ state: 'visible', timeout: 15000 });
+    check('"Your devices" lists the other device on both screens', (await A.isVisible('#known-list .ff-known-btn')) && (await B.isVisible('#known-list .ff-known-btn')));
+    t0 = Date.now();
+    await A.click('#known-list .ff-known-btn');
+    await A.locator('#connect-known').waitFor({ state: 'visible', timeout: 45000 });
+    await B.click('#known-list .ff-known-btn');
+    // The device with the smaller id shows the offer; the other shows the confirmation words.
+    const [shower, typer] = idA < idB ? [B, A] : [A, B];
+    await shower.locator('#connect-confirm-show').waitFor({ state: 'visible', timeout: 60000 });
+    await typer.locator('#connect-confirm-type').waitFor({ state: 'visible', timeout: 30000 });
+    const again = await words(shower, '#confirm-words');
+    check('known devices meet again with no pairing words to type', again.length === 6, `${Date.now() - t0} ms`);
+    await typeWords(typer, 'confirm-word', again);
+    await typer.click('#confirm-btn');
     await A.locator('#connect-status').waitFor({ state: 'visible', timeout: 15000 });
     await B.locator('#connect-status').waitFor({ state: 'visible', timeout: 15000 });
-    const paired = await A.isVisible('#paired-note');
-    check('the right words pair the devices', paired && (await B.isVisible('#paired-note')));
-    check('a file goes from the PC to the phone, hash verified', await sendAndCheck(A, B, 'words-a-to-b.bin', 3 * 1024 * 1024 + 7));
+    const keyAfter = await A.evaluate(() => window.filefinch.settings.known[0].key);
+    check('only the confirmation words were needed, and the secret is unchanged', keyAfter === knownA[0].key);
+    const note = 'https://example.com/boarding-pass';
+    await B.click('[data-go="send"]');
+    await B.fill('#clip-input', note);
+    await B.click('#clip-send');
+    await A.waitForFunction((t) => [...document.querySelectorAll('#clips-in .ff-clip-text')].some((e) => e.textContent === t), note, { timeout: 30000 });
+    await B.waitForFunction(() => document.querySelector('#clips-out li')?.dataset.state === 'delivered', null, { timeout: 30000 });
+    check('a link goes from the phone to the PC as text', true);
 
-    // 2. The reverse: the phone shows a code and the PC types it.
+    // 4. The reverse: the phone shows a code and the PC types it.
     await B.click('[data-go="connect"]');
     await B.click('#disconnect-btn');
     await A.click('[data-go="connect"]');
@@ -173,7 +229,7 @@ async function main() {
     check('pasting the confirmation phrase pairs the devices the other way', true);
     check('a file goes from the phone to the PC, hash verified', await sendAndCheck(B, A, 'words-b-to-a.bin', 1024 * 1024));
 
-    // 3. The code cannot be used twice.
+    // 5. The code cannot be used twice.
     const C = await open(await browser.newContext(opts), 'C');
     await C.goto(base);
     await C.goto(link);
