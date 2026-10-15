@@ -1,18 +1,19 @@
-// The filefinch landing page, "direct flight": a dark, lit hero with a finch
-// made of light, a scroll driven flight of a real file card, a platform
-// strip, six story sections with product visuals and motion, feature cards,
-// a comparison, honest limits, the FAQ and a big closing call to action.
+// The filefinch landing page, "direct flight": a short hero with a looping
+// animation of a PC and a phone pairing and sending files, a platform strip,
+// a step by step "how it works" that plays the same devices one step at a
+// time, story sections with product visuals and motion, feature cards, a
+// comparison, honest limits, the FAQ and a big closing call to action.
 // Every claim here must match the app in docs/app/.
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { SITE, REPO, AUTHOR, UPDATED, VERSION, esc } from './layout.mjs';
 import { art, card } from './guides.mjs';
-import { heroObjectSVG, burstSymbols } from './art/lit.mjs';
+import { burstSymbols } from './art/lit.mjs';
 import { PLATFORMS, platformMark } from './art/platforms.mjs';
 
 export const HOME = {
   title: 'filefinch: send files and folders straight between your devices, free and private',
-  description: 'Send files and whole folders of any size from one device to another with 6 words or a QR code. Peer to peer: no server of ours, no account, encrypted.',
+  description: 'Send files and folders straight from one of your devices to another in the browser. Pair with six words or a QR code. No account and no upload.',
 };
 
 /** Icon pair that follows the page theme. */
@@ -33,6 +34,8 @@ const PROMISES = [
 
 const FEATURES = [
   ['key', 'blue', 'Six words to connect', 'Type six simple words on the other device. The handshake travels encrypted through public relays that cannot read it.'],
+  ['clipboard', 'sun', 'Text and links', 'Send a note or a link to your other device, like a shared clipboard. Texts typed while offline go out on the next connection.'],
+  ['desktop', 'coral', 'Known devices', 'Paired once? Next time pick the device and type only the confirmation words. Forget it whenever you like.'],
   ['qr', 'mint', 'Zero third parties mode', 'Prefer no relay at all? The invite link or QR code carries the whole handshake, answered with one reply.'],
   ['folder-flock', 'sun', 'Whole folders', 'The tree arrives intact. Incoming paths are sanitized, so nothing lands outside the folder you pick.'],
   ['resume', 'coral', 'Resume after a drop', 'Reconnect and the transfer continues from the last confirmed chunk instead of starting over.'],
@@ -96,89 +99,108 @@ function shotFrame(R, shots, name, alt, kind = 'window') {
   return `<figure class="wf"><div class="wf-bar" aria-hidden="true"><i></i><i></i><i></i><span>kwy404.github.io/filefinch/app/</span></div><span class="art">${img}</span></figure>`;
 }
 
-/** The real QR code of the app URL, with every module ready to fly in. */
-function qrAnimated(qr) {
+/** The real QR code of the app URL as one path, for the PC screen in the animations. */
+function qrPath(qr) {
   const n = qr.size;
-  let rects = '';
-  for (let y = 0; y < n; y++) {
-    for (let x = 0; x < n; x++) {
-      if (!qr.modules[y * n + x]) continue;
-      const a = ((x * 73 + y * 151) % 360) * (Math.PI / 180);
-      const dist = 6 + ((x * 31 + y * 17) % 14);
-      rects += `<rect x="${x + 2}" y="${y + 2}" width="1.04" height="1.04" style="--dx:${(Math.cos(a) * dist).toFixed(1)}px;--dy:${(Math.sin(a) * dist).toFixed(1)}px;--d:${((x * 7 + y * 3) % 24) * 22}ms"/>`;
-    }
-  }
-  return `<svg class="qr-asm" viewBox="0 0 ${n + 4} ${n + 4}" shape-rendering="crispEdges" aria-hidden="true"><rect width="${n + 4}" height="${n + 4}" rx="1.5" fill="#fff"/><g fill="#10244A">${rects}</g></svg>`;
+  let d = '';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.modules[y * n + x]) d += `M${x + 2} ${y + 2}h1v1h-1z`;
+  return `<svg class="dqr" viewBox="0 0 ${n + 4} ${n + 4}" shape-rendering="crispEdges"><rect width="${n + 4}" height="${n + 4}" rx="1.5" fill="#fff"/><path fill="#10244A" d="${d}"/></svg>`;
 }
 
-function hero(R) {
+/** Words typed to confirm the pairing in the animations (all from the BIP39 list). */
+const CONFIRM = ['pilot', 'tiger', 'velvet', 'lemon', 'island', 'rocket'];
+const DUO_FILES = [['beach.jpg', '4.2 MB', 'c0'], ['birthday.mp4', '1.3 GB', 'c1'], ['notes.pdf', '820 KB', 'c2']];
+
+/**
+ * A PC and a phone side by side, drawn in HTML so it stays sharp and light.
+ * The step in data-step picks what each screen shows: open, code, type,
+ * confirm, send or done. The hero loops through the steps, the "how it works"
+ * stepper sets them one at a time. Purely visual: aria-hidden, with the story
+ * told in text next to it.
+ */
+function duo(step, cls, qr) {
+  const chips = (words, attr = '') => words.map((w, i) => `<li style="--i:${i}"${attr}><b>${i + 1}</b><span>${w}</span></li>`).join('');
+  const typed = (words) => words.map((w, i) => `<li style="--i:${i}"><b>${i + 1}</b><span><span class="dt">${w.slice(0, 4)}</span><span class="dr">${w.slice(4)}</span></span></li>`).join('');
+  const rows = DUO_FILES.map(([n, size, c], i) => `<li style="--i:${i}"><i class="${c}"></i><span class="dw-l"><b>${n}</b><em><s></s></em></span><span class="dw-s">${size}</span><svg class="ic dw-ok"><use href="#i-check"/></svg></li>`).join('');
+  const thumbs = DUO_FILES.map(([n, , c], i) => `<li style="--i:${i}"><i class="${c}"></i><span>${n}</span></li>`).join('');
+  return `<div class="duo ${cls}" data-duo data-step="${step}" aria-hidden="true">
+  <div class="duo-pc">
+    <div class="duo-mon">
+      <div class="duo-bar"><i></i><i></i><i></i><span>filefinch</span></div>
+      <div class="duo-scr">
+        <div class="scn s-open"><span class="duo-logo"><svg class="ic"><use href="#i-send"/></svg></span><p class="scn-t">Pair a device</p><span class="duo-btn">Show pairing code</span></div>
+        <div class="scn s-code"><p class="scn-t">Scan the code or type these 6 words</p><div class="dcode">${qrPath(qr)}<ol class="dwords">${chips(WORDS)}</ol></div></div>
+        <div class="scn s-confirm"><p class="scn-t">Now type these on your phone</p><ol class="dwords dwords-c">${chips(CONFIRM)}</ol></div>
+        <div class="scn s-recv"><p class="scn-t"><span class="t-recv">Receiving 3 files</span><span class="t-done">3 files received</span></p><ul class="drows">${rows}</ul><p class="scn-ok"><svg class="ic"><use href="#i-check"/></svg>SHA-256 checked</p></div>
+      </div>
+    </div>
+    <div class="duo-stand"></div>
+  </div>
+  <div class="duo-link"><span class="beam"></span><span class="duo-badge b-match"><svg class="ic"><use href="#i-check"/></svg>Words match</span><span class="duo-badge b-direct"><svg class="ic"><use href="#i-lock"/></svg>Direct, encrypted</span></div>
+  <div class="duo-phone">
+    <div class="ph-scr">
+      <div class="scn s-open"><p class="scn-t">Have a pairing code?</p><ol class="dwords dwords-ph dwords-empty">${chips(['', '', '', '', '', ''])}</ol></div>
+      <div class="scn s-type"><p class="scn-t">Type the 6 words</p><ol class="dwords dwords-ph dwords-typed">${typed(WORDS)}</ol></div>
+      <div class="scn s-confirm"><p class="scn-t">Confirm with the words on the PC</p><ol class="dwords dwords-ph dwords-typed dwords-fast">${typed(CONFIRM)}</ol></div>
+      <div class="scn s-send"><p class="scn-t"><span class="t-recv">Sending</span><span class="t-done">Sent</span></p><ul class="dthumbs">${thumbs}</ul></div>
+    </div>
+  </div>
+  <div class="duo-fly">${DUO_FILES.map(([, , c], i) => `<span class="fx" style="--i:${i}"><span class="fy"><i class="${c}"></i></span></span>`).join('')}</div>
+  <div class="duo-burst"></div>
+</div>`;
+}
+
+function hero(R, qr) {
   return `<section class="hx" aria-labelledby="hero-h" data-hero>
   <div class="hx-bg" aria-hidden="true"><span class="hx-grid"></span><span class="hx-glow g1"></span><span class="hx-glow g2"></span><span class="hx-spot"></span></div>
   <div class="hx-in">
     <div class="hx-copy">
-      <a class="pill" href="#connect"><span class="pill-new">New</span>Connect with six words<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <a class="pill" href="#features"><span class="pill-new">New</span>Send text and links too<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       <h1 id="hero-h">Send files <span class="grad">straight to your own devices.</span></h1>
-      <p class="lede">Like a personal drive between your phone and your computers, without the drive. Type six words or scan a QR code, and files and whole folders of any size fly from one device to the other, end to end encrypted.</p>
+      <p class="lede">Open filefinch on two devices, type six words, then drop your files. They fly from one device to the other, any size, end to end encrypted. No account, no upload.</p>
       <div class="hx-cta">
         <a class="btn btn-lg btn-solid" href="${R}app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Start sending</a>
         <a class="btn btn-lg btn-line" href="#how">See how it works</a>
       </div>
-      <ul class="promise">${PROMISES.map(([, t]) => `<li>${check}<span>${t}</span></li>`).join('')}</ul>
+      <ul class="promise">${PROMISES.filter(([k]) => k !== 'no-cloud').map(([, t]) => `<li>${check}<span>${t}</span></li>`).join('')}</ul>
     </div>
     <div class="hx-side">
-      <div class="hx-object">${heroObjectSVG()}</div>
-      <nav class="entries" aria-label="Popular uses">
-        <a href="${R}guides/transfer-files-from-phone-to-pc-without-cable/"><span class="en-k">01</span><span class="en-t">Phone to PC</span><span class="en-d">Photos and videos, no cable</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        <a href="${R}guides/send-a-whole-folder/"><span class="en-k">02</span><span class="en-t">Whole folders</span><span class="en-d">The tree arrives intact</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        <a href="${R}guides/sync-folders-between-computers-without-cloud/"><span class="en-k">03</span><span class="en-t">Sync two computers</span><span class="en-d">Only what changed is sent</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      </nav>
+      ${duo('done', 'duo-loop', qr)}
+      <p class="sr-only">Animation: a computer shows six words, a phone types them, both confirm with six more words, then three files fly from the phone to the computer and arrive checked.</p>
     </div>
   </div>
 </section>`;
 }
 
-function flightScene() {
-  const dev = (cls, inner) => `<div class="fd ${cls}" aria-hidden="true">${inner}</div>`;
-  const rows = (n, done) => Array.from({ length: n }, (_, i) => `<div class="fr"><i class="fr-ic c${i % 4}"></i><span class="fr-l"><b></b><em><s style="--w:${i < done ? 100 : 30 + i * 18}%"></s></em></span></div>`).join('');
-  return `<section class="fly" id="flight" aria-labelledby="fly-h">
-  <div class="fly-sticky">
-    <header class="fly-head"><p class="kicker">Live</p><h2 id="fly-h">Watch a file fly direct</h2><p class="lede">Scroll to send it. A real transfer works the same way: chunk by chunk, checked, straight to the other device.</p></header>
-    <div class="fly-stage" data-fly>
-      <svg class="fly-svg" aria-hidden="true"><defs><linearGradient id="flyg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1000" y2="0"><stop offset="0" stop-color="var(--lx-blue)"/><stop offset="1" stop-color="var(--lx-coral)"/></linearGradient><filter id="flyb" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="6"/></filter></defs><path class="fly-base"/><path class="fly-side"/><path class="fly-glow" filter="url(#flyb)"/><path class="fly-trail"/></svg>
-      ${dev('fd-laptop', `<div class="fd-screen"><div class="fd-bar"><i></i><span>Send</span></div>${rows(3, 0)}</div><div class="fd-base"></div>`)}
-      ${dev('fd-desktop', `<div class="fd-screen"><div class="fd-bar"><i></i><span>Sync</span></div>${rows(3, 2)}</div><div class="fd-stand"></div>`)}
-      ${dev('fd-phone', `<div class="fd-screen"><div class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" class="ring-bg"/><circle cx="32" cy="32" r="27" class="ring-fg" pathLength="100"/></svg><span class="ring-pct">0%</span></div><p class="fd-recv">Receiving</p><p class="fd-hash"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>SHA-256 verified</p></div>`)}
-      <div class="fcard" aria-hidden="true">
-        <div class="fc-top"><span class="fc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5Z"/></svg></span><span class="fc-name"><b>Holiday-4K.mov</b><em>3.8 GB, original quality</em></span></div>
-        <div class="fc-bar"><s></s></div>
-        <div class="fc-meta"><span class="fc-speed">0.0 MB/s</span><span class="fc-hash"><i></i><span class="fc-hash-t">hashing</span></span></div>
-      </div>
-      <div class="sparks" aria-hidden="true"></div>
-      <div class="burst" aria-hidden="true"></div>
-      <p class="fly-done" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg>Received</p>
+const HOW = [
+  ['open', 'Open filefinch on both devices', 'Any modern browser on a phone, tablet or computer. Nothing to install, no account.', 3200],
+  ['code', 'Show the pairing code', 'On one device, press Show pairing code, or just drop your files. Six simple words and a QR code appear.', 3200],
+  ['type', 'Type the words on the other', 'Or scan the QR code with your phone. The first 4 letters of each word are enough.', 3600],
+  ['confirm', 'Confirm it is your device', 'One screen shows six new words to type on the other. A device that only saw your code cannot match them.', 3600],
+  ['send', 'Drop files, they fly direct', 'Pick files or a whole folder. They go straight to the other device, encrypted and checked.', 5200],
+];
+
+function howSteps(R, qr) {
+  return `<section id="how" class="sec how-sec" aria-labelledby="how-h">
+  <header class="sec-head"><p class="kicker">How it works</p><h2 id="how-h">Five steps. About a minute.</h2><p class="lede">No account, no upload. Press a step to see it, or let it play.</p></header>
+  <div class="hiw" data-hiw>
+    <ol class="hiw-steps">${HOW.map(([id, t, d, ms], i) => `<li><button type="button" class="hiw-step" data-go="${id}" style="--dur:${ms}ms"${i ? '' : ' aria-current="step"'}><span class="hiw-n">${i + 1}</span><span class="hiw-tx"><b>${t}</b><span>${d}</span></span><span class="hiw-bar" aria-hidden="true"><s></s></span></button></li>`).join('')}</ol>
+    <div class="hiw-stage">
+      ${duo('open', 'duo-big', qr)}
+      <div class="hiw-tools"><button type="button" class="btn btn-sm btn-line hiw-play" data-play hidden><svg class="ic i-pause" aria-hidden="true"><use href="#i-pause"/></svg><svg class="ic i-play" aria-hidden="true"><use href="#i-play"/></svg><span>Pause</span></button><a class="btn btn-sm btn-solid" href="${R}app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Try it now</a></div>
     </div>
-    <p class="sr-only">Animation: a 3.8 GB video file card lifts off a laptop, flies along a glowing arc to a phone, the progress ring fills, the SHA-256 check passes and the phone shows Received.</p>
   </div>
+  <p class="hiw-note"><span class="dot dot-m"></span>Prefer zero third parties? Use an invite link or its QR code instead. It carries the handshake itself, so no relay passes anything along.</p>
 </section>`;
 }
 
-function stories(R, { qr, shots }) {
-  const words = WORDS.map((w, i) => `<li class="wchip" style="--i:${i}"><span class="wn">${i + 1}</span><span class="ww" data-word="${w}">${w}</span></li>`).join('');
+function stories(R, { shots }) {
   const story = (id, kicker, h, p, items, visual, flip = false, extra = '') => `<section class="st${flip ? ' st-flip' : ''}" id="${id}" aria-labelledby="${id}-h">
   <div class="st-in">
     <div class="st-copy"><p class="kicker">${kicker}</p><h2 id="${id}-h">${h}</h2><p class="lede">${p}</p>${list(items)}${extra}</div>
     <div class="st-vis" data-reveal>${visual}</div>
   </div>
 </section>`;
-  const connectVis = `<div class="vis-stack">
-    <div class="cx" data-connect>
-      <div class="cx-col"><p class="cx-h">Scan with your phone</p>${qrAnimated(qr)}<p class="cx-s"><span class="dot dot-b"></span>Opens the same six words</p></div>
-      <div class="cx-or" aria-hidden="true"><span>or</span></div>
-      <div class="cx-col"><p class="cx-h">Type these 6 words</p><ol class="words" data-type>${words}</ol><p class="cx-s"><span class="dot dot-b"></span>Encrypted handshake via public relays</p></div>
-      <p class="cx-foot"><span class="dot dot-m"></span>Prefer zero third parties? Use an invite link or its QR code: it carries the handshake itself, with no relay.</p>
-    </div>
-    ${shotFrame(R, shots, 'connect', 'The filefinch connect screen with the QR code and the six words side by side', 'window')}
-  </div>`;
   const streamVis = `<div class="vis-stack">${shotFrame(R, shots, 'transfer', 'A large transfer in progress with speed, time left and the hash check', 'window')}<div class="stats"><div><b data-count="64">64</b><span>KiB per chunk</span></div><div><b data-count="256">256</b><span>bit SHA hash per file</span></div><div><b>No</b><span>size limit set by filefinch</span></div></div></div>`;
   const resumeVis = `<div class="vis-duo"><div class="knit" data-knit><svg viewBox="0 0 600 200" aria-hidden="true"><path class="kn-a" d="M30 150 C130 40 230 40 300 100"/><path class="kn-b" d="M300 100 C370 160 470 160 570 50"/><circle class="kn-spark" cx="300" cy="100" r="7"/></svg><span class="kn-cut">Connection lost</span><span class="kn-resume"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Resumed from 64%</span></div>${shotFrame(R, shots, 'resume', 'A transfer in the app with pause and resume controls', 'phone')}</div>`;
   const folderVis = `<div class="vis-stack"><div class="unfold" data-unfold aria-hidden="true"><span class="uf-folder"><svg viewBox="0 0 48 48"><path d="M5 13a3 3 0 0 1 3-3h10l4 5h18a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3Z"/></svg><b>Project</b></span>${['index.html', 'photos/', 'notes.md', 'video.mp4', 'data.csv', 'logo.svg'].map((f, i) => `<span class="uf-file" style="--i:${i}"><i class="c${i % 4}"></i>${f}</span>`).join('')}</div>${shotFrame(R, shots, 'sync', 'The sync plan listing the files that will be copied, updated or kept', 'window')}</div>`;
@@ -186,48 +208,41 @@ function stories(R, { qr, shots }) {
   const libraryVis = `<div class="vis-stack vis-glow">${lit(R, 'preview-lit', 'Previews of a photo, a video and audio before saving', 'vis-bg')}${shotFrame(R, shots, 'library', 'The local library with received photos, a video and documents', 'window')}</div>`;
   const honest = `<div class="honest-note"><p><strong>The honest part.</strong> The 6 word handshake travels through public MQTT relays, which see that two devices exchange a few small encrypted messages, never what they say. Your files never touch them. When both networks block every direct route, a TURN relay you configure can forward the encrypted traffic. To find a route, each browser asks a public STUN server for its public address, which sees your IP address like any website. With an invite link instead of the words, nothing relays the handshake at all.</p></div>`;
   return [
-    story('connect', 'Connect', 'Six words or one QR code.', 'The connect screen shows both, side by side. Type the six words on your other device, or point your phone camera at the QR code. Either way the two browsers find each other, then talk directly.', [
-      ['Six simple words', 'from a list of 2048, typed on the other device.'],
-      ['An encrypted handshake.', 'It travels through public relays that cannot read it.'],
-      ['Zero third parties, if you prefer.', 'An invite link, or its QR code, carries the handshake itself. No relay at all.'],
-      ['Then confirm with six more words.', 'They come from both connection certificates, so a device that only saw your code cannot match them.'],
-      ['Your files go device to device.', 'The relays only ever see a few encrypted messages.'],
-    ], connectVis),
     story('stream', 'Any size', 'Any size. Never held in memory.', 'Files are read in small chunks and written to disk as they arrive, so a 50 GB video flies the same way as a photo.', [
-      ['64 KiB chunks', 'read with file.slice, a few ahead of the network.'],
-      ['Straight to disk', 'through folder access, or a streamed download from the service worker.'],
+      ['Small 64 KiB pieces,', 'read only a few ahead of the network.'],
+      ['Written straight to disk,', 'into a folder you pick or as a streamed download.'],
       ['SHA-256 while streaming.', 'The receiver checks every file before marking it done.'],
-    ], streamVis, true),
+    ], streamVis),
     story('resume', 'Resilient', 'Pause, resume, survive a drop.', 'Wi-Fi blinks, a phone sleeps, a laptop lid closes. Reconnect and the transfer continues from the last confirmed chunk.', [
       ['Resume from the last chunk', 'instead of starting over.'],
       ['Pause and cancel', 'from either side.'],
       ['Plain words when it fails.', 'filefinch explains strict networks and offers the TURN setting.'],
-    ], resumeVis),
+    ], resumeVis, true),
     story('folders', 'Folders', 'Whole folders. Two way sync.', 'Drop a folder and its tree flies as a flock. Or keep a folder in step between two computers, sending only what changed.', [
       ['The tree arrives intact,', 'with sanitized paths that never escape the folder you pick.'],
       ['Two way, push or pull.', 'Review the plan of changes before anything is written.'],
       ['Conflicts are kept,', 'never silently overwritten.'],
-    ], folderVis, true),
+    ], folderVis),
     story('privacy', 'Private by design', 'Your files take the direct line.', 'filefinch is a web page that connects two browsers to each other. After that, it steps out of the way.', [
       ['No server of ours', 'ever sees your files or messages.'],
       ['DTLS on every connection,', 'with keys created inside the two browsers.'],
       ['Confirm with six words.', 'No file moves until the words typed on one screen match the other. With an invite link, compare the 12 digit fingerprint instead.'],
       ['Add a passphrase', 'for a second AES-GCM layer. It never travels.'],
-    ], privacyVis, false, honest),
+    ], privacyVis, true, honest),
     story('library', 'Library and previews', 'See it before you keep it.', 'Preview photos, video, audio, PDF and text right in the browser, and keep what you want in a local library on your own device.', [
       ['Safe previews.', 'Received pages and scripts are shown, never run.'],
       ['A library in this browser,', 'to save or send again later.'],
       ['Nothing online.', 'Clear it whenever you like.'],
-    ], libraryVis, true),
+    ], libraryVis),
   ].join('\n');
 }
 
 export function homeBody(R, { guides, qr, shots = new Set() }) {
   const en = guides.filter((g) => g.meta.lang === 'en');
-  const pick = ['send-large-files-without-limits', 'transfer-files-from-phone-to-pc-without-cable', 'airdrop-for-windows-and-android', 'send-a-whole-folder', 'is-webrtc-file-sharing-safe', 'peer-to-peer-file-transfer-explained'];
+  const pick = ['transfer-files-from-phone-to-pc-without-cable', 'send-a-whole-folder', 'sync-folders-between-computers-without-cloud', 'is-webrtc-file-sharing-safe'];
   const featured = pick.map((s) => en.find((g) => g.meta.slug === s)).filter(Boolean);
   return `${burstSymbols()}
-${hero(R)}
+${hero(R, qr)}
 
 <section class="strip" aria-label="Runs on every platform">
   <p class="strip-k">Runs in the browser on</p>
@@ -235,18 +250,9 @@ ${hero(R)}
   <p class="browsers">Chrome <span>/</span> Edge <span>/</span> Firefox <span>/</span> Safari <span>/</span> Brave <span>/</span> Opera</p>
 </section>
 
-${flightScene()}
+${howSteps(R, qr)}
 
-<section id="how" class="sec" aria-labelledby="how-h">
-  <header class="sec-head"><p class="kicker">How it works</p><h2 id="how-h">Three steps. No account.</h2><p class="lede">Open filefinch on both devices. One shows six words and a QR code, the other types the words or scans the code, and the files fly.</p></header>
-  <ol class="how">
-    <li class="glow-card" style="--gc:var(--lx-blue)">${lit(R, 'words-orbit', 'Six numbered words orbiting a padlock')}<span class="how-n">1</span><h3>Get six words</h3><p>Open filefinch and create an invite. Six words and a QR code appear side by side.</p></li>
-    <li class="glow-card" style="--gc:var(--lx-coral)">${lit(R, 'relay-lit', 'A relay passing sealed envelopes it cannot open')}<span class="how-n">2</span><h3>Type them on the other device</h3><p>Type the words, or scan the QR code with your phone. The handshake travels encrypted through public relays that cannot read it.</p></li>
-    <li class="glow-card" style="--gc:var(--lx-mint)">${lit(R, 'lit-parcel', 'A glowing parcel ready to fly')}<span class="how-n">3</span><h3>Confirm, then fly</h3><p>One screen shows six new words; type them on the other. Only your own device can match them. Then drop files or a folder and they go device to device.</p></li>
-  </ol>
-</section>
-
-${stories(R, { qr, shots })}
+${stories(R, { shots })}
 
 <section id="features" class="sec" aria-labelledby="features-h">
   <header class="sec-head"><p class="kicker">Features</p><h2 id="features-h">Everything a parcel needs on the way</h2><p class="lede">Built for real files: big videos, deep folders, flaky Wi-Fi and phones that fall asleep.</p></header>
@@ -291,7 +297,7 @@ ${stories(R, { qr, shots })}
 </section>
 
 <section class="sec" aria-labelledby="guides-h">
-  <header class="sec-head"><p class="kicker">Guides</p><h2 id="guides-h">The flight manual</h2><p class="lede">Practical guides for moving files between your own devices.</p></header>
+  <header class="sec-head"><p class="kicker">Guides</p><h2 id="guides-h">Guides</h2><p class="lede">Short guides to the main things filefinch does.</p></header>
   <div class="cards">${featured.map((g) => card(R, g)).join('')}</div>
   <p class="more-link"><a class="btn btn-line" href="${R}guides/">All guides<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
 </section>
