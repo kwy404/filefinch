@@ -15,6 +15,7 @@ import { ICONS, iconSVG } from './art/icons.mjs';
 import { ART, artSVG } from './art/art.mjs';
 import { bird } from './art/kit.mjs';
 import { LIT, litSVG } from './art/lit.mjs';
+import { SEASON_IDS, seasonFiles } from './art/seasons.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const write = (p, s) => {
@@ -65,6 +66,12 @@ export function buildArt() {
   write('docs/assets/art/finn-head.svg', headSVG('light'));
   write('docs/assets/art/finn-head-dark.svg', headSVG('dark'));
   write('docs/assets/art/flyer.svg', flyerSVG());
+  for (const id of SEASON_IDS) {
+    for (const [name, svg] of seasonFiles(id)) {
+      write(`assets/seasons/${id}/${name}`, svg);
+      write(`docs/assets/seasons/${id}/${name}`, svg);
+    }
+  }
   return [...Object.keys(ART), ...Object.keys(LIT)];
 }
 
