@@ -8,16 +8,18 @@ All notable changes to filefinch are documented here. The format follows [Keep a
 
 - Files first: pick or drop files on the start screen and the pairing code appears right away. The files are counted under the code and go by themselves once the devices are confirmed, and the sender moves to the Send tab to watch them leave.
 - Text and links between devices, like a shared clipboard: a box on the Send tab (Ctrl + Enter sends, a Paste button where the browser allows it), and the texts that arrived on the Received tab with Copy and, for a single http or https address, Open. Each text is marked Waiting, Sent or Delivered; texts typed while disconnected go out on the next connection, and with a passphrase they are sealed with it like file chunks. Ctrl + V on the Send tab sends pasted files or puts pasted text in the box.
+- Special dates in the app: on the same dates as the website, a thin two color line under the header and Finn in costume on the start screen, with a Turn off button. Turning it off on the site or in the app keeps it off on both until next year. The script and Finn's costumes are kept for offline use.
 - Known devices: after the confirmation words match, the two devices agree on a fresh random secret over the confirmed channel and remember each other (a switch on the status screen turns it off). Next time each taps the other under "Your devices": they meet on the relays with a topic and key derived from that secret, so there are no pairing words to type, only the confirmation words. Devices can be forgotten at any time.
 
 ### Changed
 
 - Invites are a QR code and six words only: the app shows no invite address, copy link or share link button. The QR code still carries the words for a phone camera.
-- The link mode left Settings and the start screen. It stays as "Connect with no relays (advanced)" under Options: each side shows a QR code with a Copy code button, and the other side scans it or pastes the code.
+- The link mode left Settings and the start screen. It stays as "Connect with no relays (advanced)" under Options: one device shows a QR code, the other answers with its own, and either can be scanned or its code pasted.
 
 ### Fixed
 
 - The passphrase prompt showed its text keys instead of its title and explanation.
+- The installed app could not start offline: one of its scripts (library.js) was left out of the offline cache.
 
 ## [0.2.0] - 2026-10-14
 
