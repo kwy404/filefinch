@@ -1,11 +1,10 @@
 ---
 slug: enviar-arquivos-grandes-sem-limite
 lang: pt
-pair: send-large-files-without-limits
-title: Enviar Arquivos Grandes Sem Limite, Grátis e Direto | filefinch
-description: Como enviar arquivos grandes sem limite de tamanho, grátis e direto pelo navegador, sem upload para a nuvem, sem cadastro e com retomada se a conexão cair.
-h1: Como enviar arquivos grandes sem limite de tamanho
-keyword: enviar arquivos grandes sem limite
+title: Enviar arquivos grandes | filefinch
+description: Como o filefinch envia arquivos grandes direto entre dois aparelhos, gravando no disco aos poucos, com conferência e retomada se a conexão cair.
+h1: Enviar arquivos grandes direto entre aparelhos
+topic: Arquivos grandes
 art: big-file
 alt: Um bando de tentilhões carregando juntos um rolo de filme enorme
 time: PT5M
@@ -32,7 +31,7 @@ faq:
     a: A velocidade depende da conexão mais lenta das duas, geralmente o upload de quem envia. Se os dois estiverem na mesma rede Wi-Fi, o tráfego fica local e costuma ser bem mais rápido.
   - q: O filefinch é gratuito mesmo?
     a: Sim. É um projeto de código aberto com licença MIT, sem planos pagos, sem cadastro e sem anúncios ou rastreamento.
-related: [transferir-arquivos-do-celular-para-o-pc-sem-cabo, airdrop-para-windows-e-android]
+related: [transferir-arquivos-do-celular-para-o-pc-sem-cabo]
 ---
 Precisa mandar um vídeo de 20 GB, o backup do celular ou a pasta inteira de um projeto e esbarrou no limite do anexo de e-mail ou do plano gratuito de algum serviço? O filefinch resolve isso de outro jeito: em vez de subir o arquivo para a nuvem e baixar depois, ele manda direto de um navegador para o outro, sem limite de tamanho definido pelo app.
 
@@ -102,7 +101,7 @@ Um cuidado importante: os dados de conexão contêm os endereços de rede do apa
 
 Um motivo comum para procurar como enviar arquivos grandes é não querer que o vídeo chegue comprimido. No filefinch, fotos e vídeos vão byte por byte: mesma resolução, mesma qualidade e metadados intactos. Antes de salvar, quem recebe ainda pode ver uma prévia de imagens, vídeos, áudios e textos no próprio navegador.
 
-Se o arquivo estiver no celular, veja também [como transferir arquivos do celular para o PC sem cabo](guide:transferir-arquivos-do-celular-para-o-pc-sem-cabo).
+Se o arquivo estiver no celular, veja também o guia [do celular para o computador](guide:transferir-arquivos-do-celular-para-o-pc-sem-cabo).
 
 ## Quando o filefinch não é a melhor opção
 
@@ -119,4 +118,4 @@ Também pode acontecer de os dois aparelhos estarem atrás de redes muito restri
 - Verificação de integridade com SHA-256
 - Funciona entre qualquer par: Android, iPhone, Windows, Mac e Linux
 
-Abra o [filefinch](app:) nos dois aparelhos e mande aquele arquivo que não cabia em lugar nenhum. Se for entre celulares de marcas diferentes, o guia [AirDrop para Windows e Android](guide:airdrop-para-windows-e-android) mostra como fazer.
+Abra o [filefinch](app:) nos dois aparelhos e mande aquele arquivo que não cabia em lugar nenhum.

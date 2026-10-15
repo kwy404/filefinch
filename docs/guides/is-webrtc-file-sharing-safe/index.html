@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <script>(function(){try{var t=localStorage.getItem('voodoo:theme');if(t&&t.charAt(0)==='"')t=JSON.parse(t);var r=document.documentElement;if(t==='light'||t==='dark'){r.setAttribute('data-theme',t);r.style.colorScheme=t}else{r.removeAttribute('data-theme')}}catch(e){}})();</script>
-<title>Is WebRTC File Sharing Safe? An Honest Security Guide | filefinch</title>
-<meta name="description" content="Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.">
+<title>Security: what a filefinch transfer protects | filefinch</title>
+<meta name="description" content="How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.">
 <link rel="canonical" href="https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/">
 <link rel="alternate" hreflang="en" href="https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/">
 <link rel="alternate" hreflang="x-default" href="https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/">
@@ -16,16 +16,16 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="filefinch">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="Is WebRTC File Sharing Safe? An Honest Security Guide | filefinch">
-<meta property="og:description" content="Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.">
+<meta property="og:title" content="Security: what a filefinch transfer protects | filefinch">
+<meta property="og:description" content="How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.">
 <meta property="og:url" content="https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/">
 <meta property="og:image" content="https://kwy404.github.io/filefinch/assets/og/is-webrtc-file-sharing-safe.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Both screens show the same short connection fingerprint">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Is WebRTC File Sharing Safe? An Honest Security Guide | filefinch">
-<meta name="twitter:description" content="Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.">
+<meta name="twitter:title" content="Security: what a filefinch transfer protects | filefinch">
+<meta name="twitter:description" content="How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.">
 <meta name="twitter:image" content="https://kwy404.github.io/filefinch/assets/og/is-webrtc-file-sharing-safe.png">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -40,14 +40,13 @@
   {
    "@type": "TechArticle",
    "@id": "https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/#article",
-   "headline": "Is WebRTC file sharing safe? What it protects and what it does not",
-   "description": "Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.",
+   "headline": "What a filefinch transfer protects, and what it does not",
+   "description": "How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.",
    "image": "https://kwy404.github.io/filefinch/assets/og/is-webrtc-file-sharing-safe.png",
    "inLanguage": "en",
    "datePublished": "2026-10-14",
    "dateModified": "2026-10-14",
-   "wordCount": 1964,
-   "keywords": "is webrtc file sharing safe",
+   "wordCount": 1951,
    "author": {
     "@type": "Person",
     "name": "Alexandre Kohler",
@@ -69,7 +68,7 @@
    "@type": "HowTo",
    "@id": "https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/#howto",
    "name": "How to make a filefinch transfer as safe as possible",
-   "description": "Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.",
+   "description": "How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.",
    "image": "https://kwy404.github.io/filefinch/assets/og/is-webrtc-file-sharing-safe.png",
    "inLanguage": "en",
    "totalTime": "PT6M",
@@ -195,7 +194,7 @@
     {
      "@type": "ListItem",
      "position": 3,
-     "name": "Is WebRTC file sharing safe? What it protects and what it does not",
+     "name": "What a filefinch transfer protects, and what it does not",
      "item": "https://kwy404.github.io/filefinch/guides/is-webrtc-file-sharing-safe/"
     }
    ]
@@ -228,12 +227,12 @@
 </header>
 <main id="main">
 <div class="guide-wrap">
-<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">Is WebRTC file sharing safe? What it protects and what it does not</li></ol></nav>
+<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../guides/">Guides</a></li><li aria-current="page">What a filefinch transfer protects, and what it does not</li></ol></nav>
 <header class="guide-head">
   <div class="guide-head-text">
-    <p class="kicker">Guide: is webrtc file sharing safe</p>
-    <h1>Is WebRTC file sharing safe? What it protects and what it does not</h1>
-    <p class="lede">Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.</p>
+    <p class="kicker">Guide: Security</p>
+    <h1>What a filefinch transfer protects, and what it does not</h1>
+    <p class="lede">How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.</p>
     <p class="guide-meta"><span>9 min read</span><span>Updated <time datetime="2026-10-14">2026-10-14</time></span></p>
   </div>
   <figure class="guide-art"><span class="art "><img class="art-l" src="../../assets/art/fingerprint-match.svg" width="640" height="400" alt="Both screens show the same short connection fingerprint" fetchpriority="high"><img class="art-d" src="../../assets/art/fingerprint-match-dark.svg" width="640" height="400" alt="" aria-hidden="true" fetchpriority="high"></span></figure>
@@ -250,7 +249,7 @@
 <p>There is no server of ours and no filefinch backend, but two browsers still need to swap a small bundle of connection details (the WebRTC offer and answer) before they can talk. There are two ways to do that.</p>
 <p>By default you pair with 6 words. One device taps Show pairing code and displays a QR code next to 6 words. The other device types the words or scans the code. Behind the scenes, the 6-word handshake travels encrypted through public relays that cannot read it, and then your files go device to device over a WebRTC data channel.</p>
 <p>The alternative is the <strong>Zero third parties</strong> mode. The first device creates an invite, which is the full WebRTC offer, compressed and packed into a link and a QR code. The second device opens that link or scans the code, then shows a short reply code that goes back to the first device. After that single round trip, the two browsers talk directly, and no relay carried the handshake.</p>
-<p>Either way there is no account, no upload, no copy of your files on anyone else's machine, and no analytics watching what you send. If you want the full picture, read <a href="../../guides/peer-to-peer-file-transfer-explained/">peer to peer file transfer explained</a>.</p>
+<p>Either way there is no account, no upload, no copy of your files on anyone else's machine, and no analytics watching what you send.</p>
 </section>
 <section id="the-6-word-handshake-and-the-public-relays" class="prose-sec"><h2>The 6 word handshake and the public relays</h2>
 <p>The 6 words come from the BIP39 English list of 2048 words. Both devices turn them into a topic name and an encryption key. They then meet on several public MQTT brokers, which are message servers run by third parties, not by filefinch, and use them to swap the WebRTC offer and answer, sealed with that key. As soon as the connection opens, both sides leave the brokers.</p>
@@ -307,7 +306,7 @@
     <section id="faq" class="prose-sec"><h2>Questions people ask</h2><div class="faq"><details><summary>Is WebRTC encrypted?</summary><p>Yes. WebRTC data channels are always encrypted with DTLS, and browsers do not let a web page turn that off. The keys are created in the two browsers for each connection.</p></details><details><summary>Can the public relays used for the 6 words read my files?</summary><p>Your files never pass through them. The relays only carry the short connection handshake, sealed with a key derived from the 6 words, so they see random looking topic names and ciphertext. They can still see the IP address each device uses to reach them and when it connected.</p></details><details><summary>Can a TURN server read my files?</summary><p>No. A TURN relay only forwards packets that are already encrypted between the two browsers. It can see both IP addresses, the timing and roughly how much data moved, but not the content.</p></details><details><summary>Does WebRTC leak my IP address?</summary><p>To build a direct connection, each device has to learn the other device's network address, and the STUN server sees your public IP. That is how peer to peer works. Share pairing codes and invites only with people you would give your address to.</p></details><details><summary>What does the connection fingerprint protect against?</summary><p>It protects against someone swapping the connection details during the handshake, whether that handshake went through the relays or through an invite link. In the link mode you compare the 12 digit code on both screens. After a 6 word pairing, the 6 confirmation words are built from the same certificate fingerprints plus a session nonce, so typing them checks the same thing and also proves the device that joined is yours. If they match, the two browsers are talking directly to each other.</p></details><details><summary>Is filefinch safe on a computer with malware?</summary><p>No browser app can fully protect you if one of the devices is compromised. Malware on either end can read files before they are encrypted or after they are decrypted. Keep both devices updated and trusted.</p></details></div></section>
   </article>
 </div>
-<section class="related" aria-labelledby="related-h"><h2 id="related-h">Keep reading</h2><div class="cards"><a class="gcard" href="../../guides/peer-to-peer-file-transfer-explained/"><span class="art "><img class="art-l" src="../../assets/art/invite-qr.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/invite-qr-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">peer to peer file transfer</span><span class="gcard-t">Peer to peer file transfer explained, without the jargon</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/share-files-without-uploading/"><span class="art "><img class="art-l" src="../../assets/art/direct-flight.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/direct-flight-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">share files without uploading</span><span class="gcard-t">Share files without uploading them to the cloud</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/free-private-alternative-to-cloud-transfer/"><span class="art "><img class="art-l" src="../../assets/art/cloud-vs-direct.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/cloud-vs-direct-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">private alternative to cloud transfer</span><span class="gcard-t">A free and private alternative to cloud file transfer</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/transfer-files-on-the-same-wifi/"><span class="art "><img class="art-l" src="../../assets/art/same-wifi.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/same-wifi-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">transfer files on the same wifi</span><span class="gcard-t">How to transfer files on the same Wi-Fi between any devices</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div></section>
+<section class="related" aria-labelledby="related-h"><h2 id="related-h">Keep reading</h2><div class="cards"><a class="gcard" href="../../guides/transfer-files-from-phone-to-pc-without-cable/"><span class="art "><img class="art-l" src="../../assets/art/phone-to-pc.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/phone-to-pc-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">Phone to computer</span><span class="gcard-t">Send files from your phone to a computer</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a><a class="gcard" href="../../guides/send-a-whole-folder/"><span class="art "><img class="art-l" src="../../assets/art/folder-flock.svg" width="640" height="400" alt="" loading="lazy" decoding="async"><img class="art-d" src="../../assets/art/folder-flock-dark.svg" width="640" height="400" alt="" aria-hidden="true" loading="lazy" decoding="async"></span><span class="gcard-k">Folders</span><span class="gcard-t">Send a whole folder, subfolders and all</span><span class="gcard-more">Read the guide <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div></section>
 </div>
 </main>
 <footer class="foot">
@@ -323,15 +322,15 @@
       <ul class="foot-list"><li><a href="../../app/">Open the app</a></li><li><a href="../../#how">How it works</a></li><li><a href="../../guides/">All guides</a></li><li><a href="https://github.com/kwy404/filefinch" rel="noopener">Source on GitHub</a></li><li><a href="https://github.com/kwy404/filefinch/blob/main/SECURITY.md" rel="noopener">Security policy</a></li><li><a href="https://github.com/kwy404/filefinch/blob/main/CHANGELOG.md" rel="noopener">Changelog</a></li></ul>
     </div>
     <div>
-      <h2 class="foot-h">Popular guides</h2>
-      <ul class="foot-list"><li><a href="../../guides/send-large-files-without-limits/">Send large files without limits</a></li><li><a href="../../guides/transfer-files-from-phone-to-pc-without-cable/">Phone to PC without a cable</a></li><li><a href="../../guides/airdrop-for-windows-and-android/">AirDrop for Windows and Android</a></li><li><a href="../../guides/send-a-whole-folder/">Send a whole folder</a></li><li><a href="../../guides/is-webrtc-file-sharing-safe/">Is WebRTC file sharing safe?</a></li><li><a href="../../guides/peer-to-peer-file-transfer-explained/">Peer to peer file transfer explained</a></li></ul>
+      <h2 class="foot-h">Guides</h2>
+      <ul class="foot-list"><li><a href="../../guides/transfer-files-from-phone-to-pc-without-cable/">Phone to computer</a></li><li><a href="../../guides/send-a-whole-folder/">Send a whole folder</a></li><li><a href="../../guides/sync-folders-between-computers-without-cloud/">Keep a folder in sync</a></li><li><a href="../../guides/is-webrtc-file-sharing-safe/">Security</a></li></ul>
     </div>
     <div>
       <h2 class="foot-h">More from kwy404</h2>
       <ul class="foot-list foot-more"><li><a href="https://kwy404.github.io/monsoon/" rel="noopener">Monsoon</a><small>CSS framework with no build step</small></li><li><a href="https://kwy404.github.io/Voodoo.js/" rel="noopener">Voodoo.js</a><small>reactive HTML attributes</small></li><li><a href="https://kwy404.github.io/howlden/" rel="noopener">howlden</a><small>serverless peer to peer voice and chat rooms</small></li><li><a href="https://kwy404.github.io/breakhound/" rel="noopener">breakhound</a><small>finds bugs in any JS library</small></li><li><a href="https://kwy404.github.io/vueleap/" rel="noopener">vueleap</a><small>migrate Vue 2 to Vue 3</small></li><li><a href="https://kwy404.github.io/graphemely/" rel="noopener">graphemely</a><small>emoji safe string utilities</small></li><li><a href="https://kwy404.github.io/numberparrot/" rel="noopener">numberparrot</a><small>parse localized numbers</small></li><li><a href="https://kwy404.github.io/edgegoat/" rel="noopener">edgegoat</a><small>edge case test inputs</small></li><li><a href="https://kwy404.github.io/cookieowl/" rel="noopener">cookieowl</a><small>cookie consent for LGPD and GDPR</small></li><li><a href="https://kwy404.github.io/installkite/" rel="noopener">installkite</a><small>make any site an installable PWA</small></li><li><a href="https://kwy404.github.io/a11ymedic/" rel="noopener">a11ymedic</a><small>accessibility checker with fixes</small></li><li><a href="https://kwy404.github.io/fontsketch/" rel="noopener">fontsketch</a><small>turn your handwriting into a font</small></li><li><a href="https://kwy404.github.io/kastor/" rel="noopener">kastor</a><small>TypeScript ORM for almost every database</small></li></ul>
     </div>
   </div>
-  <p class="foot-legal">MIT License. Free and open source, no tracking. <span>filefinch 0.1.0</span></p>
+  <p class="foot-legal">MIT License. Free and open source, no tracking. <span>filefinch 0.2.0</span></p>
 </footer>
 </body>
 </html>

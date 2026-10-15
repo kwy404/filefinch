@@ -203,7 +203,7 @@ async function main(scheme) {
     await snap(pageA, 'sync', WINDOW);
 
     // 5. The library with a few kept files.
-    const lib = [join(docs, 'og.png'), join(root, 'assets', 'social-preview.png'), join(docs, 'assets', 'og', 'send-large-files-without-limits.png'), join(docs, 'assets', 'og', 'send-a-whole-folder.png')].filter((f) => existsSync(f));
+    const lib = [join(docs, 'og.png'), join(root, 'assets', 'social-preview.png'), join(docs, 'assets', 'og', 'sync-folders-between-computers-without-cloud.png'), join(docs, 'assets', 'og', 'send-a-whole-folder.png')].filter((f) => existsSync(f));
     const note = join(work, 'Packing list.txt');
     writeFileSync(note, 'Packing list\n- charger\n- passport\n- camera\n');
     await pageB.click('[data-go="library"]');

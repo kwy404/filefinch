@@ -69,7 +69,7 @@ for (const lang of ['en', 'pt']) {
     guides.push({ meta, body });
   }
 }
-const ORDER = ['send-large-files-without-limits', 'transfer-files-from-phone-to-pc-without-cable', 'free-private-alternative-to-cloud-transfer', 'send-a-whole-folder', 'share-files-without-uploading', 'airdrop-for-windows-and-android', 'send-video-in-original-quality', 'peer-to-peer-file-transfer-explained', 'is-webrtc-file-sharing-safe', 'transfer-files-on-the-same-wifi', 'sync-folders-between-computers-without-cloud', 'enviar-arquivos-grandes-sem-limite', 'transferir-arquivos-do-celular-para-o-pc-sem-cabo', 'airdrop-para-windows-e-android'];
+const ORDER = ['transfer-files-from-phone-to-pc-without-cable', 'send-a-whole-folder', 'sync-folders-between-computers-without-cloud', 'is-webrtc-file-sharing-safe', 'transferir-arquivos-do-celular-para-o-pc-sem-cabo', 'enviar-arquivos-grandes-sem-limite'];
 const rank = (g) => (ORDER.includes(g.meta.slug) ? ORDER.indexOf(g.meta.slug) : ORDER.length);
 guides.sort((a, b) => rank(a) - rank(b));
 for (const g of guides) {
@@ -139,8 +139,8 @@ for (const lang of ['en', 'pt']) {
   out[`${path}index.html`] = page(
     {
       lang, path, nav: 'guides',
-      title: en ? 'Guides: send large files, folders and photos directly between devices | filefinch' : 'Guias: enviar arquivos grandes direto entre aparelhos | filefinch',
-      description: en ? 'Free guides to moving files between your own devices without a cloud: large files, whole folders, phone to PC, same Wi-Fi, AirDrop alternatives and WebRTC safety.' : 'Guias grátis para mover arquivos entre os seus aparelhos sem nuvem: arquivos grandes sem limite, do celular para o PC sem cabo e alternativas ao AirDrop.',
+      title: en ? 'Guides | filefinch' : 'Guias | filefinch',
+      description: en ? 'Guides to filefinch: sending from a phone to a computer, sending a whole folder, keeping a folder in sync, and how a transfer is protected.' : 'Guias do filefinch: como enviar arquivos do celular para o computador e como enviar arquivos grandes direto entre aparelhos.',
       jsonld: indexJsonLd(lang, guides), alternates: { en: `${SITE}guides/`, 'pt-BR': `${SITE}pt/guias/`, 'x-default': `${SITE}guides/` }, langHref: en ? 'pt/guias/' : 'guides/',
       ogImage: `${SITE}assets/og/guides-${lang}.png`,
     },
@@ -212,8 +212,8 @@ for (const [name, content] of Object.entries(out)) {
 if (png) {
   await renderPng([
     ...baseImages(),
-    { svg: cardSVG({ title: 'Guides to sending files directly between your devices', kicker: 'filefinch guides', art: 'folder-flock' }), width: 1200, height: 630, out: 'docs/assets/og/guides-en.png' },
-    { svg: cardSVG({ title: 'Guias para enviar arquivos direto entre aparelhos', kicker: 'guias do filefinch', art: 'phone-to-pc' }), width: 1200, height: 630, out: 'docs/assets/og/guides-pt.png' },
+    { svg: cardSVG({ title: 'filefinch guides', kicker: 'Documentation', art: 'folder-flock' }), width: 1200, height: 630, out: 'docs/assets/og/guides-en.png' },
+    { svg: cardSVG({ title: 'Guias do filefinch', kicker: 'Documentação', art: 'phone-to-pc' }), width: 1200, height: 630, out: 'docs/assets/og/guides-pt.png' },
     ...guides.map((g) => ({ svg: cardSVG({ title: g.meta.h1, kicker: g.meta.lang === 'pt' ? 'Guia do filefinch' : 'filefinch guide', art: g.meta.art }), width: 1200, height: 630, out: `docs/assets/og/${g.meta.slug}.png` })),
   ]);
 }

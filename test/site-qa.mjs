@@ -84,7 +84,7 @@ if (shots) {
   const out = join(root, 'tmp', 'qa');
   mkdirSync(out, { recursive: true });
   const sizes = [[320, 720], [375, 812], [768, 1024], [1440, 900], [1860, 930], [2560, 1300]];
-  const targets = only ? [only] : ['', 'guides/', 'guides/send-large-files-without-limits/', 'pt/guias/', '404.html'];
+  const targets = only ? [only] : ['', 'guides/', 'guides/send-a-whole-folder/', 'pt/guias/', '404.html'];
   for (const scheme of ['light', 'dark']) {
     for (const [w, h] of sizes) {
       const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, deviceScaleFactor: 1 });

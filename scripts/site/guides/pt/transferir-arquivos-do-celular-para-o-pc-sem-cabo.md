@@ -2,10 +2,10 @@
 slug: transferir-arquivos-do-celular-para-o-pc-sem-cabo
 lang: pt
 pair: transfer-files-from-phone-to-pc-without-cable
-title: Transferir Arquivos do Celular para o PC Sem Cabo | filefinch
-description: Como transferir arquivos do celular para o PC sem cabo, pelo navegador e de graça. Fotos e vídeos em qualidade original, Android ou iPhone, sem instalar app.
-h1: Como transferir arquivos do celular para o PC sem cabo
-keyword: transferir arquivos do celular para o pc sem cabo
+title: Enviar arquivos do celular para o computador | filefinch
+description: Como passar fotos, vídeos e outros arquivos de um celular Android ou iPhone para um computador com o filefinch, por uma conexão direta.
+h1: Enviar arquivos do celular para o computador
+topic: Celular para computador
 art: phone-to-pc
 alt: Fotos e vídeos voando de um celular direto para um computador de mesa
 time: PT3M
@@ -32,7 +32,7 @@ faq:
     a: Para o pareamento com 6 palavras, sim, porque ele usa relays públicos na internet. Sem internet, use o modo Zero terceiros com link de convite. Se o celular e o PC estiverem no mesmo Wi-Fi e o filefinch já tiver sido carregado antes nos dois, dá para transferir só pela rede local.
   - q: Por que a transferência parou quando bloqueei o celular?
     a: Navegadores de celular podem pausar abas em segundo plano. Deixe a tela ligada e o filefinch aberto até o envio terminar.
-related: [enviar-arquivos-grandes-sem-limite, airdrop-para-windows-e-android]
+related: [enviar-arquivos-grandes-sem-limite]
 ---
 O cabo sumiu, a entrada do PC não é a mesma do celular ou o computador simplesmente não reconhece o aparelho. Quem nunca passou por isso? Dá para transferir fotos, vídeos e documentos do celular para o PC sem cabo nenhum, só com o navegador, usando o filefinch.
 
@@ -83,7 +83,7 @@ Vídeos em 4K e backups de galeria podem ter vários gigabytes. Algumas dicas aj
 - **Não se preocupe com quedas.** Se a conexão cair, reconecte e o envio continua do último ponto confirmado.
 - **Confira o resultado.** Cada arquivo é verificado com SHA-256 no final, então você sabe que chegou inteiro.
 
-Para arquivos realmente enormes, o guia [como enviar arquivos grandes sem limite](guide:enviar-arquivos-grandes-sem-limite) tem mais detalhes.
+Para arquivos realmente enormes, o guia sobre [arquivos grandes](guide:enviar-arquivos-grandes-sem-limite) tem mais detalhes.
 
 ## E do PC para o celular?
 
@@ -105,4 +105,4 @@ Nenhum servidor nosso entra na história, o filefinch não pede cadastro e não 
 
 Se você quer que as fotos do celular apareçam sozinhas no PC todos os dias, um backup automático na nuvem atende melhor, porque o filefinch exige os dois aparelhos online e com o app aberto ao mesmo tempo. E se o cabo está ali na gaveta e o PC reconhece o celular sem problema, ele também resolve muito bem.
 
-Para o dia a dia, quando você só quer jogar umas fotos e vídeos no computador sem procurar cabo, o caminho direto pelo navegador é prático. Se o celular for de um amigo com outra marca, veja o guia [AirDrop para Windows e Android](guide:airdrop-para-windows-e-android). Ou abra agora o [filefinch](app:) no PC e escaneie o QR code.
+Para o dia a dia, quando você só quer jogar umas fotos e vídeos no computador sem procurar cabo, o caminho direto pelo navegador é prático. Ou abra agora o [filefinch](app:) no PC e escaneie o QR code.

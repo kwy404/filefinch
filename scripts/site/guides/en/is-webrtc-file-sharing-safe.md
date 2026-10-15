@@ -1,10 +1,10 @@
 ---
 slug: is-webrtc-file-sharing-safe
 lang: en
-title: Is WebRTC File Sharing Safe? An Honest Security Guide | filefinch
-description: Is WebRTC file sharing safe? How DTLS encryption, fingerprints, TURN relays, STUN and invite links really work, plus what a browser app cannot protect.
-h1: Is WebRTC file sharing safe? What it protects and what it does not
-keyword: is webrtc file sharing safe
+title: Security: what a filefinch transfer protects | filefinch
+description: How a filefinch transfer is protected: DTLS, confirmation words, fingerprints, relays and an optional passphrase, plus what a browser app cannot do.
+h1: What a filefinch transfer protects, and what it does not
+topic: Security
 art: fingerprint-match
 alt: Both screens show the same short connection fingerprint
 time: PT6M
@@ -33,7 +33,7 @@ faq:
     a: It protects against someone swapping the connection details during the handshake, whether that handshake went through the relays or through an invite link. In the link mode you compare the 12 digit code on both screens. After a 6 word pairing, the 6 confirmation words are built from the same certificate fingerprints plus a session nonce, so typing them checks the same thing and also proves the device that joined is yours. If they match, the two browsers are talking directly to each other.
   - q: Is filefinch safe on a computer with malware?
     a: No browser app can fully protect you if one of the devices is compromised. Malware on either end can read files before they are encrypted or after they are decrypted. Keep both devices updated and trusted.
-related: [peer-to-peer-file-transfer-explained, share-files-without-uploading, free-private-alternative-to-cloud-transfer, transfer-files-on-the-same-wifi]
+related: [transfer-files-from-phone-to-pc-without-cable, send-a-whole-folder]
 ---
 Short answer: WebRTC file sharing is safe for most everyday needs, as long as you understand what the encryption covers and handle the pairing code or invite link with a little care. Every WebRTC data channel is encrypted, nobody in the middle can read the bytes, and the files never sit on a server. That still leaves a few honest caveats about IP addresses, relays and the devices themselves.
 
@@ -47,7 +47,7 @@ By default you pair with 6 words. One device taps Show pairing code and displays
 
 The alternative is the **Zero third parties** mode. The first device creates an invite, which is the full WebRTC offer, compressed and packed into a link and a QR code. The second device opens that link or scans the code, then shows a short reply code that goes back to the first device. After that single round trip, the two browsers talk directly, and no relay carried the handshake.
 
-Either way there is no account, no upload, no copy of your files on anyone else's machine, and no analytics watching what you send. If you want the full picture, read [peer to peer file transfer explained](guide:peer-to-peer-file-transfer-explained).
+Either way there is no account, no upload, no copy of your files on anyone else's machine, and no analytics watching what you send.
 
 ## The 6 word handshake and the public relays
 

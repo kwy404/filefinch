@@ -6,8 +6,8 @@ export const GUIDE_BASE = { en: 'guides/', pt: 'pt/guias/' };
 export const guidePath = (lang, slug) => `${GUIDE_BASE[lang]}${slug}/`;
 
 const T = {
-  en: { home: 'Home', guides: 'Guides', guide: 'Guide', min: 'min read', updated: 'Updated', steps: 'Step by step', faq: 'Questions people ask', related: 'Keep reading', toc: 'On this page', tryTitle: 'Try it now', tryText: 'Open filefinch on two devices, share the invite link or QR code and the files fly straight across. Free, no account.', tryBtn: 'Start sending', howBtn: 'How it works', other: 'Leia em português', indexTitle: 'Guides to sending files directly', indexKicker: 'The flight manual', indexLede: 'Plain, honest guides to moving files between your own devices without a cloud: large files, whole folders, phone to PC, the same Wi-Fi, and how peer to peer encryption really works.', read: 'Read the guide' },
-  pt: { home: 'Início', guides: 'Guias', guide: 'Guia', min: 'min de leitura', updated: 'Atualizado em', steps: 'Passo a passo', faq: 'Perguntas frequentes', related: 'Continue lendo', toc: 'Nesta página', tryTitle: 'Experimente agora', tryText: 'Abra o filefinch em dois aparelhos, compartilhe o link de convite ou o QR code e os arquivos voam direto. Grátis e sem conta.', tryBtn: 'Começar a enviar', howBtn: 'Como funciona', other: 'Read in English', indexTitle: 'Guias para enviar arquivos direto', indexKicker: 'O manual de voo', indexLede: 'Guias simples e honestos para mover arquivos entre os seus aparelhos sem nuvem: arquivos grandes, do celular para o PC e alternativas ao AirDrop.', read: 'Ler o guia' },
+  en: { home: 'Home', guides: 'Guides', guide: 'Guide', min: 'min read', updated: 'Updated', steps: 'Step by step', faq: 'Questions people ask', related: 'Keep reading', toc: 'On this page', tryTitle: 'Try it now', tryText: 'Open filefinch on two devices, share the invite link or QR code and the files fly straight across. Free, no account.', tryBtn: 'Start sending', howBtn: 'How it works', other: 'Leia em português', indexTitle: 'Guides', indexKicker: 'Documentation', indexLede: 'Short guides to the main things filefinch does: sending from a phone to a computer, sending a whole folder, keeping a folder in sync, and how a transfer is protected.', read: 'Read the guide' },
+  pt: { home: 'Início', guides: 'Guias', guide: 'Guia', min: 'min de leitura', updated: 'Atualizado em', steps: 'Passo a passo', faq: 'Perguntas frequentes', related: 'Continue lendo', toc: 'Nesta página', tryTitle: 'Experimente agora', tryText: 'Abra o filefinch em dois aparelhos, compartilhe o link de convite ou o QR code e os arquivos voam direto. Grátis e sem conta.', tryBtn: 'Começar a enviar', howBtn: 'Como funciona', other: 'Read in English', indexTitle: 'Guias', indexKicker: 'Documentação', indexLede: 'Guias curtos sobre o que o filefinch faz: enviar arquivos do celular para o computador e enviar arquivos grandes direto entre aparelhos.', read: 'Ler o guia' },
 };
 
 /** Light and dark illustration pair. */
@@ -33,7 +33,6 @@ export function guideJsonLd(g) {
       datePublished: UPDATED,
       dateModified: UPDATED,
       wordCount: g.words,
-      keywords: g.meta.keyword,
       author: { '@type': 'Person', name: AUTHOR.name, url: AUTHOR.github },
       publisher: { '@type': 'Person', name: AUTHOR.name, url: AUTHOR.github },
       mainEntityOfPage: url,
@@ -86,7 +85,7 @@ export function guideBody(g, all, R, ctx) {
 <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="${R}">${t.home}</a></li><li><a href="${R}${GUIDE_BASE[lang]}">${t.guides}</a></li><li aria-current="page">${esc(g.meta.h1)}</li></ol></nav>
 <header class="guide-head">
   <div class="guide-head-text">
-    <p class="kicker">${t.guide}: ${esc(g.meta.keyword)}</p>
+    <p class="kicker">${t.guide}: ${esc(g.meta.topic)}</p>
     <h1>${esc(g.meta.h1)}</h1>
     <p class="lede">${esc(g.meta.description)}</p>
     <p class="guide-meta"><span>${mins} ${t.min}</span><span>${t.updated} <time datetime="${UPDATED}">${UPDATED}</time></span>${g.pair ? `<a href="${R}${guidePath(g.pair.meta.lang, g.pair.meta.slug)}" hreflang="${g.pair.meta.lang === 'pt' ? 'pt-BR' : 'en'}" lang="${g.pair.meta.lang === 'pt' ? 'pt-BR' : 'en'}">${t.other}</a>` : ''}</p>
@@ -109,7 +108,7 @@ ${g.html}
 }
 
 export function card(R, g, t = T[g.meta.lang]) {
-  return `<a class="gcard" href="${R}${guidePath(g.meta.lang, g.meta.slug)}">${art(R, g.meta.art, '')}<span class="gcard-k">${esc(g.meta.keyword)}</span><span class="gcard-t">${esc(g.meta.h1)}</span><span class="gcard-more">${t.read} <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>`;
+  return `<a class="gcard" href="${R}${guidePath(g.meta.lang, g.meta.slug)}">${art(R, g.meta.art, '')}<span class="gcard-k">${esc(g.meta.topic)}</span><span class="gcard-t">${esc(g.meta.h1)}</span><span class="gcard-more">${t.read} <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>`;
 }
 
 export function indexBody(lang, guides, R) {

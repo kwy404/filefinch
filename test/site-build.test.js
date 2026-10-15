@@ -27,12 +27,25 @@ function resolveLink(fromPage, href) {
 }
 
 describe('site build', () => {
-  it('lists the home page, the app, both guide indexes and at least 14 guides', () => {
+  it('lists the home page, the app, both guide indexes and a few focused guides', () => {
     expect(urls).toContain(SITE);
     expect(urls).toContain(`${SITE}app/`);
     expect(urls).toContain(`${SITE}guides/`);
     expect(urls).toContain(`${SITE}pt/guias/`);
-    expect(urls.filter((u) => /\/(guides|guias)\/[^/]+\/$/.test(u)).length).toBeGreaterThanOrEqual(14);
+    const en = urls.filter((u) => /\/guides\/[^/]+\/$/.test(u));
+    const pt = urls.filter((u) => /\/guias\/[^/]+\/$/.test(u));
+    expect(en.length).toBeGreaterThanOrEqual(1);
+    expect(en.length).toBeLessThanOrEqual(4);
+    expect(pt.length).toBeGreaterThanOrEqual(1);
+    expect(pt.length).toBeLessThanOrEqual(2);
+  });
+
+  it('has no keyword fields or keyword meta tags', () => {
+    for (const p of sitePages) {
+      const h = html(p);
+      expect(h, p).not.toContain('<meta name="keywords"');
+      expect(h, p).not.toContain('"keywords"');
+    }
   });
 
   it('has robots.txt pointing at the sitemap and a noindex 404 page', () => {
@@ -67,14 +80,18 @@ describe('site build', () => {
     expect(graph.some((n) => n['@type'] === 'FAQPage' && n.mainEntity.length >= 5)).toBe(true);
   });
 
-  it('pairs every Portuguese guide with an English guide through hreflang, both ways', () => {
+  it('links translated guides through hreflang, both ways', () => {
     const pt = sitePages.filter((p) => p.startsWith('pt/guias/') && p !== 'pt/guias/');
-    expect(pt.length).toBeGreaterThanOrEqual(3);
+    let paired = 0;
     for (const p of pt) {
-      const en = /<link rel="alternate" hreflang="en" href="([^"]+)">/.exec(html(p))[1];
+      const m = /<link rel="alternate" hreflang="en" href="([^"]+)">/.exec(html(p));
+      if (!m) continue;
+      paired++;
+      const en = m[1];
       const back = /<link rel="alternate" hreflang="pt-BR" href="([^"]+)">/.exec(html(en.slice(SITE.length)))[1];
       expect(back).toBe(SITE + p);
     }
+    expect(paired).toBeGreaterThanOrEqual(1);
   });
 
   it('has no broken internal links or images', () => {
@@ -103,8 +120,8 @@ describe('site build', () => {
         expect(words, `${lang}/${f}`).toBeGreaterThanOrEqual(lang === 'en' ? 800 : 700);
       }
     }
-    expect(readdirSync(join(root, 'scripts', 'site', 'guides', 'en')).length).toBeGreaterThanOrEqual(10);
-    expect(readdirSync(join(root, 'scripts', 'site', 'guides', 'pt')).length).toBeGreaterThanOrEqual(3);
+    expect(readdirSync(join(root, 'scripts', 'site', 'guides', 'en')).length).toBeLessThanOrEqual(4);
+    expect(readdirSync(join(root, 'scripts', 'site', 'guides', 'pt')).length).toBeLessThanOrEqual(2);
   });
 
   it('ships the mascot, favicon, banners and paired light and dark icons', () => {

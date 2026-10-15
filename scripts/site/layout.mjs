@@ -1,9 +1,10 @@
 // Page shell of the filefinch site: head, top bar, footer, icon sprite and
 // the strings shared by the English and Portuguese pages.
+import { readFileSync } from 'node:fs';
 
 export const SITE = 'https://kwy404.github.io/filefinch/';
 export const REPO = 'https://github.com/kwy404/filefinch';
-export const VERSION = '0.1.0';
+export const VERSION = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).version;
 export const UPDATED = '2026-10-14';
 export const MONSOON = 'https://cdn.jsdelivr.net/npm/monsooncss@0.2.0/dist/monsoon.min.css';
 export const VOODOO = 'https://cdn.jsdelivr.net/npm/voodoojs@1.0.0/dist/voodoo.full.min.js';
@@ -38,7 +39,7 @@ export const STR = {
     langShort: 'PT',
     footBlurb: 'Send files and whole folders straight between your own devices. Peer to peer in the browser: no server of ours, no account, nothing stored online.',
     product: 'filefinch',
-    guides: 'Popular guides',
+    guides: 'Guides',
     more: 'More from kwy404',
     made: 'Made by',
     and: 'and',
@@ -46,7 +47,7 @@ export const STR = {
     builtVoodoo: 'Interactive parts built with',
     license: 'MIT License. Free and open source, no tracking.',
     links: [['Open the app', 'app/'], ['How it works', '#how'], ['All guides', 'guides/'], ['Source on GitHub', REPO], ['Security policy', `${REPO}/blob/main/SECURITY.md`], ['Changelog', `${REPO}/blob/main/CHANGELOG.md`]],
-    guideLinks: [['Send large files without limits', 'guides/send-large-files-without-limits/'], ['Phone to PC without a cable', 'guides/transfer-files-from-phone-to-pc-without-cable/'], ['AirDrop for Windows and Android', 'guides/airdrop-for-windows-and-android/'], ['Send a whole folder', 'guides/send-a-whole-folder/'], ['Is WebRTC file sharing safe?', 'guides/is-webrtc-file-sharing-safe/'], ['Peer to peer file transfer explained', 'guides/peer-to-peer-file-transfer-explained/']],
+    guideLinks: [['Phone to computer', 'guides/transfer-files-from-phone-to-pc-without-cable/'], ['Send a whole folder', 'guides/send-a-whole-folder/'], ['Keep a folder in sync', 'guides/sync-folders-between-computers-without-cloud/'], ['Security', 'guides/is-webrtc-file-sharing-safe/']],
   },
   pt: {
     skip: 'Pular para o conteúdo',
@@ -66,7 +67,7 @@ export const STR = {
     builtVoodoo: 'Partes interativas feitas com',
     license: 'Licença MIT. Grátis, código aberto e sem rastreamento.',
     links: [['Abrir o app', 'app/'], ['Como funciona', '#how'], ['Todos os guias', 'pt/guias/'], ['Código no GitHub', REPO], ['Política de segurança', `${REPO}/blob/main/SECURITY.md`], ['Changelog', `${REPO}/blob/main/CHANGELOG.md`]],
-    guideLinks: [['Enviar arquivos grandes sem limite', 'pt/guias/enviar-arquivos-grandes-sem-limite/'], ['Do celular para o PC sem cabo', 'pt/guias/transferir-arquivos-do-celular-para-o-pc-sem-cabo/'], ['AirDrop para Windows e Android', 'pt/guias/airdrop-para-windows-e-android/']],
+    guideLinks: [['Do celular para o computador', 'pt/guias/transferir-arquivos-do-celular-para-o-pc-sem-cabo/'], ['Enviar arquivos grandes', 'pt/guias/enviar-arquivos-grandes-sem-limite/']],
   },
 };
 

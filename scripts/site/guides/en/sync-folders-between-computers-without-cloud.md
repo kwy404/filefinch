@@ -1,10 +1,10 @@
 ---
 slug: sync-folders-between-computers-without-cloud
 lang: en
-title: Sync Folders Between Computers Without Cloud, Free | filefinch
-description: Sync folders between computers without cloud storage. Two way, push or pull sync in the browser, with a change plan you approve and conflicts kept as copies.
-h1: How to sync folders between computers without a cloud
-keyword: sync folders between computers without cloud
+title: Keep a folder in sync between two computers | filefinch
+description: How folder sync works in filefinch: two way, push or pull, a plan of changes you approve first, and conflicts kept as copies.
+h1: Keep a folder in sync between two computers
+topic: Sync
 art: sync-twins
 alt: Two computers keeping one folder in step with circular arrows
 time: PT5M
@@ -31,13 +31,13 @@ faq:
     a: It can, if a file was removed on one side and the mode calls for mirroring that. Deletes are listed in the plan before anything happens, so review them carefully before you approve.
   - q: Does folder sync work between Windows and Mac?
     a: Yes, filefinch works across operating systems. File names that one system refuses are cleaned up, and paths from the other computer are checked so nothing can be written outside the folder you chose.
-related: [send-a-whole-folder, free-private-alternative-to-cloud-transfer, transfer-files-on-the-same-wifi, share-files-without-uploading]
+related: [send-a-whole-folder, is-webrtc-file-sharing-safe]
 ---
 Keeping one folder identical on two computers usually means paying for cloud storage, installing a sync client on both machines and trusting a company with a copy of everything inside. If all you really want is your work laptop and your desktop to agree on a project folder, there is a simpler route: compare the two folders directly and send only the differences.
 
 filefinch does that in the browser, for free, with no account. You pick the folder on each computer, choose a direction, review a plan of exactly what will change, and approve it. The files go straight from one machine to the other.
 
-## How folder sync without a cloud works
+## How folder sync works
 
 Both computers open [filefinch](app:) and pair the same way as for any other transfer. By default one computer taps Show pairing code and shows a QR code next to 6 words, and the other types the words (the first four letters of each are enough) or scans the code. The 6-word handshake travels encrypted through public relays that cannot read it, the code works once and expires after 10 minutes, and from then on your files go device to device. Once connected, the computer that joined shows 6 new confirmation words, and you type them on the first computer. No file moves until they match.
 
@@ -88,7 +88,7 @@ This also makes syncing between Windows, macOS and Linux practical, since a file
 
 Folder sync works best on desktop browsers that can write directly into a folder you pick, through the File System Access API. Chromium based browsers such as Chrome and Edge on Windows, macOS and Linux support that. Other browsers save received files through a streamed download, which is fine for one off transfers but less suited to keeping a folder in step.
 
-For speed, put both computers on the same network. Traffic then stays local and is often much faster than going through the internet. It even works with no internet once filefinch is loaded, using the Zero third parties link mode, since the 6 word pairing needs internet to reach its relays. The [same Wi-Fi guide](guide:transfer-files-on-the-same-wifi) has tips. Across the internet, speed is limited by the slower upload of the two connections.
+For speed, put both computers on the same network. Traffic then stays local and is often much faster than going through the internet. It even works with no internet once filefinch is loaded, using the Zero third parties link mode, since the 6 word pairing needs internet to reach its relays. Across the internet, speed is limited by the slower upload of the two connections.
 
 If the connection drops in the middle, reconnect and the current file resumes from the last confirmed point rather than starting over.
 

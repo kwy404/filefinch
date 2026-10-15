@@ -1,10 +1,10 @@
 ---
 slug: send-a-whole-folder
 lang: en
-title: How to Send a Whole Folder Without Zipping It, Free | filefinch
-description: How to send a whole folder with all its subfolders, free and without zipping. filefinch rebuilds the folder tree on the other device, from your browser.
-h1: How to send a whole folder, subfolders and all
-keyword: send a whole folder
+title: Send a whole folder | filefinch
+description: How filefinch sends a folder with all its subfolders and rebuilds the same tree on the other device, without zipping it first.
+h1: Send a whole folder, subfolders and all
+topic: Folders
 art: folder-flock
 alt: A folder whose files fly out as a flock of small finches, each carrying one file
 time: PT5M
@@ -31,7 +31,7 @@ faq:
     a: Paths from the other device are treated as untrusted and cleaned up. Names cannot climb out of the folder you chose, and names Windows refuses or that contain control characters are fixed.
   - q: How do I keep a folder up to date on two computers?
     a: Use folder sync instead of a one time send. It shows a plan of changes for approval and later only sends what changed.
-related: [sync-folders-between-computers-without-cloud, send-large-files-without-limits, transfer-files-on-the-same-wifi, share-files-without-uploading]
+related: [sync-folders-between-computers-without-cloud, transfer-files-from-phone-to-pc-without-cable]
 ---
 Sending one file is easy almost everywhere. Sending a folder with hundreds of files spread across nested subfolders is where things get awkward. The usual workaround is to compress everything into an archive, send that, and ask the other side to unpack it, which costs time and disk space at both ends and fails badly if the archive gets cut off halfway.
 
@@ -98,11 +98,9 @@ For the transfer itself, WebRTC encrypts everything with DTLS, and you can add a
 A folder of family videos or a full project directory can be many gigabytes. A few habits make it smoother:
 
 - **Check free space on the receiver first.** filefinch does not cap size, but the disk does.
-- **Use the same network if you can.** On the same Wi-Fi or wired network the traffic stays local and is often much faster. See [transferring files on the same Wi-Fi](guide:transfer-files-on-the-same-wifi).
+- **Use the same network if you can.** On the same Wi-Fi or wired network the traffic stays local and is often much faster.
 - **Keep screens on.** Mobile browsers may pause background tabs.
 - **Reconnect if it drops.** The transfer resumes from the last confirmed point instead of starting over.
-
-For more on very large transfers, read [how to send large files without limits](guide:send-large-files-without-limits).
 
 ## One time send or folder sync
 
@@ -112,7 +110,7 @@ Sending a folder is a one time copy. If you want the same folder to stay in step
 - **Push**: one side's folder is copied over to the other.
 - **Pull**: the other side's folder is brought to you.
 
-One side proposes a sync, and a plan of changes (copies, updates, deletions and conflicts) is shown and must be approved before anything is written. Later syncs send only what changed, and conflicting edits are kept as separate copies rather than overwritten. The guide to [syncing folders between computers without a cloud](guide:sync-folders-between-computers-without-cloud) covers this in detail.
+One side proposes a sync, and a plan of changes (copies, updates, deletions and conflicts) is shown and must be approved before anything is written. Later syncs send only what changed, and conflicting edits are kept as separate copies rather than overwritten. The [sync guide](guide:sync-folders-between-computers-without-cloud) covers this in detail.
 
 ## When filefinch is not the right tool
 

@@ -2,10 +2,10 @@
 slug: transfer-files-from-phone-to-pc-without-cable
 lang: en
 pair: transferir-arquivos-do-celular-para-o-pc-sem-cabo
-title: Transfer Files From Phone to PC Without a Cable, Free | filefinch
-description: Transfer files from phone to PC without a cable, from Android or iPhone to Windows, Mac or Linux. Scan a QR code, send photos and videos in original quality.
-h1: How to transfer files from phone to PC without a cable
-keyword: transfer files from phone to pc without cable
+title: Send files from your phone to a computer | filefinch
+description: How to move photos, videos and other files from an Android phone or iPhone to a computer with filefinch, over a direct connection.
+h1: Send files from your phone to a computer
+topic: Phone to computer
 art: phone-to-pc
 alt: Photos and videos flying from a phone straight to a desktop computer
 time: PT3M
@@ -34,7 +34,7 @@ faq:
     a: No. filefinch works in the phone browser. You can add it to the home screen as an installable web app if you use it often, but it is optional.
   - q: Why did my transfer pause when I switched apps on my phone?
     a: Mobile browsers may pause background tabs to save battery. Keep filefinch in front and the screen on during long transfers, and reconnect to resume if it stops.
-related: [airdrop-for-windows-and-android, transfer-files-on-the-same-wifi, send-video-in-original-quality, share-files-without-uploading]
+related: [send-a-whole-folder, is-webrtc-file-sharing-safe]
 ---
 Getting photos, videos and documents off a phone and onto a computer used to mean hunting for the right cable, then waiting for a driver or a prompt to trust the device. With filefinch you can skip all of that. Open it in the browser on both devices, scan a QR code with the phone, and send the files straight across, with nothing to install and no account to create.
 
@@ -81,7 +81,7 @@ Before that path exists, the two browsers need a short introduction. With the 6 
 
 Either way, the two browsers then open a data channel between them. There is no server of ours in the middle, nothing is uploaded, and your files go device to device.
 
-The data channel is encrypted with DTLS, and the keys are created inside the two browsers for that one connection. Matching confirmation words, or with an invite link a matching 12 digit fingerprint on both screens, confirm that nobody slipped into the middle while the devices were being introduced. For a deeper look, read the guide on [whether WebRTC file sharing is safe](guide:is-webrtc-file-sharing-safe).
+The data channel is encrypted with DTLS, and the keys are created inside the two browsers for that one connection. Matching confirmation words, or with an invite link a matching 12 digit fingerprint on both screens, confirm that nobody slipped into the middle while the devices were being introduced. For a deeper look, read the [security guide](guide:is-webrtc-file-sharing-safe).
 
 ## Same Wi-Fi or not
 
@@ -94,13 +94,13 @@ You do not have to be on the same network, but it makes a big difference.
 | Phone on mobile data, PC at home | Works in most cases, limited by the phone's upload speed. |
 | Strict mobile carrier or corporate firewall | A direct path may be impossible. filefinch explains this and lets you add a TURN relay in Settings. |
 
-If you are sitting next to your computer, joining the same Wi-Fi first is the easiest speed boost. The guide to [transferring files on the same Wi-Fi](guide:transfer-files-on-the-same-wifi) has more ideas.
+If you are sitting next to your computer, joining the same Wi-Fi first is the easiest speed boost.
 
 ## Photos and videos stay in original quality
 
 Many wireless methods quietly shrink photos or re-encode video to save bandwidth. filefinch does not touch the content. Files are sent byte for byte, so the resolution, the frame rate and the metadata (such as date and location, if your camera saved them) arrive exactly as they left the phone.
 
-Each file is checked with a SHA-256 hash at the end, so you know the copy on the computer matches the original. Before saving, you can preview images, videos, audio and text right in the browser on the computer, which is handy for picking out the shots you actually want. There is more on this in [sending video in original quality](guide:send-video-in-original-quality).
+Each file is checked with a SHA-256 hash at the end, so you know the copy on the computer matches the original. Before saving, you can preview images, videos, audio and text right in the browser on the computer, which is handy for picking out the shots you actually want.
 
 ## Tips for long transfers from a phone
 
