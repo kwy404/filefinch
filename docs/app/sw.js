@@ -2,9 +2,24 @@
 // streamed downloads, so a large file goes to disk as it arrives instead of filling memory.
 
 // precache:start
-const CACHE_VERSION = 'c5b44ad5e286';
+const CACHE_VERSION = 'a9aaf06b911b';
 const PRECACHE = [
   './',
+  '../assets/seasons/carnival/finn-dark.svg',
+  '../assets/seasons/carnival/finn.svg',
+  '../assets/seasons/christmas/finn-dark.svg',
+  '../assets/seasons/christmas/finn.svg',
+  '../assets/seasons/easter/finn-dark.svg',
+  '../assets/seasons/easter/finn.svg',
+  '../assets/seasons/halloween/finn-dark.svg',
+  '../assets/seasons/halloween/finn.svg',
+  '../assets/seasons/junina/finn-dark.svg',
+  '../assets/seasons/junina/finn.svg',
+  '../assets/seasons/newyear/finn-dark.svg',
+  '../assets/seasons/newyear/finn.svg',
+  '../assets/seasons/valentine/finn-dark.svg',
+  '../assets/seasons/valentine/finn.svg',
+  '../assets/site/seasons.js',
   'app.css',
   'clips-ui.js',
   'connection.js',
@@ -39,6 +54,7 @@ const PRECACHE = [
   'lib/wordlist.js',
   'lib/words.js',
   'lib/zip.js',
+  'library.js',
   'main.js',
   'manifest.webmanifest',
   'motion.js',
@@ -46,6 +62,7 @@ const PRECACHE = [
   'panels.js',
   'preview.js',
   'scan.js',
+  'season.js',
   'settings.js',
   'sinks.js',
   'sync-ui.js',

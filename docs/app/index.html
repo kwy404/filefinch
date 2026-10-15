@@ -7,6 +7,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' blob: data:; media-src 'self' blob:; frame-src 'self' blob:; worker-src 'self'; connect-src 'self' https://cdn.jsdelivr.net wss://broker.emqx.io:8084 wss://test.mosquitto.org:8081 wss://broker.hivemq.com:8884 wss://broker-cn.emqx.io:8084; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <script src="theme.js"></script>
+<script src="../assets/site/seasons.js"></script>
 <title>filefinch app: send files and folders between your devices</title>
 <meta name="description" content="The filefinch app: pair two of your devices with a QR code or 6 words and send files and whole folders straight between them, peer to peer, with no server and no account.">
 <link rel="canonical" href="https://kwy404.github.io/filefinch/app/">
@@ -118,6 +119,7 @@
       <div id="connect-start" class="ff-pair-grid">
         <article class="card ff-card ff-pair-card ff-pair-primary">
           <div class="card-body">
+            <span class="ff-season-finn" id="season-finn" hidden></span>
             <div class="ff-pair-art" aria-hidden="true">
               <span class="ff-dev"><svg class="ic"><use href="#i-devices"/></svg></span>
               <span class="ff-beam"></span>
@@ -130,6 +132,7 @@
               <label class="btn btn-outline btn-lg ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="pair.files.button">Pick files to send</span><input type="file" id="start-files" multiple></label>
             </div>
             <p class="ff-drop-hint text-sm text-muted-foreground"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="pair.files.hint">Or drop files anywhere on this page: the code appears right away and they go as soon as your devices connect.</span></p>
+            <p class="ff-season-note text-sm text-muted-foreground" id="season-note" hidden></p>
           </div>
         </article>
         <article class="card ff-card ff-pair-card">
@@ -150,19 +153,19 @@
           <div class="card-body">
             <p class="ff-step">1</p>
             <h2 class="card-title" data-i18n="connect.host.title">Start on this device</h2>
-            <p class="text-muted-foreground" data-i18n="connect.host.text">Show an invite QR code, then scan it with your other device.</p>
+            <p class="text-muted-foreground" data-i18n="connect.host.text">Show a QR code here and scan it with your other device. It answers with a QR code of its own.</p>
             <div class="card-actions">
-              <button type="button" class="btn btn-primary" id="host-btn"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg><span data-i18n="connect.host.button">Show invite QR</span></button>
+              <button type="button" class="btn btn-primary" id="host-btn"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="connect.host.button">Show a QR code</span></button>
             </div>
           </div>
         </article>
         <article class="card ff-card">
           <div class="card-body">
             <p class="ff-step">2</p>
-            <h2 class="card-title" data-i18n="connect.join.title">Got an invite?</h2>
-            <p class="text-muted-foreground" data-i18n="connect.join.text">Scan the invite QR code on the other screen, or paste its code here.</p>
+            <h2 class="card-title" data-i18n="connect.join.title">The other device showed a QR code?</h2>
+            <p class="text-muted-foreground" data-i18n="connect.join.text">Scan it with this device, or paste its code here.</p>
             <div class="field">
-              <label class="label" for="join-input" data-i18n="connect.join.label">Invite code</label>
+              <label class="label" for="join-input" data-i18n="connect.join.label">Code from the other device</label>
               <textarea class="textarea ff-code" id="join-input" rows="3" spellcheck="false" autocomplete="off"></textarea>
             </div>
             <div class="card-actions">
@@ -284,10 +287,10 @@
         <article class="card ff-card">
           <div class="card-body ff-share">
             <div class="ff-qr-wrap">
-              <div class="ff-qr" id="invite-qr" role="img" aria-label="Invite QR code" data-i18n-attr="aria-label:invite.qr"></div>
+              <div class="ff-qr" id="invite-qr" role="img" aria-label="QR code for your other device" data-i18n-attr="aria-label:invite.qr"></div>
             </div>
             <div class="ff-share-text">
-              <h2 class="card-title" data-i18n="invite.title">Scan this invite with your other device</h2>
+              <h2 class="card-title" data-i18n="invite.title">Scan this QR code with your other device</h2>
               <p class="text-muted-foreground" data-i18n="invite.text">Point the other device's camera at the QR code. No camera there? Copy the code and paste it on that device.</p>
               <input type="hidden" id="invite-link">
               <div class="flex flex-wrap gap-2">
@@ -296,10 +299,10 @@
               </div>
               <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
               <hr class="divider">
-              <h3 class="ff-h3" data-i18n="invite.reply.title">Then bring the reply back</h3>
-              <p class="text-sm text-muted-foreground" data-i18n="invite.reply.text">The other device shows a reply QR code. Scan it with this device, or paste its code below.</p>
+              <h3 class="ff-h3" data-i18n="invite.reply.title">Then scan the QR code it shows back</h3>
+              <p class="text-sm text-muted-foreground" data-i18n="invite.reply.text">The other device answers with its own QR code. Scan it with this device, or paste its code below.</p>
               <div class="field">
-                <label class="label" for="reply-input" data-i18n="invite.reply.label">Reply code</label>
+                <label class="label" for="reply-input" data-i18n="invite.reply.label">Answer code</label>
                 <textarea class="textarea ff-code" id="reply-input" rows="2" spellcheck="false" autocomplete="off"></textarea>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -316,11 +319,11 @@
         <article class="card ff-card">
           <div class="card-body ff-share">
             <div class="ff-qr-wrap">
-              <div class="ff-qr" id="reply-qr" role="img" aria-label="Reply QR code" data-i18n-attr="aria-label:reply.qr"></div>
+              <div class="ff-qr" id="reply-qr" role="img" aria-label="Answer QR code" data-i18n-attr="aria-label:reply.qr"></div>
             </div>
             <div class="ff-share-text">
-              <h2 class="card-title" id="reply-title">Send this reply back</h2>
-              <p class="text-muted-foreground" data-i18n="reply.text">Scan this QR code with the device that made the invite, or copy the code and paste it there. It connects as soon as the reply arrives.</p>
+              <h2 class="card-title" id="reply-title">Show this answer</h2>
+              <p class="text-muted-foreground" data-i18n="reply.text">Scan this QR code with the device that showed the first one, or copy the code and paste it there. It connects as soon as the answer arrives.</p>
               <input type="hidden" id="reply-link">
               <div class="flex flex-wrap gap-2">
                 <button type="button" class="btn btn-outline btn-sm" id="reply-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
@@ -376,7 +379,7 @@
             <details class="ff-fp" id="fp-box" open>
               <summary class="ff-fp-label" data-i18n="status.fp.label">Connection fingerprint</summary>
               <p class="ff-fp-digits" id="peer-fp" aria-describedby="fp-help"></p>
-              <p class="text-sm text-muted-foreground" id="fp-help" data-i18n="status.fp.help">Both screens must show the same 12 digits. If they differ, someone may have changed the invite on the way: disconnect and start again.</p>
+              <p class="text-sm text-muted-foreground" id="fp-help" data-i18n="status.fp.help">Both screens must show the same 12 digits. If they differ, someone may have changed a code on the way: disconnect and start again.</p>
             </details>
             <ul class="ff-security">
               <li><svg class="ic text-success" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="status.dtls">Encrypted end to end with DTLS by WebRTC. No server of ours ever sees your files.</span></li>
@@ -413,7 +416,7 @@
         <summary class="collapse-title" data-i18n="connect.how.title">How does this work without a server?</summary>
         <div class="collapse-content prose">
           <p data-i18n="connect.how.0">With pairing words, both devices turn the 6 words into a secret topic name and an encryption key. They meet on a few public message relays (MQTT brokers that are not ours) and swap their connection details there, encrypted with that key, so the relays only see random names and ciphertext. Then they connect directly and leave the relays. The 6 confirmation words prove the device that joined is yours.</p>
-          <p data-i18n="connect.how.1">With the advanced no relay option, nothing touches any relay: the invite QR code holds what the other browser needs to find this one, compressed, and the reply QR code carries the same back. You scan or paste both by hand.</p>
+          <p data-i18n="connect.how.1">With the advanced no relay option, nothing touches any relay: the first QR code holds what the other browser needs to find this one, compressed, and the answer QR code carries the same back. You scan or paste both by hand.</p>
           <p data-i18n="connect.how.2">Public STUN servers only tell each browser its own public address. They never see your files. If both devices sit behind strict firewalls, a direct path may be impossible; then a TURN relay you add in Settings forwards the encrypted packets without being able to read them.</p>
         </div>
       </details>

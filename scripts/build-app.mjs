@@ -34,10 +34,19 @@ const swPath = join(app, 'sw.js');
 if (existsSync(swPath)) {
   const files = new Map();
   for (const file of walk(app)) {
-    if (file === swPath || file.startsWith(lib)) continue;
+    // lib/ is added from the outputs below. The separator matters: library.js starts with "lib" too.
+    if (file === swPath || file.startsWith(lib + sep)) continue;
     files.set(file, readFileSync(file));
   }
   for (const [file, text] of outputs) files.set(file, Buffer.from(text));
+  // Site files the app uses too: the special dates script and Finn in costume, so the start
+  // screen looks the same offline. Their content is in the hash, so a change refreshes the cache.
+  const assets = join(root, 'docs', 'assets');
+  const shared = [join(assets, 'site', 'seasons.js')];
+  for (const dir of existsSync(join(assets, 'seasons')) ? readdirSync(join(assets, 'seasons')).sort() : []) {
+    for (const name of ['finn.svg', 'finn-dark.svg']) shared.push(join(assets, 'seasons', dir, name));
+  }
+  for (const file of shared) if (existsSync(file)) files.set(file, readFileSync(file));
   const list = [...files.keys()].map((f) => relative(app, f).split(sep).join('/')).sort();
   const hash = createHash('sha256');
   for (const name of list) hash.update(name).update(files.get(join(app, name)) ?? '');

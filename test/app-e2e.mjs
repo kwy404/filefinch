@@ -453,8 +453,42 @@ async function main() {
       .then(() => true)
       .catch(() => false);
     const styled = await pageB.evaluate(() => getComputedStyle(document.querySelector('.btn')).borderRadius !== '0px');
-    check('app loads offline with its styles', offline && styled);
+    // Every module must come from the cache too, or the app shows but does nothing.
+    const booted = await pageB.waitForFunction(() => !!window.filefinch, null, { timeout: 10000 }).then(() => true).catch(() => false);
+    check('app loads offline with its styles and all of its scripts', offline && styled && booted);
     await ctxB.setOffline(false);
+
+    // 8. Special dates: on Halloween the header gets a seasonal line and Finn wears a costume on
+    //    the start screen. Turning it off uses the site's key, so it stays off on both.
+    const ctxS = await browser.newContext(opts);
+    const pageS = await ctxS.newPage();
+    watch(pageS, 'S');
+    await pageS.clock.setFixedTime(new Date(2026, 9, 30, 12, 0, 0));
+    await pageS.goto(base);
+    await pageS.locator('#season-finn img.ff-season-light').waitFor({ state: 'visible', timeout: 10000 });
+    const season = await pageS.evaluate(() => ({
+      id: document.documentElement.dataset.season,
+      line: getComputedStyle(document.querySelector('.ff-top'), '::after').backgroundImage,
+      loaded: document.querySelector('#season-finn img.ff-season-light').naturalWidth > 0,
+      alt: document.querySelector('#season-finn img.ff-season-light').alt,
+    }));
+    check('on Halloween the app shows the accent line and Finn in costume', season.id === 'halloween' && /gradient/.test(season.line) && season.loaded && /Halloween/.test(season.alt), season.alt);
+    await pageS.click('#season-note button');
+    const turnedOff = await pageS.evaluate(() => ({ id: document.documentElement.dataset.season ?? null, key: localStorage.getItem('filefinch:season-off:halloween'), finn: document.querySelector('#season-finn').hidden }));
+    await pageS.reload();
+    const stillOff = await pageS.evaluate(() => document.documentElement.dataset.season ?? null);
+    check('Turn off hides it until next year, with the key the site uses', turnedOff.id === null && turnedOff.key === '2026' && turnedOff.finn && stillOff === null, JSON.stringify(turnedOff));
+    const ctxT = await browser.newContext(opts);
+    await ctxT.addInitScript(() => localStorage.setItem('filefinch:season-off:christmas', '2026'));
+    const pageT = await ctxT.newPage();
+    watch(pageT, 'T');
+    await pageT.clock.setFixedTime(new Date(2026, 11, 20, 12, 0, 0));
+    await pageT.goto(base);
+    const christmas = await pageT.evaluate(() => ({ id: document.documentElement.dataset.season ?? null, finn: document.querySelector('#season-finn').hidden }));
+    check('a season turned off on the website stays off in the app', christmas.id === null && christmas.finn);
+    await ctxS.close();
+    await ctxT.close();
+    check('no console errors with the special dates', errors.length === 0, errors.slice(0, 3).join(' | '));
     writeFileSync(join(work, 'result.json'), JSON.stringify({ browser: exe, bigMB: BIG_MB, seconds, speedMBs, rawSpeed, results }, null, 2));
   } catch (err) {
     check('end to end run', false, err.stack || err.message);

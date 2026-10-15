@@ -1996,3 +1996,116 @@ details.ff-fp summary {
 .ff-advanced p {
   margin: 0;
 }
+
+/* ---- special dates (data-season comes from ../assets/site/seasons.js, shared with the site) ---- */
+
+:root[data-season="newyear"] { --season-a: #F2C96B; --season-b: #8FB6FF; }
+:root[data-season="carnival"] { --season-a: #B48CFF; --season-b: #FFD06B; }
+:root[data-season="easter"] { --season-a: #9CC8FF; --season-b: #FFB3C7; }
+:root[data-season="valentine"] { --season-a: #FF7C9C; --season-b: #FFB3C6; }
+:root[data-season="junina"] { --season-a: #FF9F5A; --season-b: #FFD06B; }
+:root[data-season="halloween"] { --season-a: #FF9F45; --season-b: #B48CFF; }
+:root[data-season="christmas"] { --season-a: #5FD39A; --season-b: #FF7A88; }
+
+/* A thin two color line under the header and a soft glow behind the logo. */
+:root[data-season] .ff-top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--season-a), var(--season-b), var(--season-a));
+  background-size: 200% 100%;
+  opacity: 0.9;
+  pointer-events: none;
+  animation: ff-season-line 12s linear infinite;
+}
+
+:root[data-season] .ff-brand img {
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--season-a) 55%, transparent));
+}
+
+:root[data-season] .ff-pair-primary {
+  background:
+    radial-gradient(90% 70% at 100% 0%, color-mix(in oklch, var(--season-a) 16%, transparent), transparent 60%),
+    radial-gradient(120% 90% at 0% 0%, color-mix(in oklch, var(--primary) 14%, transparent), transparent 60%),
+    var(--surface);
+}
+
+@keyframes ff-season-line {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.ff-pair-primary {
+  position: relative;
+}
+
+.ff-season-finn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  width: clamp(4.5rem, 22%, 6.5rem);
+  pointer-events: none;
+  animation: ff-season-hop 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.16));
+}
+
+.ff-season-finn[hidden] {
+  display: none;
+}
+
+.ff-season-finn img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ff-season-dark {
+  display: none !important;
+}
+
+:root[data-theme="dark"] .ff-season-light {
+  display: none !important;
+}
+
+:root[data-theme="dark"] .ff-season-dark {
+  display: block !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ff-season-light {
+    display: none !important;
+  }
+  :root:not([data-theme="light"]) .ff-season-dark {
+    display: block !important;
+  }
+}
+
+.ff-season-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  margin: 0.25rem 0 0;
+}
+
+.ff-season-note[hidden] {
+  display: none;
+}
+
+@keyframes ff-season-hop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-season] .ff-top::after,
+  .ff-season-finn {
+    animation: none !important;
+  }
+}

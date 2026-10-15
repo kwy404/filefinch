@@ -25,6 +25,7 @@ import { initTransfers, refreshAll, sendFiles, updateEmpty } from './transfers-u
 import { initSync, onSyncMessage, syncConnectionLost } from './sync-ui.js';
 import { initPanels, openSettings, refreshHistory, refreshLibrary } from './panels.js';
 import { canScan, scanSignal } from './scan.js';
+import { initSeason, renderSeason } from './season.js';
 
 const VIEWS = ['connect', 'send', 'received', 'sync', 'library', 'history'];
 const engine = new TransferEngine({ onMessage: (m) => onMessage(m) });
@@ -113,6 +114,7 @@ function setLanguage(lang) {
   setTheme(getTheme());
   renderPill();
   renderStatus();
+  renderSeason();
   refreshAll();
   refreshHistory();
   refreshLibrary();
@@ -1038,6 +1040,7 @@ function boot() {
   initSync(app);
   initPanels(app);
   initClips(app);
+  initSeason();
   renderKnown();
   setLanguage(getLang());
   let view = 'connect';
