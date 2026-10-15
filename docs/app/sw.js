@@ -2,10 +2,11 @@
 // streamed downloads, so a large file goes to disk as it arrives instead of filling memory.
 
 // precache:start
-const CACHE_VERSION = 'f9288be7afd5';
+const CACHE_VERSION = 'c5b44ad5e286';
 const PRECACHE = [
   './',
   'app.css',
+  'clips-ui.js',
   'connection.js',
   'db.js',
   'files.js',

@@ -1,15 +1,19 @@
 // filefinch app entry: navigation, theme and language, pairing with six words (through public
-// relays) or with a link (no third party), the hello handshake (device id, passphrase check),
-// the confirmation words, and the glue between the connection and the engine.
+// relays) or with a link (no third party), known devices that meet again with only the
+// confirmation words, the hello handshake (device id, passphrase check), the confirmation
+// words, files dropped before pairing, and the glue between the connection and the engine.
 
 import { applyI18n, getLang, setLang, t } from './i18n.js';
-import { $, $$, bytes, copyText, el, showDialog, toast } from './ui.js';
+import { $, $$, bytes, button, copyText, dateTime, el, icon, showDialog, toast } from './ui.js';
 import { settings, save, iceConfig } from './settings.js';
 import { Connection, signalChannel } from './connection.js';
 import { TransferEngine } from './lib/transfer.js';
 import { PassphraseLayer, makeKeyCheck, sdpFingerprint, verifyKeyCheck } from './lib/crypto.js';
 import { confirmWords, resolvePhrase, wordsFromLink, wordsLink } from './lib/words.js';
 import { CODE_LIFETIME_MS, CodeCreator, CodeJoiner } from './pairing.js';
+import { forgetDevice, knownRole, newPairSecret, rememberDevice } from './lib/known.js';
+import { deriveKnownRendezvous } from './lib/rendezvous.js';
+import { clipsConnectionLost, flushClips, initClips, onClipMessage, waitingClips } from './clips-ui.js';
 import { wordInputs } from './word-inputs.js';
 import { celebrate } from './motion.js';
 import { decodeSignal, findSignal, signalLink } from './lib/invite.js';
@@ -17,7 +21,7 @@ import { decodeControl } from './lib/protocol.js';
 import { encodeQr, qrSvg } from './lib/qr.js';
 import { fromBase64Url, randomId, toBase64Url } from './lib/bytes.js';
 import { PROTOCOL_VERSION } from './lib/version.js';
-import { initTransfers, refreshAll, sendFiles } from './transfers-ui.js';
+import { initTransfers, refreshAll, sendFiles, updateEmpty } from './transfers-ui.js';
 import { initSync, onSyncMessage, syncConnectionLost } from './sync-ui.js';
 import { initPanels, openSettings, refreshHistory, refreshLibrary } from './panels.js';
 import { canScan, scanSignal } from './scan.js';
@@ -37,6 +41,8 @@ let helloSeen = null;
 let countdown = null;
 let joinInputs = null;
 let confirmInputs = null;
+let retryKnown = null; // the known device to try again from the failure screen
+let forgotten = null; // the entry just forgotten on the status screen, so the switch can undo it
 
 const app = {
   engine,
@@ -48,7 +54,11 @@ const app = {
   getTheme,
   setTheme,
   setLanguage,
-  connectModeChanged: () => ['start', 'link'].includes(connectPanel) && showPanel('start'),
+  canPairForFiles: () => !app.isConnected() && !conn && !codeSide && ['start', 'link', 'failed'].includes(connectPanel),
+  pairingInProgress: () => !app.isConnected() && (!!codeSide || (!!conn && conn.state !== 'lost')),
+  pairForFiles,
+  pendingChanged: () => renderPending(),
+  receivedChanged: () => updateEmpty(),
 };
 
 // ---- navigation ----
@@ -115,6 +125,7 @@ const PANELS = {
   start: '#connect-start',
   link: '#connect-link',
   code: '#connect-code',
+  known: '#connect-known',
   'confirm-show': '#connect-confirm-show',
   'confirm-type': '#connect-confirm-type',
   invite: '#connect-invite',
@@ -125,11 +136,7 @@ const PANELS = {
   lost: '#connect-lost',
 };
 
-/** The first panel: pairing words by default, or the link mode when chosen in Settings. */
-const firstPanel = () => (settings.connectMode === 'link' ? 'link' : 'start');
-
 function showPanel(name, text) {
-  if (name === 'start') name = firstPanel();
   connectPanel = name;
   for (const [k, sel] of Object.entries(PANELS)) $(sel).hidden = k !== name;
   if (name === 'busy') $('#busy-text').textContent = text ?? '';
@@ -137,7 +144,124 @@ function showPanel(name, text) {
   $('#connect-foot').hidden = !choosing;
   $('#mode-link').hidden = name !== 'start';
   $('#mode-words').hidden = name !== 'link';
+  $('#known-box').hidden = name !== 'start' || !settings.known.length;
+  renderPending();
   renderPill();
+}
+
+// ---- files dropped or picked before pairing ----
+
+/** Starts pairing for files queued while no device is connected: the code shows right away. */
+function pairForFiles() {
+  go('connect');
+  if (connectPanel === 'link') startHost();
+  else startCode();
+}
+
+/** "3 files (12 MB) ready" on the pairing screens, so it is clear they will go by themselves. */
+function renderPending() {
+  const waiting = [...engine.outgoing.values()].filter((x) => x.state === 'waiting');
+  const files = waiting.reduce((n, x) => n + x.files.length, 0);
+  const size = waiting.reduce((n, x) => n + x.files.reduce((a, f) => a + f.size, 0), 0);
+  const texts = waitingClips();
+  const parts = [];
+  if (files) parts.push(t(files === 1 ? 'pending.file' : 'pending.files', { count: files, size: bytes(size) }));
+  if (texts) parts.push(t(texts === 1 ? 'pending.text' : 'pending.texts', { count: texts }));
+  const text = parts.length ? t('pending.ready', { what: parts.join(t('pending.and')) }) : '';
+  for (const node of $$('.ff-pending')) {
+    node.hidden = !text;
+    node.querySelector('.ff-pending-text').textContent = text;
+  }
+}
+
+// ---- known devices ----
+
+function saveKnown(list) {
+  settings.known = list;
+  save();
+  renderKnown();
+}
+
+function renderKnown() {
+  const list = $('#known-list');
+  list.replaceChildren(
+    ...settings.known.map((e) =>
+      el(
+        'li.ff-known-item',
+        {},
+        el(
+          'button.ff-known-btn',
+          { type: 'button', dataset: { device: e.device }, onclick: () => startKnown(e.device) },
+          el('span.ff-known-icon', {}, icon('devices')),
+          el('span.ff-known-name', {}, el('span.font-medium', { text: e.name }), el('span.text-sm.text-muted-foreground', { text: e.seen ? t('known.seen', { when: dateTime(e.seen) }) : '' })),
+          el('span.ff-known-go', {}, el('span', { text: t('known.connect') }), icon('plug')),
+        ),
+        button('', 'x', () => forgetKnown(e.device), 'btn-ghost btn-sm btn-square ff-known-forget', { 'aria-label': t('known.forget', { name: e.name }), title: t('known.forget', { name: e.name }) }),
+      ),
+    ),
+  );
+  if (connectPanel === 'start') $('#known-box').hidden = !settings.known.length;
+}
+
+function forgetKnown(device) {
+  const entry = settings.known.find((e) => e.device === device);
+  if (!entry) return;
+  saveKnown(forgetDevice(settings.known, device));
+  toast(t('known.forgotten', { name: entry.name }), 'info');
+}
+
+/** Both devices tap each other: the one with the smaller id shows the offer, the other knocks. */
+function startKnown(device) {
+  const entry = settings.known.find((e) => e.device === device);
+  if (!entry) return;
+  let role;
+  try {
+    role = knownRole(settings.deviceId, entry.device);
+  } catch (err) {
+    return showFailure(err.message);
+  }
+  if (role === 'creator') startCode(entry);
+  else startWordsJoin(null, entry);
+}
+
+function showKnownWait(entry) {
+  $('#known-wait-title').textContent = t('known.wait.title', { name: entry.name });
+  $('#known-wait-text').textContent = t('known.wait.text', { name: entry.name, me: settings.name });
+  $('#known-relays').textContent = '';
+  showPanel('known');
+}
+
+/** After the words matched: keep the new pair secret, or refresh the name of a known device. */
+function rememberPeer() {
+  forgotten = null;
+  const device = app.peer?.device;
+  if (!pairing?.confirmed || !device) return;
+  const known = settings.known.some((e) => e.device === device);
+  if (pairing.key) saveKnown(rememberDevice(settings.known, { device, name: app.peer.name, key: pairing.key }));
+  else if (known) saveKnown(rememberDevice(settings.known, { device, name: app.peer.name }));
+}
+
+function renderRemember() {
+  const box = $('#remember-box');
+  const device = app.peer?.device;
+  const known = !!device && settings.known.some((e) => e.device === device);
+  box.hidden = !app.isConnected() || !pairing?.confirmed || (!known && forgotten?.device !== device);
+  if (box.hidden) return;
+  $('#remember').checked = known;
+  $('#remember-text').textContent = t('known.remember', { name: app.peer.name });
+}
+
+function toggleRemember(on) {
+  const device = app.peer?.device;
+  if (!device) return;
+  if (on && forgotten?.device === device) {
+    saveKnown(rememberDevice(settings.known, { ...forgotten, name: app.peer.name, seen: Date.now() }));
+    forgotten = null;
+  } else if (!on) {
+    forgotten = settings.known.find((e) => e.device === device) ?? forgotten;
+    saveKnown(forgetDevice(settings.known, device));
+  }
+  renderRemember();
 }
 
 function renderPill() {
@@ -183,11 +307,19 @@ function supported() {
   return true;
 }
 
-function showFailure(text, title = t('fail.title')) {
+function showFailure(text, title = t('fail.title'), known = null) {
   $('#fail-title').textContent = title;
   $('#fail-text').textContent = text;
+  retryKnown = known?.device ?? null;
+  $('#fail-known').hidden = !retryKnown;
+  if (known) $('#fail-known-text').textContent = t('known.retry', { name: known.name });
   showPanel('failed');
   go('connect');
+}
+
+/** Nobody answered on a known device's topic: say what to do on the other device. */
+function showKnownFailure(known) {
+  showFailure(t('known.nopeer', { name: known.name, me: settings.name }), t('known.nopeer.title', { name: known.name }), known);
 }
 
 function stopRelays() {
@@ -209,6 +341,7 @@ function resetConnection() {
     old.close();
   }
   engine.detach();
+  clipsConnectionLost();
   app.peer = null;
   renderPill();
 }
@@ -290,11 +423,16 @@ function renderWords(list, words) {
 }
 
 function renderRelays(status) {
-  $('#code-relays').textContent = t('pair.code.relays', { n: status.connected.length, total: status.total });
+  const text = t('pair.code.relays', { n: status.connected.length, total: status.total });
+  $('#code-relays').textContent = text;
+  $('#known-relays').textContent = text;
 }
 
-/** Shows a QR code and six words, and waits on the public relays for the other device. */
-async function startCode() {
+/**
+ * Shows a QR code and six words, and waits on the public relays for the other device.
+ * With a known device entry there are no words: it waits on the topic of that pair's secret.
+ */
+async function startCode(known = null) {
   if (!supported()) return;
   saveName();
   resetConnection();
@@ -307,7 +445,13 @@ async function startCode() {
   }
   if (pass === false) return;
   layer = pass;
-  showPanel('busy', t('pair.busy.code'));
+  showPanel('busy', t(known ? 'known.busy' : 'pair.busy.code', { name: known?.name }));
+  let rv = null;
+  try {
+    rv = known ? await deriveKnownRendezvous(known.key) : null;
+  } catch (err) {
+    return showFailure(errorText(err));
+  }
   const c = makeConnection();
   const nonce = randomId(12);
   const offerReady = c.prepareOffer().then((sdp) => ({
@@ -318,14 +462,15 @@ async function startCode() {
     ...(layer ? { lock: 1, salt: toBase64Url(layer.salt), iterations: layer.iterations } : {}),
   }));
   offerReady.catch(() => {});
-  const creator = new CodeCreator(offerReady);
+  const creator = new CodeCreator(offerReady, { rv });
   codeSide = creator;
-  pairing = { role: 'creator', nonce };
+  pairing = { role: 'creator', nonce, known: known?.device ?? null };
   creator.on('status', renderRelays);
   creator.on('expired', () => {
     if (codeSide !== creator) return;
     resetConnection();
-    showFailure(t('pair.expired'), t('pair.expired.title'));
+    if (known) showKnownFailure(known);
+    else showFailure(t('pair.expired'), t('pair.expired.title'));
   });
   creator.on('answer', async (msg) => {
     if (codeSide !== creator || typeof msg.sdp !== 'string') return;
@@ -339,6 +484,11 @@ async function startCode() {
   try {
     const words = await creator.start();
     if (codeSide !== creator) return;
+    if (known) {
+      showKnownWait(known);
+      renderRelays(creator.hub.status());
+      return;
+    }
     const link = wordsLink(location.href, words);
     const qr = encodeQr(link, { ecl: 'M' });
     const box = $('#code-qr');
@@ -367,28 +517,40 @@ async function startCode() {
   }
 }
 
-/** Joins with six words typed in, pasted, or carried by a scanned pairing link. */
-async function startWordsJoin(input) {
+/**
+ * Joins with six words typed in, pasted, or carried by a scanned pairing link. With a known
+ * device entry instead, it knocks on that pair's topic for as long as a code would last.
+ */
+async function startWordsJoin(input, known = null) {
   if (!supported()) return;
-  const res = resolvePhrase(input);
-  if (!res.ok) {
-    toast(t('pair.words.incomplete'), 'warning');
-    return;
+  let words = null;
+  if (!known) {
+    const res = resolvePhrase(input);
+    if (!res.ok) {
+      toast(t('pair.words.incomplete'), 'warning');
+      return;
+    }
+    words = res.words;
+    // Pressing Connect right after the last word already started the same join.
+    if (codeSide instanceof CodeJoiner && codeSide.phrase === words.join(' ')) return;
   }
-  // Pressing Connect right after the last word already started the same join.
-  if (codeSide instanceof CodeJoiner && codeSide.phrase === res.words.join(' ')) return;
   saveName();
   resetConnection();
   go('connect');
-  showPanel('busy', t('pair.busy.find'));
+  if (known) showKnownWait(known);
+  else showPanel('busy', t('pair.busy.find'));
   const joiner = new CodeJoiner();
-  joiner.phrase = res.words.join(' ');
+  joiner.phrase = words?.join(' ') ?? null;
   codeSide = joiner;
-  joiner.on('status', (st) => connectPanel === 'busy' && st.connected.length && ($('#busy-text').textContent = t('pair.busy.knock', { n: st.connected.length })));
+  joiner.on('status', (st) => {
+    if (known) renderRelays(st);
+    else if (connectPanel === 'busy' && st.connected.length) $('#busy-text').textContent = t('pair.busy.knock', { n: st.connected.length });
+  });
   joiner.on('timeout', () => {
     if (codeSide !== joiner) return;
     resetConnection();
-    showFailure(t('pair.nopeer'), t('pair.nopeer.title'));
+    if (known) showKnownFailure(known);
+    else showFailure(t('pair.nopeer'), t('pair.nopeer.title'));
   });
   joiner.on('offer', async (msg) => {
     if (codeSide !== joiner) return;
@@ -409,7 +571,7 @@ async function startWordsJoin(input) {
       }
       showPanel('busy', t('busy.join'));
       const c = makeConnection();
-      pairing = { role: 'joiner', nonce: msg.nonce.slice(0, 64) };
+      pairing = { role: 'joiner', nonce: msg.nonce.slice(0, 64), known: known?.device ?? null };
       const name = String(msg.name ?? '').slice(0, 40);
       const sdp = await c.answerOffer({ sdp: msg.sdp, sid: msg.sid.slice(0, 32), name });
       if (codeSide !== joiner) return;
@@ -420,7 +582,8 @@ async function startWordsJoin(input) {
     }
   });
   try {
-    await joiner.start(res.words);
+    if (known) await joiner.start({ rv: await deriveKnownRendezvous(known.key) }, { timeout: CODE_LIFETIME_MS });
+    else await joiner.start(words);
   } catch (err) {
     if (codeSide !== joiner) return;
     resetConnection();
@@ -460,8 +623,11 @@ function confirmTyped() {
   }
   if (res.words.join(' ') === pairing.expected.join(' ')) {
     pairing.confirmed = true;
+    // A first pairing gives the two devices a fresh secret to meet again with; a known device
+    // keeps the one it has.
+    pairing.key = pairing.known ? null : newPairSecret();
     try {
-      conn.dc.send(JSON.stringify({ t: 'pair', ok: true }));
+      conn.dc.send(JSON.stringify({ t: 'pair', ok: true, ...(pairing.key ? { key: pairing.key } : {}) }));
     } catch {}
     finishAttach();
     return;
@@ -484,6 +650,7 @@ function handlePair(m) {
   if (!pairing || pairing.role !== 'joiner' || pairing.confirmed) return;
   if (m.ok) {
     pairing.confirmed = true;
+    pairing.key = pairing.known ? null : (m.key ?? null);
     finishAttach();
   } else {
     resetConnection();
@@ -597,6 +764,7 @@ async function onConnState(c, state, detail) {
     helloDone = false;
     engine.detach();
     syncConnectionLost();
+    clipsConnectionLost();
     showPanel('lost');
     go('connect');
     toast(t('toast.lost'), 'warning');
@@ -604,6 +772,7 @@ async function onConnState(c, state, detail) {
   if (state === 'closed') {
     helloDone = false;
     engine.detach();
+    clipsConnectionLost();
   }
   renderPill();
 }
@@ -638,6 +807,11 @@ async function handleHello(m) {
     return;
   }
   if (c !== conn) return;
+  if (pairing?.known && m.device !== pairing.known) {
+    resetConnection();
+    showFailure(t('known.wrong'));
+    return;
+  }
   helloSeen = m;
   app.peer = { name: m.name || c.peerName || '?', device: m.device };
   // Words pairing: nothing moves until the confirmation words match.
@@ -661,6 +835,8 @@ function finishAttach() {
   }
   lastPeerDevice = m.device;
   engine.layer = layer;
+  // Files picked or dropped before this connection: show them going out on the Send tab.
+  const filesFirst = [...engine.outgoing.values()].some((x) => x.state === 'waiting');
   for (const tr of engine.outgoing.values()) if (tr.state === 'waiting') tr.peerName = app.peer.name;
   engine.attach(c.link(), { resume: true });
   helloDone = true;
@@ -670,11 +846,13 @@ function finishAttach() {
     if (typeof item === 'string') engine.handleText(item);
     else engine.handleBinary(item);
   }
+  rememberPeer();
   showPanel('status');
   renderStatus();
-  go('connect');
+  go(filesFirst ? 'send' : 'connect');
   celebrate.connected($('#connect-status .ff-link-anim'));
   toast(t(same && hadInterrupted ? 'toast.resumed' : pairing?.confirmed ? 'toast.paired' : 'toast.connected', { name: app.peer.name }), 'success', 7000);
+  flushClips();
 }
 
 function onMessage(m) {
@@ -685,6 +863,7 @@ function onMessage(m) {
     return;
   }
   if (m.t.startsWith('sync-')) onSyncMessage(m);
+  if (m.t === 'clip' || m.t === 'clip-ok') onClipMessage(m);
 }
 
 function renderStatus() {
@@ -697,6 +876,7 @@ function renderStatus() {
     $('#fp-box').open = !paired;
     $('#fp-box').dataset.paired = paired;
   }
+  renderRemember();
   $('#sec-pass-text').textContent = t(layer ? 'status.pass.on' : 'status.pass.off');
   $('#sec-pass').classList.toggle('ff-muted', !layer);
   const r = conn.route;
@@ -764,6 +944,7 @@ function bind() {
     }
     if (action === 'open-ice') openSettings(true);
     if (action === 'new-code') startCode();
+    if (action === 'retry-known' && retryKnown) startKnown(retryKnown);
   });
   $('#device-name').value = settings.name;
   $('#device-name').addEventListener('change', saveName);
@@ -772,36 +953,23 @@ function bind() {
     if (e.target.checked) $('#pass-input').focus();
   });
   $('#host-btn').addEventListener('click', startHost);
-  $('#code-btn').addEventListener('click', startCode);
-  $('#code-new').addEventListener('click', startCode);
+  $('#code-btn').addEventListener('click', () => startCode());
+  $('#code-new').addEventListener('click', () => startCode());
+  $('#remember').addEventListener('change', (e) => toggleRemember(e.target.checked));
   $('#code-copy').addEventListener('click', (e) => copyText($('#code-words').dataset.words ?? '', e.currentTarget));
   joinInputs = wordInputs($('#join-words'), { idPrefix: 'join-word', auto: true, onReady: (words) => startWordsJoin(words) });
   confirmInputs = wordInputs($('#confirm-inputs'), { idPrefix: 'confirm-word', onReady: () => confirmTyped() });
   $('#words-join-btn').addEventListener('click', () => startWordsJoin(joinInputs.inputs.map((x) => x.value)));
   $('#confirm-btn').addEventListener('click', confirmTyped);
-  $('#mode-link').addEventListener('click', () => {
-    settings.connectMode = 'link';
-    save();
-    showPanel('start');
-  });
-  $('#mode-words').addEventListener('click', () => {
-    settings.connectMode = 'words';
-    save();
-    showPanel('start');
-  });
+  // The advanced no relay mode: an invite QR code each way, or codes pasted by hand.
+  $('#mode-link').addEventListener('click', () => showPanel('link'));
+  $('#mode-words').addEventListener('click', () => showPanel('start'));
   $('#join-btn').addEventListener('click', () => startJoin($('#join-input').value));
   $('#reply-btn').addEventListener('click', () => submitReply($('#reply-input').value));
   $('#reply-input').addEventListener('paste', () => setTimeout(() => findSignal($('#reply-input').value)?.kind === 'r' && submitReply($('#reply-input').value), 0));
   $('#join-input').addEventListener('paste', () => setTimeout(() => findSignal($('#join-input').value)?.kind === 'i' && startJoin($('#join-input').value), 0));
   $('#invite-copy').addEventListener('click', (e) => copyText($('#invite-link').value, e.currentTarget));
   $('#reply-copy').addEventListener('click', (e) => copyText($('#reply-link').value, e.currentTarget));
-  if (navigator.share) {
-    for (const kind of ['invite', 'reply']) {
-      const btn = $(`#${kind}-share`);
-      btn.hidden = false;
-      btn.addEventListener('click', () => navigator.share({ title: 'filefinch', url: $(`#${kind}-link`).value }).catch(() => {}));
-    }
-  }
   $('#disconnect-btn').addEventListener('click', () => {
     resetConnection();
     showPanel('start');
@@ -869,6 +1037,8 @@ function boot() {
   initTransfers(app);
   initSync(app);
   initPanels(app);
+  initClips(app);
+  renderKnown();
   setLanguage(getLang());
   let view = 'connect';
   try {
@@ -879,6 +1049,7 @@ function boot() {
   handleHash();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   engine.on('error', (err) => console.warn('filefinch:', err.message));
+  engine.on('update', () => renderPending());
   // A handle for debugging from the console and for the end to end test.
   window.filefinch = { app, engine, settings, version: PROTOCOL_VERSION, connection: () => conn, pairing: () => pairing };
 }

@@ -3,7 +3,8 @@
 //   creator: shows the words, waits for a "join", sends its offer to the first device that joins
 //   joiner:  knocks with "join" until the offer arrives, then sends its answer
 // The code expires after 10 minutes, works once, and both sides leave the brokers as soon as
-// the connection opens.
+// the connection opens. Known devices meet the same way, with a topic and key derived from the
+// secret they share instead of from words (see lib/known.js).
 
 import { Emitter } from './lib/transfer.js';
 import { randomId } from './lib/bytes.js';
@@ -26,9 +27,10 @@ class Side extends Emitter {
     this.stopped = false;
   }
 
+  /** words: the six words, or { rv } with a topic and key already derived. */
   async open(words) {
-    this.words = words;
-    this.rv = await deriveRendezvous(words);
+    this.words = Array.isArray(words) ? words : null;
+    this.rv = Array.isArray(words) ? await deriveRendezvous(words) : words.rv;
     if (this.stopped) throw new Error('stopped');
     this.hub = new RelayHub(this.rv.topic);
     this.hub.on('status', (s) => this.emit('status', s));
@@ -74,29 +76,35 @@ class Side extends Emitter {
   }
 }
 
-/** The device that shows the code. offerReady resolves with the offer fields to send. */
+/**
+ * The device that shows the code. offerReady resolves with the offer fields to send.
+ * With rv (known devices) there are no words, and a device that knocks again after reloading
+ * may take the place of the first knock, since only the known device has the key.
+ */
 export class CodeCreator extends Side {
-  constructor(offerReady) {
+  constructor(offerReady, { rv = null } = {}) {
     super();
     this.offerReady = offerReady;
+    this.presetRv = rv;
     this.guest = null;
     this.answered = false;
   }
 
   async start() {
-    const words = generateWords();
+    const words = this.presetRv ? null : generateWords();
     this.expires = Date.now() + CODE_LIFETIME_MS;
     this.after(CODE_LIFETIME_MS, () => {
       this.stop();
       this.emit('expired');
     });
-    await this.open(words);
+    await this.open(words ?? { rv: this.presetRv });
     return words;
   }
 
   async handle(msg) {
     if (msg.k === 'join') {
       // Single use: the first device that joins gets the offer, everyone else is ignored.
+      if (this.presetRv && !this.answered) this.guest = msg.f;
       this.guest ??= msg.f;
       if (msg.f !== this.guest || this.answered) return;
       const offer = await this.offerReady;
@@ -108,11 +116,11 @@ export class CodeCreator extends Side {
   }
 }
 
-/** The device that typed or scanned the code. */
+/** The device that typed or scanned the code. words: the six words, or { rv } for a known device. */
 export class CodeJoiner extends Side {
-  async start(words) {
+  async start(words, { timeout = JOIN_TIMEOUT_MS } = {}) {
     await this.open(words);
-    this.after(JOIN_TIMEOUT_MS, () => {
+    this.after(timeout, () => {
       if (!this.host) this.emit('timeout');
     });
     this.every(KNOCK_EVERY_MS, () => !this.host && this.publish({ k: 'join' }));

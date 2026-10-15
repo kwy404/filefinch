@@ -8,7 +8,7 @@
 <meta name="referrer" content="no-referrer">
 <script src="theme.js"></script>
 <title>filefinch app: send files and folders between your devices</title>
-<meta name="description" content="The filefinch app: connect two of your devices with a link or QR code and send files and whole folders straight between them, peer to peer, with no server and no account.">
+<meta name="description" content="The filefinch app: pair two of your devices with a QR code or 6 words and send files and whole folders straight between them, peer to peer, with no server and no account.">
 <link rel="canonical" href="https://kwy404.github.io/filefinch/app/">
 <meta name="theme-color" content="#EAF5FF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B1530" media="(prefers-color-scheme: dark)">
@@ -107,6 +107,14 @@
       <h1 id="h-connect" class="ff-h1" data-i18n="connect.title">Connect your devices</h1>
       <p class="ff-lead" data-i18n="connect.lead.words">Pair two devices like Bluetooth: one shows a QR code and 6 words, the other scans the code or types the words. Files then go straight from one device to the other.</p>
 
+      <section id="known-box" class="ff-known" aria-labelledby="known-title" hidden>
+        <div class="ff-known-head">
+          <h2 class="ff-h3" id="known-title" data-i18n="known.title">Your devices</h2>
+          <p class="text-sm text-muted-foreground" data-i18n="known.text">Tap a device here, then tap this one on that device. You only type the 6 confirmation words.</p>
+        </div>
+        <ul class="ff-known-list" id="known-list"></ul>
+      </section>
+
       <div id="connect-start" class="ff-pair-grid">
         <article class="card ff-card ff-pair-card ff-pair-primary">
           <div class="card-body">
@@ -119,7 +127,9 @@
             <p class="text-muted-foreground" data-i18n="pair.show.text">Show a QR code and 6 words on this screen. Scan the code with your phone, or type the words on any other device.</p>
             <div class="card-actions ff-actions-start">
               <button type="button" class="btn btn-primary btn-lg" id="code-btn"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="pair.show.button">Show pairing code</span></button>
+              <label class="btn btn-outline btn-lg ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="pair.files.button">Pick files to send</span><input type="file" id="start-files" multiple></label>
             </div>
+            <p class="ff-drop-hint text-sm text-muted-foreground"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="pair.files.hint">Or drop files anywhere on this page: the code appears right away and they go as soon as your devices connect.</span></p>
           </div>
         </article>
         <article class="card ff-card ff-pair-card">
@@ -140,9 +150,9 @@
           <div class="card-body">
             <p class="ff-step">1</p>
             <h2 class="card-title" data-i18n="connect.host.title">Start on this device</h2>
-            <p class="text-muted-foreground" data-i18n="connect.host.text">Create an invite link and QR code, then open it on your other device.</p>
+            <p class="text-muted-foreground" data-i18n="connect.host.text">Show an invite QR code, then scan it with your other device.</p>
             <div class="card-actions">
-              <button type="button" class="btn btn-primary" id="host-btn"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg><span data-i18n="connect.host.button">Create invite</span></button>
+              <button type="button" class="btn btn-primary" id="host-btn"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg><span data-i18n="connect.host.button">Show invite QR</span></button>
             </div>
           </div>
         </article>
@@ -150,9 +160,9 @@
           <div class="card-body">
             <p class="ff-step">2</p>
             <h2 class="card-title" data-i18n="connect.join.title">Got an invite?</h2>
-            <p class="text-muted-foreground" data-i18n="connect.join.text">Open the invite link on this device, scan its QR code, or paste the link here.</p>
+            <p class="text-muted-foreground" data-i18n="connect.join.text">Scan the invite QR code on the other screen, or paste its code here.</p>
             <div class="field">
-              <label class="label" for="join-input" data-i18n="connect.join.label">Invite link or code</label>
+              <label class="label" for="join-input" data-i18n="connect.join.label">Invite code</label>
               <textarea class="textarea ff-code" id="join-input" rows="3" spellcheck="false" autocomplete="off"></textarea>
             </div>
             <div class="card-actions">
@@ -166,11 +176,10 @@
       <div class="ff-connect-foot" id="connect-foot">
         <p class="ff-honest"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><span id="honest-text" data-i18n="pair.honest">No server of ours. The 6-word handshake passes encrypted through public relays that cannot read it. Your files never touch them: they go device to device.</span></p>
         <div class="flex flex-wrap items-center gap-3">
-          <button type="button" class="btn btn-ghost btn-sm" id="mode-link"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg><span data-i18n="pair.mode.link">Prefer zero third parties? Use a link or QR instead</span></button>
           <button type="button" class="btn btn-ghost btn-sm" id="mode-words" hidden><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="pair.mode.words">Back to pairing with 6 words</span></button>
         </div>
         <details class="collapse collapse-arrow ff-options">
-          <summary class="collapse-title" data-i18n="pair.options">Options: this device's name and an extra passphrase</summary>
+          <summary class="collapse-title" data-i18n="pair.options">Options: this device's name, a passphrase, and connecting with no relays</summary>
           <div class="collapse-content grid gap-3">
             <div class="field">
               <label class="label" for="device-name" data-i18n="connect.name">This device's name</label>
@@ -181,6 +190,10 @@
               <label class="label" for="pass-input" data-i18n="connect.pass">Passphrase, typed on both devices</label>
               <input class="input" id="pass-input" type="password" autocomplete="new-password" minlength="4">
               <p class="hint" data-i18n="connect.pass.hint">Share it by voice or in person, not in the same message as the invite.</p>
+            </div>
+            <div class="ff-advanced">
+              <p class="text-sm text-muted-foreground" data-i18n="pair.advanced.text">Advanced: a network that blocks the public relays can still connect by scanning a QR code each way, or by pasting the codes by hand.</p>
+              <button type="button" class="btn btn-ghost btn-sm" id="mode-link"><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="pair.mode.link">Connect with no relays (advanced)</span></button>
             </div>
           </div>
         </details>
@@ -209,8 +222,26 @@
                 </div>
                 <span class="ff-countdown" id="code-countdown">10:00</span>
               </div>
+              <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
               <p class="text-sm text-muted-foreground" data-i18n="pair.code.note">Works once and expires in 10 minutes.</p>
             </div>
+          </div>
+        </article>
+      </div>
+
+      <div id="connect-known" hidden>
+        <article class="card ff-card">
+          <div class="card-body ff-confirm">
+            <span class="ff-known-wait" aria-hidden="true">
+              <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
+              <span class="ff-radar"><span></span></span>
+              <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
+            </span>
+            <h2 class="card-title" id="known-wait-title" role="status">Waiting for your device...</h2>
+            <p class="text-muted-foreground" id="known-wait-text"></p>
+            <p class="text-sm text-muted-foreground" id="known-relays"></p>
+            <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
+            <div><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button></div>
           </div>
         </article>
       </div>
@@ -256,21 +287,19 @@
               <div class="ff-qr" id="invite-qr" role="img" aria-label="Invite QR code" data-i18n-attr="aria-label:invite.qr"></div>
             </div>
             <div class="ff-share-text">
-              <h2 class="card-title" data-i18n="invite.title">Open this invite on your other device</h2>
-              <p class="text-muted-foreground" data-i18n="invite.text">Scan the QR code with the other device's camera, or send yourself the link by any messenger or email.</p>
-              <div class="input-group">
-                <input class="input ff-code" id="invite-link" readonly aria-label="Invite link" data-i18n-attr="aria-label:invite.link">
-                <button type="button" class="input-group-button" id="invite-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="copy">Copy</span></button>
-              </div>
+              <h2 class="card-title" data-i18n="invite.title">Scan this invite with your other device</h2>
+              <p class="text-muted-foreground" data-i18n="invite.text">Point the other device's camera at the QR code. No camera there? Copy the code and paste it on that device.</p>
+              <input type="hidden" id="invite-link">
               <div class="flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline btn-sm" id="invite-share" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
+                <button type="button" class="btn btn-outline btn-sm" id="invite-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
                 <span class="badge badge-info" id="invite-lock" hidden><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span data-i18n="invite.locked">Passphrase required</span></span>
               </div>
+              <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
               <hr class="divider">
-              <h3 class="ff-h3" data-i18n="invite.reply.title">Then paste the reply here</h3>
-              <p class="text-sm text-muted-foreground" data-i18n="invite.reply.text">The other device shows a reply link. If you open that link on this device it connects by itself; otherwise paste it below.</p>
+              <h3 class="ff-h3" data-i18n="invite.reply.title">Then bring the reply back</h3>
+              <p class="text-sm text-muted-foreground" data-i18n="invite.reply.text">The other device shows a reply QR code. Scan it with this device, or paste its code below.</p>
               <div class="field">
-                <label class="label" for="reply-input" data-i18n="invite.reply.label">Reply link or code</label>
+                <label class="label" for="reply-input" data-i18n="invite.reply.label">Reply code</label>
                 <textarea class="textarea ff-code" id="reply-input" rows="2" spellcheck="false" autocomplete="off"></textarea>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -291,13 +320,10 @@
             </div>
             <div class="ff-share-text">
               <h2 class="card-title" id="reply-title">Send this reply back</h2>
-              <p class="text-muted-foreground" data-i18n="reply.text">Show this QR code to the device that made the invite, or send it the link. It connects as soon as the reply is opened there.</p>
-              <div class="input-group">
-                <input class="input ff-code" id="reply-link" readonly aria-label="Reply link" data-i18n-attr="aria-label:reply.link">
-                <button type="button" class="input-group-button" id="reply-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="copy">Copy</span></button>
-              </div>
+              <p class="text-muted-foreground" data-i18n="reply.text">Scan this QR code with the device that made the invite, or copy the code and paste it there. It connects as soon as the reply arrives.</p>
+              <input type="hidden" id="reply-link">
               <div class="flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline btn-sm" id="reply-share" hidden><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
+                <button type="button" class="btn btn-outline btn-sm" id="reply-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
                 <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
               </div>
               <p class="ff-waiting"><span class="spinner spinner-sm spinner-primary" aria-hidden="true"></span> <span data-i18n="reply.waiting">Waiting for the other device...</span></p>
@@ -321,6 +347,7 @@
           </div>
         </div>
         <div class="flex flex-wrap gap-2 mt-4">
+          <button type="button" class="btn btn-primary" data-action="retry-known" id="fail-known" hidden><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span id="fail-known-text">Try again</span></button>
           <button type="button" class="btn btn-primary" data-action="restart-connect"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="fail.retry">Try again</span></button>
           <button type="button" class="btn btn-outline" data-action="open-ice"><svg class="ic" aria-hidden="true"><use href="#i-relay"/></svg><span data-i18n="fail.turn">Add a TURN relay</span></button>
         </div>
@@ -342,6 +369,10 @@
               <span class="badge badge-success badge-dot ml-auto" id="peer-badge" data-i18n="status.connected">Connected</span>
             </div>
             <p class="ff-paired" id="paired-note" hidden><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="status.paired">Confirmed: the 6 words matched on both devices.</span></p>
+            <div class="ff-remember" id="remember-box" hidden>
+              <label class="label ff-check"><input type="checkbox" class="toggle toggle-sm" role="switch" id="remember" aria-describedby="remember-hint"> <span id="remember-text">Remember this device</span></label>
+              <p class="hint" id="remember-hint" data-i18n="known.remember.hint">Next time, tap each other under Your devices and type only the confirmation words. The secret stays in this browser.</p>
+            </div>
             <details class="ff-fp" id="fp-box" open>
               <summary class="ff-fp-label" data-i18n="status.fp.label">Connection fingerprint</summary>
               <p class="ff-fp-digits" id="peer-fp" aria-describedby="fp-help"></p>
@@ -358,7 +389,7 @@
               <div><dt data-i18n="status.received">Received</dt><dd id="stat-recv">0 B</dd></div>
             </dl>
             <div class="card-actions">
-              <button type="button" class="btn btn-primary" data-go="send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="status.sendfiles">Send files</span></button>
+              <button type="button" class="btn btn-primary" data-go="send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="status.sendfiles">Send files or text</span></button>
               <button type="button" class="btn btn-outline btn-danger" id="disconnect-btn"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg><span data-i18n="status.disconnect">Disconnect</span></button>
             </div>
           </div>
@@ -382,7 +413,7 @@
         <summary class="collapse-title" data-i18n="connect.how.title">How does this work without a server?</summary>
         <div class="collapse-content prose">
           <p data-i18n="connect.how.0">With pairing words, both devices turn the 6 words into a secret topic name and an encryption key. They meet on a few public message relays (MQTT brokers that are not ours) and swap their connection details there, encrypted with that key, so the relays only see random names and ciphertext. Then they connect directly and leave the relays. The 6 confirmation words prove the device that joined is yours.</p>
-          <p data-i18n="connect.how.1">With a link instead, nothing touches any relay: the invite holds what the other browser needs to find this one, compressed into the link, and the reply carries the same back. You pass both by hand.</p>
+          <p data-i18n="connect.how.1">With the advanced no relay option, nothing touches any relay: the invite QR code holds what the other browser needs to find this one, compressed, and the reply QR code carries the same back. You scan or paste both by hand.</p>
           <p data-i18n="connect.how.2">Public STUN servers only tell each browser its own public address. They never see your files. If both devices sit behind strict firewalls, a direct path may be impossible; then a TURN relay you add in Settings forwards the encrypted packets without being able to read them.</p>
         </div>
       </details>
@@ -393,7 +424,7 @@
       <h1 id="h-send" class="ff-h1" data-i18n="send.title">Send files and folders</h1>
       <div class="alert alert-info" id="send-offline" role="status">
         <svg class="alert-icon" aria-hidden="true"><use href="#i-info"/></svg>
-        <div class="alert-content"><p class="alert-description" data-i18n="send.offline">Not connected yet. You can pick files now; they go out as soon as a device connects.</p></div>
+        <div class="alert-content"><p class="alert-description" data-i18n="send.offline">Not connected yet. You can pick files or write text now; they go out as soon as a device connects.</p></div>
         <div class="alert-actions"><button type="button" class="btn btn-sm btn-info" data-go="connect" data-i18n="nav.connect">Connect</button></div>
       </div>
       <div class="dropzone ff-drop" id="dropzone">
@@ -409,6 +440,21 @@
           </span>
         </div>
       </div>
+      <article class="card ff-card ff-clipbox">
+        <div class="card-body">
+          <div class="field">
+            <label class="label" for="clip-input"><svg class="ic" aria-hidden="true"><use href="#i-text"/></svg><span data-i18n="clip.title">Send text or a link</span></label>
+            <textarea class="textarea" id="clip-input" rows="2" maxlength="100000" data-i18n-attr="placeholder:clip.placeholder" placeholder="Paste a link, an address, a note..."></textarea>
+          </div>
+          <div class="ff-clip-bar">
+            <button type="button" class="btn btn-primary btn-sm" id="clip-send" disabled><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="clip.send">Send text</span></button>
+            <button type="button" class="btn btn-ghost btn-sm" id="clip-paste" hidden><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="clip.paste">Paste</span></button>
+            <span class="text-sm text-muted-foreground ff-clip-hint" data-i18n="clip.hint">Ctrl + Enter sends. It arrives on the other device ready to copy.</span>
+            <span class="text-sm text-muted-foreground" id="clip-count"></span>
+          </div>
+          <ul class="ff-clips-out" id="clips-out" hidden></ul>
+        </div>
+      </article>
       <div class="ff-overall" id="send-overall" hidden>
         <div class="flex items-center justify-between gap-2 text-sm"><span data-i18n="send.overall">All transfers</span><span id="send-overall-text"></span></div>
         <progress class="progress progress-sm" id="send-overall-bar" max="1" value="0"></progress>
@@ -424,10 +470,11 @@
     <section class="ff-view" id="view-received" aria-labelledby="h-received" hidden>
       <h1 id="h-received" class="ff-h1" data-i18n="received.title">Received files</h1>
       <p class="ff-lead" data-i18n="received.lead">You accept every file before it arrives, and nothing is opened by itself. Each file is checked with SHA-256 against the sender's copy.</p>
+      <div id="clips-in" class="ff-list ff-clips-in" aria-live="polite"></div>
       <div id="received-list" class="ff-list"></div>
       <div class="empty-state" id="received-empty">
         <div class="empty-state-icon"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg></div>
-        <p class="empty-state-description" data-i18n="received.empty">Nothing received yet.</p>
+        <p class="empty-state-description" data-i18n="received.empty">Nothing received yet. Files and texts from your other device show up here.</p>
       </div>
     </section>
 
@@ -569,7 +616,7 @@
 
 <dialog class="modal" id="pass-dialog" aria-labelledby="pass-title">
   <form method="dialog" class="modal-box" id="pass-form">
-    <div class="modal-header"><h2 class="modal-title" id="pass-title" data-i18n="passprompt.title">This invite needs a passphrase</h2></div>
+    <div class="modal-header"><h2 class="modal-title" id="pass-title" data-i18n="passprompt.title">This connection needs a passphrase</h2></div>
     <div class="modal-body">
       <p class="text-muted-foreground" data-i18n="passprompt.text">The other device added an extra encryption layer. Type the same passphrase.</p>
       <div class="field">
@@ -631,13 +678,6 @@
             </select>
           </div>
           <label class="label ff-check"><input type="checkbox" class="toggle toggle-sm" role="switch" id="set-sound"> <span data-i18n="settings.sound">Play a short sound when files arrive</span></label>
-          <div class="field">
-            <label class="label" for="set-mode" data-i18n="settings.mode">How devices connect</label>
-            <select class="select" id="set-mode">
-              <option value="words" data-i18n="settings.mode.words">Pairing code: QR and 6 words, through public relays that cannot read it</option>
-              <option value="link" data-i18n="settings.mode.link">Link or QR only: zero third parties, you pass two codes by hand</option>
-            </select>
-          </div>
         </div>
       </section>
       <section id="ice-section">

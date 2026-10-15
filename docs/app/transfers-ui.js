@@ -36,14 +36,18 @@ export function initTransfers(context) {
   const zone = $('#dropzone');
   const page = document.body;
   let depth = 0;
+  const dragging = (on) => {
+    zone.classList.toggle('ff-drag', on);
+    page.classList.toggle('ff-dragging', on);
+  };
   page.addEventListener('dragenter', (e) => {
     if (![...(e.dataTransfer?.types ?? [])].includes('Files')) return;
     depth++;
-    zone.classList.add('ff-drag');
+    dragging(true);
   });
   page.addEventListener('dragleave', () => {
     depth = Math.max(0, depth - 1);
-    if (!depth) zone.classList.remove('ff-drag');
+    if (!depth) dragging(false);
   });
   page.addEventListener('dragover', (e) => {
     if ([...(e.dataTransfer?.types ?? [])].includes('Files')) e.preventDefault();
@@ -52,15 +56,26 @@ export function initTransfers(context) {
     if (![...(e.dataTransfer?.types ?? [])].includes('Files')) return;
     e.preventDefault();
     depth = 0;
-    zone.classList.remove('ff-drag');
+    dragging(false);
     const pending = filesFromDrop(e.dataTransfer);
-    app.go('send');
+    // Not connected and nothing started yet: the pairing code appears right away and the files
+    // go as soon as the other device is confirmed. Otherwise they join the Send queue.
+    // A code already on screen stays there, with the files counted under it.
+    const pair = app.canPairForFiles?.();
+    const stay = pair || app.pairingInProgress?.();
+    if (!stay) app.go('send');
     toast(t('send.reading'), 'info', 1500);
     try {
-      pick(await pending);
+      const tr = pick(await pending, { stay });
+      if (tr && pair) app.pairForFiles();
     } catch (err) {
       toast(t('toast.error', { error: err.message }), 'danger');
     }
+  });
+  $('#start-files').addEventListener('change', (e) => {
+    const tr = pick(filesFromInput(e.target), { stay: true });
+    e.target.value = '';
+    if (tr && app.canPairForFiles()) app.pairForFiles();
   });
 
   engine.on('update', (tr) => queueRender(tr));
@@ -70,22 +85,23 @@ export function initTransfers(context) {
   engine.on('finished', (tr) => onFinished(tr));
 }
 
-export function pick(files) {
+export function pick(files, meta = {}) {
   if (!files.length) {
     toast(t('send.nothing'), 'warning');
     return null;
   }
-  return sendFiles(files);
+  return sendFiles(files, meta);
 }
 
-export function sendFiles(files, meta = {}) {
+export function sendFiles(files, { stay = false, ...meta } = {}) {
   const label = meta.label ?? batchLabel(files, (n) => t('tr.files', { count: n }));
   const tr = app.engine.send(
     files.map((f) => ({ blob: f.blob, path: f.path, mtime: f.mtime, type: f.blob.type })),
     { label, ...meta },
   );
   tr.peerName = app.peer?.name ?? '';
-  app.go('send');
+  if (!stay) app.go('send');
+  app.pendingChanged?.();
   return tr;
 }
 
@@ -299,9 +315,9 @@ function renderOverall() {
   }
 }
 
-function updateEmpty() {
+export function updateEmpty() {
   $('#send-empty').hidden = !!$('#send-list').children.length;
-  $('#received-empty').hidden = !!$('#received-list').children.length;
+  $('#received-empty').hidden = !!($('#received-list').children.length || $('#clips-in').children.length);
 }
 
 // ---- receiving ----

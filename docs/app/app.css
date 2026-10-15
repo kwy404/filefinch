@@ -1679,3 +1679,320 @@ details.ff-fp summary {
   font-size: 1rem;
   white-space: nowrap;
 }
+
+/* ---- files picked or dropped before pairing ---- */
+
+.ff-drop-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0.25rem 0 0;
+}
+
+.ff-drop-hint .ic {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* While files are dragged over the page and no device is connected yet, the pairing card says
+   it will take them. */
+.ff-dragging #connect-start .ff-pair-primary {
+  outline: 2px dashed var(--primary);
+  outline-offset: 4px;
+  transform: translateY(-2px);
+  transition: transform 0.2s ease, outline-offset 0.2s ease;
+}
+
+.ff-pending {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.85rem;
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  animation: ff-rise 0.35s ease-out both;
+}
+
+.ff-pending[hidden] {
+  display: none;
+}
+
+.ff-pending .ic {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+@keyframes ff-rise {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+}
+
+/* ---- known devices ---- */
+
+.ff-known {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+}
+
+.ff-known-head p {
+  margin: 0.15rem 0 0;
+}
+
+.ff-known-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .ff-known-list {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
+}
+
+.ff-known-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--ff-radius);
+  background: var(--surface);
+  animation: ff-rise 0.3s ease-out both;
+}
+
+.ff-known-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: calc(var(--ff-radius) - 0.25rem);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ff-known-btn:hover {
+  background: var(--surface-2);
+}
+
+.ff-known-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.ff-known-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+}
+
+.ff-known-btn:hover .ff-known-icon {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.ff-known-name {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+
+.ff-known-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ff-known-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ff-known-wait {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.ff-remember {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.85rem;
+  background: var(--surface-2);
+}
+
+.ff-remember .hint {
+  margin: 0.35rem 0 0;
+}
+
+/* ---- text and links ---- */
+
+.ff-clipbox {
+  margin: 1rem 0;
+}
+
+.ff-clipbox .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ff-clipbox .textarea {
+  resize: vertical;
+  min-height: 3.5rem;
+}
+
+.ff-clip-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.ff-clips-out {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ff-clips-out[hidden] {
+  display: none;
+}
+
+.ff-clip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.ff-clip-out {
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.75rem;
+  background: var(--surface-2);
+  animation: ff-rise 0.3s ease-out both;
+}
+
+.ff-clip-out .ff-tr-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.6rem;
+  background: var(--surface);
+}
+
+.ff-clip-preview {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.ff-clip-out .badge {
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+
+.ff-clip-out[data-state="delivered"] .badge {
+  animation: ff-pop 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+}
+
+.ff-clips-in:empty {
+  display: none;
+}
+
+.ff-clips-in {
+  margin-bottom: 0.75rem;
+}
+
+.ff-clip-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ff-clip-meta {
+  margin: 0;
+}
+
+.ff-clip-text {
+  display: block;
+  margin: 0.35rem 0 0;
+  max-height: 14rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ff-clip-link {
+  font-weight: 600;
+}
+
+.ff-clip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.ff-clip-actions .btn-square {
+  margin-left: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ff-pending,
+  .ff-known-item,
+  .ff-clip-out,
+  .ff-clip-out[data-state="delivered"] .badge {
+    animation: none !important;
+  }
+  .ff-dragging #connect-start .ff-pair-primary,
+  .ff-known-btn:hover .ff-known-icon {
+    transform: none;
+  }
+}
+
+/* ---- the advanced no relay option, inside Options ---- */
+
+.ff-advanced {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.ff-advanced p {
+  margin: 0;
+}

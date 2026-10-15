@@ -167,7 +167,6 @@ export async function openSettings(focusIce = false) {
   $('#set-stun').value = settings.stun.join('\n');
   $('#set-relayonly').checked = settings.relayOnly;
   $('#set-sound').checked = settings.sound;
-  $('#set-mode').value = settings.connectMode;
   $('#turn-list').replaceChildren();
   for (const entry of settings.turn) addTurnRow(entry);
   $('#settings-close').onclick = () => dialog.close('');
@@ -188,10 +187,7 @@ export async function openSettings(focusIce = false) {
   settings.turn = [...$('#turn-list').querySelectorAll('.ff-turn')].map(readTurn).filter((x) => x.urls);
   settings.relayOnly = $('#set-relayonly').checked;
   settings.sound = $('#set-sound').checked;
-  const modeChanged = settings.connectMode !== $('#set-mode').value;
-  settings.connectMode = $('#set-mode').value;
   save();
-  if (modeChanged) app.connectModeChanged?.();
   $('#device-name').value = settings.name;
   if ($('#set-lang').value !== getLang()) app.setLanguage($('#set-lang').value);
   app.setTheme($('#set-theme').value);

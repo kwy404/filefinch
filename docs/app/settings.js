@@ -1,6 +1,9 @@
-// Settings stored in this browser only (localStorage). The passphrase is never stored.
+// Settings stored in this browser only (localStorage). The passphrase is never stored. Known
+// devices keep the secret each pair agreed on, so anyone with access to this browser profile
+// could use it; forgetting a device removes it.
 
 import { randomId } from './lib/bytes.js';
+import { loadKnown } from './lib/known.js';
 
 export const DEFAULT_STUN = [
   'stun:stun.l.google.com:19302',
@@ -36,8 +39,8 @@ function load() {
     turn: Array.isArray(saved.turn) ? saved.turn.filter((t) => t && typeof t.urls === 'string') : [],
     relayOnly: saved.relayOnly === true,
     destination: ['ask', 'download', 'library'].includes(saved.destination) ? saved.destination : 'ask',
-    connectMode: saved.connectMode === 'link' ? 'link' : 'words',
     sound: saved.sound === true,
+    known: loadKnown(saved.known),
   };
   return s;
 }
