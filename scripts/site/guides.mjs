@@ -95,7 +95,7 @@ export function guideBody(g, all, R, ctx) {
 <div class="guide-grid">
   <aside class="guide-side" aria-label="${t.toc}">
     <div class="toc"><p class="toc-h">${t.toc}</p><ol>${g.toc.map((h) => `<li><a href="#${h.id}">${inline(h.text, link)}</a></li>`).join('')}${g.meta.steps ? `<li><a href="#steps">${t.steps}</a></li>` : ''}<li><a href="#faq">${t.faq}</a></li></ol></div>
-    <div class="try-card"><img src="${R}assets/art/finn-head.svg" width="96" height="83" alt="" loading="lazy"><p class="try-h">${t.tryTitle}</p><p>${t.tryText}</p><a class="btn btn-primary btn-sm" href="${R}app/">${t.tryBtn}</a><a class="btn btn-ghost btn-sm" href="${R}#how">${t.howBtn}</a></div>
+    <div class="try-card"><img src="${R}assets/art/finn-head-dark.svg" width="96" height="83" alt="" loading="lazy"><p class="try-h">${t.tryTitle}</p><p>${t.tryText}</p><a class="btn btn-primary btn-sm" href="${R}app/">${t.tryBtn}</a><a class="btn btn-ghost btn-sm" href="${R}#how">${t.howBtn}</a></div>
   </aside>
   <article class="prose" id="article">
 ${g.html}
@@ -116,7 +116,7 @@ export function indexBody(lang, guides, R) {
   const list = guides.filter((g) => g.meta.lang === lang);
   return `<div class="guide-wrap">
 <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="${R}">${t.home}</a></li><li aria-current="page">${t.guides}</li></ol></nav>
-<header class="index-head"><img src="${R}assets/art/finn.svg" class="index-finn art-l-only" width="150" height="150" alt=""><div><p class="kicker">${t.indexKicker}</p><h1>${t.indexTitle}</h1><p class="lede">${t.indexLede}</p></div></header>
+<header class="index-head"><img src="${R}assets/art/finn-dark.svg" class="index-finn" width="150" height="150" alt=""><div><p class="kicker">${t.indexKicker}</p><h1>${t.indexTitle}</h1><p class="lede">${t.indexLede}</p></div></header>
 <div class="cards cards-index">${list.map((g) => card(R, g, t)).join('')}</div>
 </div>`;
 }

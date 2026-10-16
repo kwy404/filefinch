@@ -33,7 +33,6 @@ export const STR = {
     skip: 'Skip to content',
     nav: [['how', 'How it works', '#how'], ['privacy', 'Privacy', '#privacy'], ['features', 'Features', '#features'], ['faq', 'FAQ', '#faq'], ['guides', 'Guides', 'guides/']],
     cta: 'Start sending',
-    theme: 'Theme: system, light or dark',
     menu: 'Menu',
     langLabel: 'Guias em português',
     langShort: 'PT',
@@ -53,7 +52,6 @@ export const STR = {
     skip: 'Pular para o conteúdo',
     nav: [['how', 'Como funciona', '#how'], ['privacy', 'Privacidade', '#privacy'], ['features', 'Recursos', '#features'], ['faq', 'Perguntas', '#faq'], ['guides', 'Guias', 'pt/guias/']],
     cta: 'Começar a enviar',
-    theme: 'Tema: sistema, claro ou escuro',
     menu: 'Menu',
     langLabel: 'English',
     langShort: 'EN',
@@ -74,9 +72,6 @@ export const STR = {
 const ic = (id, path) => `<symbol id="i-${id}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</symbol>`;
 export const SPRITE = `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${[
   ic('github', '<path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>'),
-  ic('sun', '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
-  ic('moon', '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/>'),
-  ic('system', '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'),
   ic('menu', '<path d="M4 7h16M4 12h16M4 17h16"/>'),
   ic('copy', '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>'),
   ic('check', '<path d="m5 12 5 5L20 7"/>'),
@@ -94,10 +89,6 @@ export const SPRITE = `<svg width="0" height="0" style="position:absolute" aria-
 
 /** Relative prefix from a page path (like 'guides/x/') to the site root. */
 export const rel = (path) => '../'.repeat((path.match(/\//g) || []).length);
-
-function themeHead() {
-  return `<script>(function(){try{var t=localStorage.getItem('voodoo:theme');if(t&&t.charAt(0)==='"')t=JSON.parse(t);var r=document.documentElement;if(t==='light'||t==='dark'){r.setAttribute('data-theme',t);r.style.colorScheme=t}else{r.removeAttribute('data-theme')}}catch(e){}})();</script>`;
-}
 
 /**
  * @param {object} o
@@ -129,20 +120,18 @@ export function page(o, body) {
   const navHref = (h) => (h.startsWith('#') ? (isHome ? h : `${R || './'}${h}`) : R + h);
   const otherLang = R + (o.langHref ?? (o.lang === 'pt' ? '' : 'pt/guias/'));
   return `<!doctype html>
-<html lang="${htmlLang}">
+<html lang="${htmlLang}" data-theme="dark" style="color-scheme: dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
-${themeHead()}
+<meta name="color-scheme" content="dark">
 <script src="${R}assets/site/seasons.js"></script>
 <title>${esc(o.title)}</title>
 <meta name="description" content="${esc(o.description)}">
 ${o.noindex ? '<meta name="robots" content="noindex">\n' : ''}<link rel="canonical" href="${url}">
 ${Object.entries(alts).map(([l, u]) => `<link rel="alternate" hreflang="${l}" href="${u}">`).join('\n')}
 <meta name="author" content="${AUTHOR.name}">
-<meta name="theme-color" content="#EAF5FF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B1530" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#09090B">
 <meta property="og:type" content="${o.ogType || 'website'}">
 <meta property="og:site_name" content="filefinch">
 <meta property="og:locale" content="${o.lang === 'pt' ? 'pt_BR' : 'en_US'}">
@@ -171,7 +160,7 @@ ${SPRITE}
 <a class="skip" href="#main">${s.skip}</a>
 <header class="topbar" v-data="{ open: false }" @keydown.escape="open = false">
   <div class="topbar-in">
-    <a class="brand" href="${R}" aria-label="filefinch home"><img src="${R}favicon.svg" width="34" height="34" alt=""><span class="brand-word">file<span>finch</span></span></a>
+    <a class="brand" href="${R}" aria-label="filefinch home"><img src="${R}favicon.svg" width="28" height="28" alt=""><span class="brand-word">filefinch</span></a>
     <nav id="topnav" class="topnav" :class="open ? 'is-open' : ''" aria-label="Main">
       ${s.nav.map(([nid, label, h]) => `<a href="${navHref(h)}"${o.nav === nid ? ' aria-current="page"' : ''}>${label}</a>`).join('\n      ')}
       <a class="topnav-cta btn btn-primary btn-sm" href="${R}app/"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>${s.cta}</a>
@@ -179,7 +168,6 @@ ${SPRITE}
     <div class="topbar-tools">
       <a class="icon-btn lang-btn" href="${otherLang}" hreflang="${o.lang === 'pt' ? 'en' : 'pt-BR'}" lang="${o.lang === 'pt' ? 'en' : 'pt-BR'}" title="${s.langLabel}" aria-label="${s.langLabel}"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span>${s.langShort}</span></a>
       <a class="icon-btn" href="${REPO}" rel="noopener" aria-label="filefinch on GitHub"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg></a>
-      <button type="button" class="icon-btn theme-btn" v-theme-toggle.cycle aria-label="${s.theme}" title="${s.theme}"><svg class="ic ti-system" aria-hidden="true"><use href="#i-system"/></svg><svg class="ic ti-light" aria-hidden="true"><use href="#i-sun"/></svg><svg class="ic ti-dark" aria-hidden="true"><use href="#i-moon"/></svg></button>
       <button type="button" class="icon-btn nav-btn" aria-controls="topnav" :aria-expanded="open ? 'true' : 'false'" aria-expanded="false" @click="open = !open" aria-label="${s.menu}"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -190,7 +178,7 @@ ${body}
 <footer class="foot">
   <div class="foot-in">
     <div class="foot-brand">
-      <a class="brand" href="${R}"><img src="${R}favicon.svg" width="34" height="34" alt=""><span class="brand-word">file<span>finch</span></span></a>
+      <a class="brand" href="${R}"><img src="${R}favicon.svg" width="28" height="28" alt=""><span class="brand-word">filefinch</span></a>
       <p>${s.footBlurb}</p>
       <p class="foot-made">${s.made} <strong>${AUTHOR.name}</strong> (<a href="${AUTHOR.github}" rel="me noopener">GitHub</a> ${s.and} <a href="${AUTHOR.linkedin}" rel="me noopener">LinkedIn</a>).</p>
       <p class="foot-built">${s.builtMonsoon} <a href="https://kwy404.github.io/monsoon/" rel="noopener">Monsoon</a>. ${s.builtVoodoo} <a href="https://kwy404.github.io/Voodoo.js/" rel="noopener">Voodoo.js</a>.</p>

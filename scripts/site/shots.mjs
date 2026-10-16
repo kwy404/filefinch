@@ -1,7 +1,7 @@
 // Takes the product screenshots used on the home page from the real app:
 // two browser contexts (two "devices") connect with an invite link, send a
 // large generated file, pause it, sync a folder and fill the library. Every
-// screen is saved in light and dark to docs/assets/shots/.
+// screen is saved in the dark theme (the site is dark) to docs/assets/shots/.
 // The pairing screen with six words needs internet to reach the public
 // relays; if they do not answer, that screenshot is skipped.
 // Usage: node scripts/site/shots.mjs
@@ -43,7 +43,7 @@ const exe = [process.env.FILEFINCH_BROWSER, 'C:/Program Files (x86)/Microsoft/Ed
 const WINDOW = { width: 1100, height: 700 };
 const PHONE = { width: 390, height: 844 };
 
-let SCHEME = 'light';
+const SCHEME = 'dark';
 
 /** Saves the page at the given size in the current color scheme. */
 async function snap(page, name, size) {
@@ -51,7 +51,7 @@ async function snap(page, name, size) {
   await page.evaluate(() => document.querySelectorAll('#toasts > *').forEach((t) => t.remove()));
   await page.setViewportSize(size);
   await page.waitForTimeout(500);
-  await page.screenshot({ path: join(out, `${name}-${SCHEME}.png`) });
+  await page.screenshot({ path: join(out, `${name}.png`) });
   await page.setViewportSize(before);
   console.log(`shot ${name} ${SCHEME}`);
 }
@@ -77,7 +77,8 @@ const seedFolder = async ({ dir, files }) => {
 
 async function connect(pageA, pageB, ctxA) {
   await pageA.click('[data-go="connect"]');
-  if (await pageA.locator('#mode-link').isVisible()) await pageA.click('#mode-link');
+  if (!(await pageA.locator('#mode-link').isVisible())) await pageA.click('.ff-options summary');
+  await pageA.click('#mode-link');
   await pageA.click('#host-btn');
   await pageA.locator('#connect-invite').waitFor({ state: 'visible', timeout: 30000 });
   await pageB.goto(await pageA.inputValue('#invite-link'));
@@ -90,20 +91,23 @@ async function connect(pageA, pageB, ctxA) {
   await pageB.locator('#connect-status').waitFor({ state: 'visible', timeout: 40000 });
 }
 
-async function main(scheme) {
-  SCHEME = scheme;
+async function main() {
   if (!exe) throw new Error('No Chrome or Edge found; set FILEFINCH_BROWSER');
   mkdirSync(out, { recursive: true });
   mkdirSync(work, { recursive: true });
   const server = await serve();
   const base = `http://127.0.0.1:${server.address().port}/filefinch/app/`;
   const browser = await chromium.launch({ executablePath: exe, headless: true });
-  const opts = { acceptDownloads: true, locale: 'en-US', viewport: WINDOW, deviceScaleFactor: 2, reducedMotion: 'reduce', colorScheme: scheme };
+  const opts = { acceptDownloads: true, locale: 'en-US', viewport: WINDOW, deviceScaleFactor: 2, reducedMotion: 'reduce', colorScheme: SCHEME };
   const ctxA = await browser.newContext(opts);
   const ctxB = await browser.newContext(opts);
   const pageA = await ctxA.newPage();
   const pageB = await ctxB.newPage();
   for (const p of [pageA, pageB]) await p.addInitScript(stubPickers);
+  // Friendly device names, saved before the app reads its settings.
+  const named = (name) => `try { const k = 'filefinch:settings'; const s = JSON.parse(localStorage.getItem(k) || '{}'); s.name = ${JSON.stringify(name)}; localStorage.setItem(k, JSON.stringify(s)); } catch {}`;
+  await ctxA.addInitScript(named('Studio laptop'));
+  await ctxB.addInitScript(named('Phone'));
   await pageA.goto(base);
   await pageB.goto(base);
   await pageA.evaluate(() => navigator.serviceWorker.ready);
@@ -167,7 +171,11 @@ async function main(scheme) {
     await pageA.waitForFunction(() => {
       const tr = [...window.filefinch.engine.outgoing.values()][0];
       return tr && tr.files[0].sent > tr.files[0].size * 0.38;
-    }, null, { polling: 30, timeout: 120000 });
+    }, null, { polling: 30, timeout: 120000 }).catch(async (err) => {
+      const state = (page) => page.evaluate(() => [...window.filefinch.engine.outgoing.values(), ...window.filefinch.engine.incoming.values()].map((t) => `${t.dir} ${t.state} ${t.files[0].sent ?? t.files[0].written}`));
+      console.error('A', await state(pageA), 'B', await state(pageB));
+      throw err;
+    });
     await pageA.evaluate(() => {
       const tr = [...window.filefinch.engine.outgoing.values()][0];
       window.filefinch.engine.pause(tr.id);
@@ -218,9 +226,7 @@ async function main(scheme) {
   }
 }
 
-(async () => {
-  for (const scheme of ['light', 'dark']) await main(scheme);
-})().then(() => process.exit(0), (err) => {
+main().then(() => process.exit(0), (err) => {
   console.error(err);
   process.exit(1);
 });
