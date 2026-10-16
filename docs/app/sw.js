@@ -2,7 +2,7 @@
 // streamed downloads, so a large file goes to disk as it arrives instead of filling memory.
 
 // precache:start
-const CACHE_VERSION = 'a9aaf06b911b';
+const CACHE_VERSION = '3b13d2e58454';
 const PRECACHE = [
   './',
   '../assets/seasons/carnival/finn-dark.svg',

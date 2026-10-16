@@ -223,6 +223,15 @@ async function main() {
       dt.setData('text/plain', text);
       document.querySelector('#confirm-word-0').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
     }, confirm2.join(' '));
+    // A phone keyboard inserts clipboard text with no paste event, here with a label around it.
+    await B.evaluate(() => { for (let i = 0; i < 6; i++) document.querySelector(`#confirm-word-${i}`).value = ''; });
+    await B.evaluate((text) => {
+      const box = document.querySelector('#confirm-word-0');
+      box.value = text;
+      box.dispatchEvent(new InputEvent('input', { inputType: 'insertFromPaste', data: text, bubbles: true }));
+    }, `Code: ${confirm2.join(' ')}`);
+    const spread = await B.evaluate(() => [...Array(6)].map((_, i) => document.querySelector(`#confirm-word-${i}`).value));
+    check('a phrase inserted by a phone keyboard fills one word per box', spread.join(' ') === confirm2.join(' '), spread.join(' '));
     await B.click('#confirm-btn');
     await B.locator('#connect-status').waitFor({ state: 'visible', timeout: 15000 });
     await A.locator('#connect-status').waitFor({ state: 'visible', timeout: 15000 });
