@@ -1,6 +1,7 @@
 // The Library and History tabs and the Settings dialog.
 
 import { $, button, bytes, dateTime, el, fileIconName, icon, showDialog, speed, toast } from './ui.js';
+import { attachMenu } from './contextmenu.js';
 import { t, getLang } from './i18n.js';
 import { addToLibrary, libraryFile, listLibrary, removeFromLibrary, storageEstimate } from './library.js';
 import { clearHistory, listHistory } from './history.js';
@@ -82,11 +83,14 @@ export async function refreshLibrary() {
         }, 'btn-ghost btn-sm btn-square', { 'aria-label': `${t('library.delete')}: ${item.name}`, title: t('library.delete') }),
       );
       const meta = [bytes(item.size), dateTime(item.added), item.from ? t('library.from', { name: item.from }) : ''].filter(Boolean).join(' · ');
-      return el(
+      const card = el(
         'article.card.ff-card.ff-lib',
         {},
         el('div.card-body', {}, el('div.ff-tr-head', {}, el('span.ff-tr-icon', {}, icon(fileIconName(item.name, item.type))), el('div.ff-tr-title', {}, el('p.ff-tr-label', { text: item.name }), el('p.text-sm.text-muted-foreground', { text: meta }))), acts),
       );
+      // The same actions in the context menu, in the order of the buttons.
+      attachMenu(card, () => [...acts.querySelectorAll('button')].map((b, i, all) => [i === all.length - 1 ? '-' : null, { label: b.textContent.trim() || b.getAttribute('aria-label'), icon: b.querySelector('use')?.getAttribute('href').slice(3), danger: i === all.length - 1, run: () => b.click() }]).flat());
+      return card;
     }),
   );
   $('#library-empty').hidden = items.length > 0;

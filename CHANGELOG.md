@@ -6,6 +6,9 @@ All notable changes to filefinch are documented here. The format follows [Keep a
 
 ### Added
 
+- A context menu in the app: right click, a long press on touch, or the Menu key (or Shift+F10) on a focused item. Received files offer Open, Save, Keep in library, Copy and Remove from list; texts offer Copy and Open link; known devices offer Connect, Rename and Forget; transfers offer Pause, Resume, Cancel, Send again and Remove from list. It is one keyboard friendly menu that stays inside the screen.
+- Known devices can be renamed on this device. The name stays in this browser only.
+- A sent batch that failed, was canceled or declined can be sent again with one click.
 - Files first: pick or drop files on the start screen and the pairing code appears right away. The files are counted under the code and go by themselves once the devices are confirmed, and the sender moves to the Send tab to watch them leave.
 - Text and links between devices, like a shared clipboard: a box on the Send tab (Ctrl + Enter sends, a Paste button where the browser allows it), and the texts that arrived on the Received tab with Copy and, for a single http or https address, Open. Each text is marked Waiting, Sent or Delivered; texts typed while disconnected go out on the next connection, and with a passphrase they are sealed with it like file chunks. Ctrl + V on the Send tab sends pasted files or puts pasted text in the box.
 - Special dates in the app: on the same dates as the website, a thin two color line under the header and Finn in costume on the start screen, with a Turn off button. Turning it off on the site or in the app keeps it off on both until next year. The script and Finn's costumes are kept for offline use.
@@ -13,6 +16,8 @@ All notable changes to filefinch are documented here. The format follows [Keep a
 
 ### Changed
 
+- A new look for the app and the website: near black surfaces, hairline borders, one coral accent from Finn, and a calm single column in the app. The app keeps Connect, Send and Received up front; Sync, Library and History sit at the side (under More on a phone), and the language and theme switches moved to the footer. The light theme stays available in the app.
+- The website is dark only, with a centered hero over real screenshots of the app, and Finn, the icons and the illustrations redrawn for the dark look. The app icon is now Finn on a near black tile.
 - Invites are a QR code and six words only: the app shows no invite address, copy link or share link button. The QR code still carries the words for a phone camera.
 - The link mode left Settings and the start screen. It stays as "Connect with no relays (advanced)" under Options: one device shows a QR code, the other answers with its own, and either can be scanned or its code pasted.
 

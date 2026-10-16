@@ -1,7 +1,7 @@
 // The Send and Received tabs: picking and dropping files, the queues with per file and overall
 // progress, speed and time left, pause, resume and cancel, and the accept dialog for offers.
 
-import { $, button, bytes, duration, el, fileIconName, icon, showDialog, speed, toast } from './ui.js';
+import { $, button, bytes, copyText, duration, el, fileIconName, icon, previewKind, showDialog, speed, toast } from './ui.js';
 import { t } from './i18n.js';
 import { SpeedMeter } from './lib/format.js';
 import { transferProgress } from './lib/transfer.js';
@@ -13,8 +13,10 @@ import { recordTransfer } from './history.js';
 import { settings } from './settings.js';
 import { addToLibrary } from './library.js';
 import { celebrate } from './motion.js';
+import { attachMenu } from './contextmenu.js';
 
 const MAX_ROWS = 300;
+const OPEN_STATES = ['waiting', 'offered', 'active', 'interrupted', 'pending'];
 const cards = new Map();
 const meters = new Map();
 let app;
@@ -162,6 +164,7 @@ function buildCard(tr) {
   const card = el('article.card.ff-card.ff-tr', { dataset: { id: tr.id } }, el('div.card-body', {}, head, bar, stats, note, actions, files));
   list.prepend(card);
   const entry = { card, head, bar, stats, actions, files, note, rows: new Map(), lastActions: '' };
+  attachMenu(card, () => transferMenu(tr));
   cards.set(`${tr.dir}:${tr.id}`, entry);
   files.addEventListener('toggle', () => files.open && render(tr));
   return entry;
@@ -209,26 +212,103 @@ function renderActions(tr, entry) {
   entry.lastActions = sig;
   const { engine } = app;
   const a = [];
-  const open = ['waiting', 'offered', 'active', 'interrupted', 'pending'].includes(tr.state);
+  const open = OPEN_STATES.includes(tr.state);
   if (tr.state === 'active' || tr.state === 'interrupted') {
     if (tr.paused) a.push(button(t('tr.resume'), 'play', () => engine.resume(tr.id), 'btn-soft btn-sm'));
     else a.push(button(t('tr.pause'), 'pause', () => engine.pause(tr.id), 'btn-ghost btn-sm'));
   }
   if (open && tr.state !== 'pending') a.push(button(t('tr.cancel'), 'x', () => engine.cancel(tr.id), 'btn-ghost btn-sm'));
-  if (!open) {
-    a.push(
-      button(t('tr.dismiss'), 'x', () => {
-        entry.card.remove();
-        cards.delete(`${tr.dir}:${tr.id}`);
-        meters.delete(tr.id);
-        engine.outgoing.delete(tr.id);
-        engine.incoming.delete(tr.id);
-        updateEmpty();
-        renderOverall();
-      }, 'btn-ghost btn-sm'),
-    );
-  }
+  if (canRetry(tr)) a.push(button(t('tr.retry'), 'refresh', () => retry(tr), 'btn-soft btn-sm'));
+  if (!open) a.push(button(t('tr.dismiss'), 'x', () => dismiss(tr), 'btn-ghost btn-sm'));
   entry.actions.replaceChildren(...a);
+}
+
+/** Takes a finished transfer off the list (the history keeps its record). */
+function dismiss(tr) {
+  cards.get(`${tr.dir}:${tr.id}`)?.card.remove();
+  cards.delete(`${tr.dir}:${tr.id}`);
+  meters.delete(tr.id);
+  app.engine.outgoing.delete(tr.id);
+  app.engine.incoming.delete(tr.id);
+  updateEmpty();
+  renderOverall();
+}
+
+/** A sent batch that failed, was canceled or declined can go again: its files are still here. */
+const canRetry = (tr) => tr.dir === 'out' && tr.kind !== 'sync' && ['failed', 'canceled', 'declined'].includes(tr.state) && tr.files.every((f) => f.blob);
+
+function retry(tr) {
+  if (!canRetry(tr)) return;
+  const files = tr.files.map((f) => ({ blob: f.blob, path: f.path, mtime: f.mtime }));
+  dismiss(tr);
+  sendFiles(files, { label: tr.label });
+}
+
+// ---- context menus ----
+
+const fileReady = (tr, f) => tr.dir === 'in' && f.state === 'done' && !!f.saved?.getFile;
+
+async function saveOne(f) {
+  try {
+    if (await saveFile(await f.saved.getFile(), f.name)) toast(t('toast.saved', { name: f.name }), 'success');
+  } catch (err) {
+    toast(t('toast.error', { error: err.message }), 'danger');
+  }
+}
+
+async function keepOne(tr, f) {
+  try {
+    await addToLibrary(await f.saved.getFile(), { name: f.name, path: f.path, from: tr.peerName });
+    toast(t('toast.library', { name: f.name }), 'success');
+    app.refreshLibrary?.();
+  } catch (err) {
+    toast(t('toast.error', { error: err.message }), 'danger');
+  }
+}
+
+/** What Copy puts on the clipboard: a PNG image, the text of a small text file, or the file name. */
+function copyKind(tr, f) {
+  if (!fileReady(tr, f)) return 'name';
+  const kind = previewKind(f.name, f.type);
+  if (kind === 'image' && /\.png$/i.test(f.name) && globalThis.ClipboardItem && navigator.clipboard?.write) return 'image';
+  if (kind === 'text' && f.size <= 1 << 20) return 'text';
+  return 'name';
+}
+
+async function copyFile(tr, f) {
+  const kind = copyKind(tr, f);
+  try {
+    if (kind === 'image') {
+      const blob = await f.saved.getFile();
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob.slice(0, blob.size, 'image/png') })]);
+    } else if (kind === 'text') await copyText(await (await f.saved.getFile()).text());
+    else await copyText(f.path);
+    toast(t('menu.copied'), 'success', 1800);
+  } catch (err) {
+    toast(t('toast.error', { error: err.message }), 'danger');
+  }
+}
+
+function fileItems(tr, f) {
+  const ready = fileReady(tr, f);
+  return [
+    ready && canPreview(f.name, f.type) && { label: t('menu.open'), icon: 'eye', run: () => openPreview(f.name, f.type, f.saved.getFile) },
+    ready && ['memory', 'library'].includes(f.saved.kind) && { label: t('tr.save'), icon: 'save', run: () => saveOne(f) },
+    ready && f.saved.kind === 'memory' && { label: t('tr.keep'), icon: 'library', run: () => keepOne(tr, f) },
+    { label: t(`menu.copy.${copyKind(tr, f)}`), icon: 'copy', run: () => copyFile(tr, f) },
+  ];
+}
+
+function transferMenu(tr) {
+  const { engine } = app;
+  const open = OPEN_STATES.includes(tr.state);
+  const items = tr.files.length === 1 ? fileItems(tr, tr.files[0]) : [{ label: t('menu.copy.names'), icon: 'copy', run: () => copyText(tr.files.map((f) => f.path).join('\n')).then(() => toast(t('menu.copied'), 'success', 1800)) }];
+  items.push('-');
+  if (tr.state === 'active' || tr.state === 'interrupted') items.push(tr.paused ? { label: t('tr.resume'), icon: 'play', run: () => engine.resume(tr.id) } : { label: t('tr.pause'), icon: 'pause', run: () => engine.pause(tr.id) });
+  if (open && tr.state !== 'pending') items.push({ label: t('tr.cancel'), icon: 'x', run: () => engine.cancel(tr.id) });
+  if (canRetry(tr)) items.push({ label: t('tr.retry'), icon: 'refresh', run: () => retry(tr) });
+  if (!open) items.push({ label: t('tr.dismiss'), icon: 'trash', danger: true, run: () => dismiss(tr) });
+  return items;
 }
 
 function renderFiles(tr, entry) {
@@ -242,8 +322,10 @@ function renderFiles(tr, entry) {
       const state = el('span.ff-file-state.text-xs');
       const acts = el('span.ff-file-acts');
       const li = el(tr.files.length === 1 ? 'div.ff-file.ff-file-single' : 'li.ff-file', {}, icon(fileIconName(f.name, f.type)), el('span.ff-file-name', { text: f.path, title: f.path }), el('span.ff-file-size.text-xs.text-muted-foreground', { text: bytes(f.size) }), state, bar, acts);
-      if (ul) ul.append(li);
-      else target.insertBefore(li, entry.actions);
+      if (ul) {
+        ul.append(li);
+        attachMenu(li, () => fileItems(tr, f));
+      } else target.insertBefore(li, entry.actions);
       row = { li, bar, state, acts, sig: '' };
       entry.rows.set(f.key, row);
     }
@@ -262,33 +344,11 @@ function renderFiles(tr, entry) {
 }
 
 function fileActions(tr, f) {
-  if (tr.dir !== 'in' || f.state !== 'done' || !f.saved?.getFile) return [];
+  if (!fileReady(tr, f)) return [];
   const out = [];
   if (canPreview(f.name, f.type)) out.push(button('', 'eye', () => openPreview(f.name, f.type, f.saved.getFile), 'btn-ghost btn-xs btn-square', { 'aria-label': `${t('tr.preview')}: ${f.name}`, title: t('tr.preview') }));
-  if (f.saved.kind === 'memory' || f.saved.kind === 'library') {
-    out.push(
-      button('', 'save', async () => {
-        try {
-          if (await saveFile(await f.saved.getFile(), f.name)) toast(t('toast.saved', { name: f.name }), 'success');
-        } catch (err) {
-          toast(t('toast.error', { error: err.message }), 'danger');
-        }
-      }, 'btn-ghost btn-xs btn-square', { 'aria-label': `${t('tr.save')}: ${f.name}`, title: t('tr.save') }),
-    );
-  }
-  if (f.saved.kind === 'memory') {
-    out.push(
-      button('', 'library', async () => {
-        try {
-          await addToLibrary(await f.saved.getFile(), { name: f.name, path: f.path, from: tr.peerName });
-          toast(t('toast.library', { name: f.name }), 'success');
-          app.refreshLibrary?.();
-        } catch (err) {
-          toast(t('toast.error', { error: err.message }), 'danger');
-        }
-      }, 'btn-ghost btn-xs btn-square', { 'aria-label': `${t('tr.keep')}: ${f.name}`, title: t('tr.keep') }),
-    );
-  }
+  if (f.saved.kind === 'memory' || f.saved.kind === 'library') out.push(button('', 'save', () => saveOne(f), 'btn-ghost btn-xs btn-square', { 'aria-label': `${t('tr.save')}: ${f.name}`, title: t('tr.save') }));
+  if (f.saved.kind === 'memory') out.push(button('', 'library', () => keepOne(tr, f), 'btn-ghost btn-xs btn-square', { 'aria-label': `${t('tr.keep')}: ${f.name}`, title: t('tr.keep') }));
   return out;
 }
 

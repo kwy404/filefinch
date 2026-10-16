@@ -6,6 +6,7 @@ import { $, button, copyText, el, icon, toast } from './ui.js';
 import { t, locale } from './i18n.js';
 import { clipLink, clipPreview, makeClip, readClip } from './lib/clip.js';
 import { celebrate } from './motion.js';
+import { attachMenu } from './contextmenu.js';
 
 const MAX_KEPT = 50;
 const outgoing = []; // { id, text, state: 'waiting' | 'sent' | 'delivered', card }
@@ -167,11 +168,7 @@ function renderIn(clip) {
     {},
     button(t('copy'), 'copy', (e) => copyText(clip.text, e.currentTarget), 'btn-soft btn-sm'),
     link ? el('a.btn.btn-ghost.btn-sm', { href: link, target: '_blank', rel: 'noopener noreferrer' }, icon('link'), el('span', { text: t('clip.open') })) : null,
-    button('', 'x', () => {
-      incoming.splice(incoming.indexOf(clip), 1);
-      clip.card.remove();
-      app.receivedChanged?.();
-    }, 'btn-ghost btn-sm btn-square', { 'aria-label': t('remove'), title: t('remove') }),
+    button('', 'x', () => removeIn(clip), 'btn-ghost btn-sm btn-square', { 'aria-label': t('remove'), title: t('remove') }),
   );
   clip.card = el(
     'article.card.ff-card.ff-clip.ff-clip-in',
@@ -179,6 +176,24 @@ function renderIn(clip) {
     el('div.card-body', {}, el('div.ff-clip-head', {}, el('span.ff-tr-icon', {}, icon(link ? 'link' : 'text')), el('p.ff-clip-meta.text-sm.text-muted-foreground', { text: t('clip.from', { name: clip.from, time: time(clip.at) }) })), textBlock(clip.text), actions),
   );
   $('#clips-in').prepend(clip.card);
+  attachMenu(clip.card, () => [
+    { label: t('copy'), icon: 'copy', run: () => copied(clip.text) },
+    link && { label: t('clip.open'), icon: 'link', run: () => window.open(link, '_blank', 'noopener,noreferrer') },
+    '-',
+    { label: t('remove'), icon: 'trash', danger: true, run: () => removeIn(clip) },
+  ]);
+}
+
+function removeIn(clip) {
+  const i = incoming.indexOf(clip);
+  if (i >= 0) incoming.splice(i, 1);
+  clip.card.remove();
+  app.receivedChanged?.();
+}
+
+async function copied(text) {
+  await copyText(text);
+  toast(t('menu.copied'), 'success', 1800);
 }
 
 function renderOut(clip) {
@@ -189,6 +204,8 @@ function renderOut(clip) {
   else {
     clip.card = el('li.ff-clip.ff-clip-out', { dataset: { id: clip.id, state: clip.state } }, body);
     $('#clips-out').prepend(clip.card);
+    const link = clipLink(clip.text);
+    attachMenu(clip.card, () => [{ label: t('copy'), icon: 'copy', run: () => copied(clip.text) }, link && { label: t('clip.open'), icon: 'link', run: () => window.open(link, '_blank', 'noopener,noreferrer') }]);
   }
   clip.card.dataset.state = clip.state;
   $('#clips-out').hidden = !outgoing.length;

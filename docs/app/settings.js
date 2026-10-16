@@ -27,6 +27,16 @@ function guessName() {
   return 'My device';
 }
 
+/** Names given to known devices on this device with Rename: device id to name. */
+function cleanAliases(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const [id, name] of Object.entries(raw)) {
+    if (/^[A-Za-z0-9_-]{8,40}$/.test(id) && typeof name === 'string' && name.trim()) out[id] = name.trim().slice(0, 40);
+  }
+  return out;
+}
+
 function load() {
   let saved = {};
   try {
@@ -41,6 +51,7 @@ function load() {
     destination: ['ask', 'download', 'library'].includes(saved.destination) ? saved.destination : 'ask',
     sound: saved.sound === true,
     known: loadKnown(saved.known),
+    aliases: cleanAliases(saved.aliases),
   };
   return s;
 }

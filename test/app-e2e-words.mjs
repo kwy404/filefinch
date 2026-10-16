@@ -177,6 +177,13 @@ async function main() {
     await B.locator('#connect-start').waitFor({ state: 'visible', timeout: 15000 });
     check('"Your devices" lists the other device on both screens', (await A.isVisible('#known-list .ff-known-btn')) && (await B.isVisible('#known-list .ff-known-btn')));
     t0 = Date.now();
+    // Rename a known device from its context menu (the name is kept on this device only).
+    await A.click('#known-list .ff-known-item', { button: 'right', position: { x: 30, y: 20 } });
+    await A.locator('.ff-menu [role="menuitem"]', { hasText: 'Rename' }).click();
+    await A.fill('#known-rename', 'Kitchen phone');
+    await A.press('#known-rename', 'Enter');
+    const renamed = await A.textContent('#known-list .ff-known-name .font-medium');
+    check('a known device can be renamed from its context menu', renamed === 'Kitchen phone', renamed);
     await A.click('#known-list .ff-known-btn');
     await A.locator('#connect-known').waitFor({ state: 'visible', timeout: 45000 });
     await B.click('#known-list .ff-known-btn');

@@ -11,8 +11,8 @@
 <title>filefinch app: send files and folders between your devices</title>
 <meta name="description" content="The filefinch app: pair two of your devices with a QR code or 6 words and send files and whole folders straight between them, peer to peer, with no server and no account.">
 <link rel="canonical" href="https://kwy404.github.io/filefinch/app/">
-<meta name="theme-color" content="#EAF5FF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B1530" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#09090B" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="filefinch app: send files and folders between your devices">
 <meta property="og:description" content="Peer to peer file transfer in the browser. No server, no account, no size limit.">
 <meta property="og:image" content="https://kwy404.github.io/filefinch/og.png">
@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="app.css">
 <script type="module" src="main.js"></script>
 </head>
-<body class="bg-background text-foreground antialiased">
+<body class="antialiased">
 <svg class="sprite" aria-hidden="true" focusable="false">
   <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v4M15 3v4M6 7h12v4a6 6 0 0 1-12 0zM12 17v4"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
@@ -65,6 +65,7 @@
   <symbol id="i-devices" viewBox="0 0 24 24"><path d="M2.5 5.5h12v9h-12zM1 18h15M17.5 8h5v12h-5zM20 17h.01"/></symbol>
   <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16.5 6.5l3 3M14 9l2 2"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><path d="M5.5 12h.01M12 12h.01M18.5 12h.01" stroke-width="3"/></symbol>
   <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0M12 17l4-5"/></symbol>
 </svg>
 
@@ -72,20 +73,27 @@
 
 <header class="ff-top">
   <a class="ff-brand" href="../" aria-label="filefinch home">
-    <img src="icons/icon.svg" width="32" height="32" alt="">
+    <img src="icons/icon.svg" width="28" height="28" alt="">
     <span>filefinch</span>
   </a>
   <button type="button" class="ff-pill" id="conn-pill" data-go="connect" aria-live="polite">
     <span class="status status-offline" id="conn-dot"></span>
     <span id="conn-text" data-i18n="pill.offline">Not connected</span>
   </button>
+  <nav class="ff-tabs" id="ff-tabs" aria-label="App sections" data-i18n-attr="aria-label:nav.label">
+    <div class="ff-tabs-main">
+      <button type="button" class="ff-tab" data-go="connect" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span class="ff-tab-t" data-i18n="nav.connect">Connect</span></button>
+      <button type="button" class="ff-tab" data-go="send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-tab-t" data-i18n="nav.send">Send</span><span class="ff-count" id="count-send" hidden></span></button>
+      <button type="button" class="ff-tab" data-go="received"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg><span class="ff-tab-t" data-i18n="nav.received">Received</span><span class="ff-count" id="count-received" hidden></span></button>
+      <button type="button" class="ff-tab ff-tab-more" id="more-btn" aria-expanded="false" aria-controls="ff-tabs-more"><svg class="ic" aria-hidden="true"><use href="#i-dots"/></svg><span class="ff-tab-t" data-i18n="nav.more">More</span></button>
+    </div>
+    <div class="ff-tabs-more" id="ff-tabs-more">
+      <button type="button" class="ff-tab" data-go="sync" data-i18n-attr="title:nav.sync" title="Sync"><svg class="ic" aria-hidden="true"><use href="#i-sync"/></svg><span class="ff-tab-t" data-i18n="nav.sync">Sync</span></button>
+      <button type="button" class="ff-tab" data-go="library" data-i18n-attr="title:nav.library" title="Library"><svg class="ic" aria-hidden="true"><use href="#i-library"/></svg><span class="ff-tab-t" data-i18n="nav.library">Library</span></button>
+      <button type="button" class="ff-tab" data-go="history" data-i18n-attr="title:nav.history" title="History"><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg><span class="ff-tab-t" data-i18n="nav.history">History</span></button>
+    </div>
+  </nav>
   <div class="ff-top-actions">
-    <button type="button" class="btn btn-ghost btn-sm btn-square" id="lang-btn" aria-label="Language: switch to Portuguese" title="Language">
-      <svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span class="ff-lang-code" id="lang-code">EN</span>
-    </button>
-    <button type="button" class="btn btn-ghost btn-sm btn-square" id="theme-btn" aria-label="Theme: system" title="Theme">
-      <svg class="ic" aria-hidden="true"><use href="#i-auto" id="theme-icon"/></svg>
-    </button>
     <button type="button" class="btn btn-ghost btn-sm btn-square" id="settings-btn" data-i18n-attr="aria-label:settings.title,title:settings.title" aria-label="Settings" title="Settings">
       <svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>
     </button>
@@ -93,20 +101,14 @@
 </header>
 
 <div class="ff-shell">
-  <nav class="ff-tabs" aria-label="App sections" data-i18n-attr="aria-label:nav.label">
-    <button type="button" class="ff-tab" data-go="connect" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="nav.connect">Connect</span></button>
-    <button type="button" class="ff-tab" data-go="send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="nav.send">Send</span><span class="ff-count" id="count-send" hidden></span></button>
-    <button type="button" class="ff-tab" data-go="received"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg><span data-i18n="nav.received">Received</span><span class="ff-count" id="count-received" hidden></span></button>
-    <button type="button" class="ff-tab" data-go="sync"><svg class="ic" aria-hidden="true"><use href="#i-sync"/></svg><span data-i18n="nav.sync">Sync</span></button>
-    <button type="button" class="ff-tab" data-go="library"><svg class="ic" aria-hidden="true"><use href="#i-library"/></svg><span data-i18n="nav.library">Library</span></button>
-    <button type="button" class="ff-tab" data-go="history"><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg><span data-i18n="nav.history">History</span></button>
-  </nav>
-
   <main id="main" tabindex="-1">
     <!-- CONNECT -->
-    <section class="ff-view" id="view-connect" aria-labelledby="h-connect">
-      <h1 id="h-connect" class="ff-h1" data-i18n="connect.title">Connect your devices</h1>
-      <p class="ff-lead" data-i18n="connect.lead.words">Pair two devices like Bluetooth: one shows a QR code and 6 words, the other scans the code or types the words. Files then go straight from one device to the other.</p>
+    <section class="ff-view ff-view-connect" id="view-connect" aria-labelledby="h-connect">
+      <div class="ff-aura" aria-hidden="true"><span class="ff-aura-grid"></span><span class="ff-aura-glow"></span></div>
+      <header class="ff-head ff-head-center">
+        <h1 id="h-connect" class="ff-h1" data-i18n="connect.title">Connect your devices</h1>
+        <p class="ff-lead" data-i18n="connect.lead.words">Pair two devices like Bluetooth: one shows a QR code and 6 words, the other scans the code or types the words. Files then go straight from one device to the other.</p>
+      </header>
 
       <section id="known-box" class="ff-known" aria-labelledby="known-title" hidden>
         <div class="ff-known-head">
@@ -116,74 +118,66 @@
         <ul class="ff-known-list" id="known-list"></ul>
       </section>
 
-      <div id="connect-start" class="ff-pair-grid">
-        <article class="card ff-card ff-pair-card ff-pair-primary">
-          <div class="card-body">
-            <span class="ff-season-finn" id="season-finn" hidden></span>
-            <div class="ff-pair-art" aria-hidden="true">
-              <span class="ff-dev"><svg class="ic"><use href="#i-devices"/></svg></span>
-              <span class="ff-beam"></span>
-              <span class="ff-dev ff-dev-qr"><svg class="ic"><use href="#i-qr"/></svg></span>
-            </div>
-            <h2 class="card-title" data-i18n="pair.show.title">Pair a device</h2>
-            <p class="text-muted-foreground" data-i18n="pair.show.text">Show a QR code and 6 words on this screen. Scan the code with your phone, or type the words on any other device.</p>
-            <div class="card-actions ff-actions-start">
-              <button type="button" class="btn btn-primary btn-lg" id="code-btn"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="pair.show.button">Show pairing code</span></button>
-              <label class="btn btn-outline btn-lg ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="pair.files.button">Pick files to send</span><input type="file" id="start-files" multiple></label>
-            </div>
-            <p class="ff-drop-hint text-sm text-muted-foreground"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="pair.files.hint">Or drop files anywhere on this page: the code appears right away and they go as soon as your devices connect.</span></p>
-            <p class="ff-season-note text-sm text-muted-foreground" id="season-note" hidden></p>
+      <div id="connect-start" class="ff-start">
+        <article class="ff-panel ff-pair-card ff-pair-primary">
+          <span class="ff-season-finn" id="season-finn" hidden></span>
+          <div class="ff-pair-art" aria-hidden="true">
+            <span class="ff-dev"><svg class="ic"><use href="#i-devices"/></svg></span>
+            <span class="ff-beam"></span>
+            <span class="ff-dev ff-dev-qr"><svg class="ic"><use href="#i-qr"/></svg></span>
           </div>
+          <h2 class="ff-h2" data-i18n="pair.show.title">Pair a device</h2>
+          <p class="ff-muted" data-i18n="pair.show.text">Show a QR code and 6 words on this screen. Scan the code with your phone, or type the words on any other device.</p>
+          <div class="ff-actions">
+            <button type="button" class="btn btn-primary btn-lg ff-cta" id="code-btn"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="pair.show.button">Show pairing code</span></button>
+            <label class="btn btn-outline btn-lg ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="pair.files.button">Pick files to send</span><input type="file" id="start-files" multiple></label>
+          </div>
+          <p class="ff-drop-hint"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="pair.files.hint">Or drop files anywhere on this page: the code appears right away and they go as soon as your devices connect.</span></p>
+          <p class="ff-season-note" id="season-note" hidden></p>
         </article>
-        <article class="card ff-card ff-pair-card">
-          <div class="card-body">
-            <h2 class="card-title" data-i18n="pair.enter.title">Have a pairing code?</h2>
-            <p class="text-muted-foreground" data-i18n="pair.enter.text">Type the 6 words shown on your other device. The first 4 letters of each word are enough, and you can paste the whole phrase.</p>
-            <div id="join-words"></div>
-            <div class="card-actions ff-actions-start">
-              <button type="button" class="btn btn-primary" id="words-join-btn"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="pair.enter.button">Connect</span></button>
-              <button type="button" class="btn btn-outline" id="words-scan" hidden><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.button">Scan QR</span></button>
-            </div>
+        <article class="ff-panel ff-pair-card ff-join">
+          <div class="ff-join-head">
+            <h2 class="ff-h3" data-i18n="pair.enter.title">Have a pairing code?</h2>
+            <p class="ff-muted text-sm" data-i18n="pair.enter.text">Type the 6 words shown on your other device. The first 4 letters of each word are enough, and you can paste the whole phrase.</p>
+          </div>
+          <div id="join-words"></div>
+          <div class="ff-actions ff-actions-end">
+            <button type="button" class="btn btn-outline" id="words-scan" hidden><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.button">Scan QR</span></button>
+            <button type="button" class="btn btn-soft" id="words-join-btn"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="pair.enter.button">Connect</span></button>
           </div>
         </article>
       </div>
 
-      <div id="connect-link" class="ff-grid-2" hidden>
-        <article class="card ff-card">
-          <div class="card-body">
-            <p class="ff-step">1</p>
-            <h2 class="card-title" data-i18n="connect.host.title">Start on this device</h2>
-            <p class="text-muted-foreground" data-i18n="connect.host.text">Show a QR code here and scan it with your other device. It answers with a QR code of its own.</p>
-            <div class="card-actions">
-              <button type="button" class="btn btn-primary" id="host-btn"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="connect.host.button">Show a QR code</span></button>
-            </div>
+      <div id="connect-link" class="ff-start ff-start-link" hidden>
+        <article class="ff-panel">
+          <p class="ff-step">1</p>
+          <h2 class="ff-h3" data-i18n="connect.host.title">Start on this device</h2>
+          <p class="ff-muted text-sm" data-i18n="connect.host.text">Show a QR code here and scan it with your other device. It answers with a QR code of its own.</p>
+          <div class="ff-actions">
+            <button type="button" class="btn btn-primary" id="host-btn"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="connect.host.button">Show a QR code</span></button>
           </div>
         </article>
-        <article class="card ff-card">
-          <div class="card-body">
-            <p class="ff-step">2</p>
-            <h2 class="card-title" data-i18n="connect.join.title">The other device showed a QR code?</h2>
-            <p class="text-muted-foreground" data-i18n="connect.join.text">Scan it with this device, or paste its code here.</p>
-            <div class="field">
-              <label class="label" for="join-input" data-i18n="connect.join.label">Code from the other device</label>
-              <textarea class="textarea ff-code" id="join-input" rows="3" spellcheck="false" autocomplete="off"></textarea>
-            </div>
-            <div class="card-actions">
-              <button type="button" class="btn btn-primary" id="join-btn"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="connect.join.button">Join</span></button>
-              <button type="button" class="btn btn-outline" id="join-scan" hidden><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.button">Scan QR</span></button>
-            </div>
+        <article class="ff-panel">
+          <p class="ff-step">2</p>
+          <h2 class="ff-h3" data-i18n="connect.join.title">The other device showed a QR code?</h2>
+          <p class="ff-muted text-sm" data-i18n="connect.join.text">Scan it with this device, or paste its code here.</p>
+          <div class="field">
+            <label class="label" for="join-input" data-i18n="connect.join.label">Code from the other device</label>
+            <textarea class="textarea ff-code" id="join-input" rows="3" spellcheck="false" autocomplete="off"></textarea>
+          </div>
+          <div class="ff-actions">
+            <button type="button" class="btn btn-soft" id="join-btn"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="connect.join.button">Join</span></button>
+            <button type="button" class="btn btn-outline" id="join-scan" hidden><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.button">Scan QR</span></button>
           </div>
         </article>
       </div>
 
       <div class="ff-connect-foot" id="connect-foot">
         <p class="ff-honest"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><span id="honest-text" data-i18n="pair.honest">No server of ours. The 6-word handshake passes encrypted through public relays that cannot read it. Your files never touch them: they go device to device.</span></p>
-        <div class="flex flex-wrap items-center gap-3">
-          <button type="button" class="btn btn-ghost btn-sm" id="mode-words" hidden><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="pair.mode.words">Back to pairing with 6 words</span></button>
-        </div>
-        <details class="collapse collapse-arrow ff-options">
-          <summary class="collapse-title" data-i18n="pair.options">Options: this device's name, a passphrase, and connecting with no relays</summary>
-          <div class="collapse-content grid gap-3">
+        <button type="button" class="btn btn-ghost btn-sm ff-back" id="mode-words" hidden><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="pair.mode.words">Back to pairing with 6 words</span></button>
+        <details class="ff-disclosure ff-options">
+          <summary data-i18n="pair.options">Options: this device's name, a passphrase, and connecting with no relays</summary>
+          <div class="ff-disclosure-body ff-options-body">
             <div class="field">
               <label class="label" for="device-name" data-i18n="connect.name">This device's name</label>
               <input class="input" id="device-name" maxlength="40" autocomplete="off">
@@ -195,142 +189,134 @@
               <p class="hint" data-i18n="connect.pass.hint">Share it by voice or in person, not in the same message as the invite.</p>
             </div>
             <div class="ff-advanced">
-              <p class="text-sm text-muted-foreground" data-i18n="pair.advanced.text">Advanced: a network that blocks the public relays can still connect by scanning a QR code each way, or by pasting the codes by hand.</p>
-              <button type="button" class="btn btn-ghost btn-sm" id="mode-link"><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="pair.mode.link">Connect with no relays (advanced)</span></button>
+              <p class="text-sm ff-muted" data-i18n="pair.advanced.text">Advanced: a network that blocks the public relays can still connect by scanning a QR code each way, or by pasting the codes by hand.</p>
+              <button type="button" class="btn btn-outline btn-sm" id="mode-link"><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="pair.mode.link">Connect with no relays (advanced)</span></button>
             </div>
           </div>
         </details>
       </div>
 
-      <div id="connect-code" hidden>
-        <article class="card ff-card ff-code-card">
-          <div class="card-body ff-code-layout">
+      <div id="connect-code" class="ff-stage" hidden>
+        <article class="ff-panel ff-code-card">
+          <div class="ff-code-layout">
             <div class="ff-code-qr">
               <div class="ff-qr ff-qr-words" id="code-qr" role="img" aria-label="QR code" data-i18n-attr="aria-label:pair.qr"></div>
               <p class="ff-scan-hint"><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="pair.code.scan">Scan with your phone's camera</span></p>
             </div>
             <div class="ff-code-side">
-              <h2 class="card-title" data-i18n="pair.code.title">Or type these 6 words on your other device</h2>
+              <h2 class="ff-h3" data-i18n="pair.code.title">Or type these 6 words on your other device</h2>
               <ol class="ff-words" id="code-words" aria-live="polite"></ol>
-              <div class="flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline btn-sm" id="code-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="pair.code.copy">Copy words</span></button>
-                <button type="button" class="btn btn-ghost btn-sm" id="code-new"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="pair.code.new">New code</span></button>
-                <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
-              </div>
               <div class="ff-wait" role="status">
                 <span class="ff-radar" aria-hidden="true"><span></span></span>
                 <div class="ff-wait-text">
                   <p class="font-medium" id="code-status" data-i18n="pair.code.waiting">Waiting for your other device...</p>
-                  <p class="text-sm text-muted-foreground" id="code-relays"></p>
+                  <p class="text-sm ff-muted" id="code-relays"></p>
                 </div>
                 <span class="ff-countdown" id="code-countdown">10:00</span>
               </div>
               <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
-              <p class="text-sm text-muted-foreground" data-i18n="pair.code.note">Works once and expires in 10 minutes.</p>
+            </div>
+          </div>
+          <div class="ff-code-foot">
+            <p class="text-sm ff-muted" data-i18n="pair.code.note">Works once and expires in 10 minutes.</p>
+            <div class="ff-actions">
+              <button type="button" class="btn btn-ghost btn-sm" id="code-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="pair.code.copy">Copy words</span></button>
+              <button type="button" class="btn btn-ghost btn-sm" id="code-new"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="pair.code.new">New code</span></button>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg><span data-i18n="cancel">Cancel</span></button>
             </div>
           </div>
         </article>
       </div>
 
-      <div id="connect-known" hidden>
-        <article class="card ff-card">
-          <div class="card-body ff-confirm">
-            <span class="ff-known-wait" aria-hidden="true">
-              <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
-              <span class="ff-radar"><span></span></span>
-              <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
-            </span>
-            <h2 class="card-title" id="known-wait-title" role="status">Waiting for your device...</h2>
-            <p class="text-muted-foreground" id="known-wait-text"></p>
-            <p class="text-sm text-muted-foreground" id="known-relays"></p>
+      <div id="connect-known" class="ff-stage" hidden>
+        <article class="ff-panel ff-confirm">
+          <span class="ff-known-wait" aria-hidden="true">
+            <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
+            <span class="ff-radar"><span></span></span>
+            <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
+          </span>
+          <h2 class="ff-h2" id="known-wait-title" role="status">Waiting for your device...</h2>
+          <p class="ff-muted" id="known-wait-text"></p>
+          <p class="text-sm ff-muted" id="known-relays"></p>
+          <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
+          <div class="ff-actions ff-actions-center"><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button></div>
+        </article>
+      </div>
+
+      <div id="connect-confirm-show" class="ff-stage" hidden>
+        <article class="ff-panel ff-confirm">
+          <span class="ff-confirm-icon" aria-hidden="true"><svg class="ic"><use href="#i-key"/></svg></span>
+          <h2 class="ff-h2" data-i18n="confirm.show.title">Type these 6 words on your other device</h2>
+          <p class="ff-muted" data-i18n="confirm.show.text">They prove the other screen is really yours. No file moves until they match.</p>
+          <ol class="ff-words ff-words-confirm" id="confirm-words"></ol>
+          <p class="ff-waiting"><span class="spinner spinner-sm spinner-primary" aria-hidden="true"></span> <span data-i18n="confirm.show.waiting">Waiting for the words to be typed on the other device...</span></p>
+          <details class="ff-fp-more"><summary data-i18n="confirm.details">Details: connection fingerprint</summary><p class="ff-fp-digits ff-fp-small" id="confirm-fp-show"></p></details>
+          <div class="ff-actions ff-actions-center"><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button></div>
+        </article>
+      </div>
+
+      <div id="connect-confirm-type" class="ff-stage" hidden>
+        <article class="ff-panel ff-confirm">
+          <span class="ff-confirm-icon" aria-hidden="true"><svg class="ic"><use href="#i-key"/></svg></span>
+          <h2 class="ff-h2" id="confirm-type-title" data-i18n="confirm.type.title">Type the 6 words shown on your other device</h2>
+          <p class="ff-muted" data-i18n="confirm.type.text">This proves the device that joined is yours, not someone who saw the code. No file moves until the words match.</p>
+          <div id="confirm-inputs"></div>
+          <div class="alert alert-danger" id="confirm-error" role="alert" hidden>
+            <svg class="alert-icon" aria-hidden="true"><use href="#i-alert"/></svg>
+            <div class="alert-content"><p class="alert-description" id="confirm-error-text"></p></div>
+          </div>
+          <div class="ff-actions ff-actions-center">
+            <button type="button" class="btn btn-ghost" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
+            <button type="button" class="btn btn-primary" id="confirm-btn"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="confirm.type.button">Confirm</span></button>
+          </div>
+          <details class="ff-fp-more"><summary data-i18n="confirm.details">Details: connection fingerprint</summary><p class="ff-fp-digits ff-fp-small" id="confirm-fp-type"></p></details>
+        </article>
+      </div>
+
+      <div id="connect-invite" class="ff-stage" hidden>
+        <article class="ff-panel ff-share">
+          <div class="ff-qr-wrap">
+            <div class="ff-qr" id="invite-qr" role="img" aria-label="QR code for your other device" data-i18n-attr="aria-label:invite.qr"></div>
+          </div>
+          <div class="ff-share-text">
+            <h2 class="ff-h3" data-i18n="invite.title">Scan this QR code with your other device</h2>
+            <p class="ff-muted text-sm" data-i18n="invite.text">Point the other device's camera at the QR code. No camera there? Copy the code and paste it on that device.</p>
+            <input type="hidden" id="invite-link">
+            <div class="ff-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="invite-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
+              <span class="badge badge-info" id="invite-lock" hidden><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span data-i18n="invite.locked">Passphrase required</span></span>
+            </div>
             <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
-            <div><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button></div>
-          </div>
-        </article>
-      </div>
-
-      <div id="connect-confirm-show" hidden>
-        <article class="card ff-card">
-          <div class="card-body ff-confirm">
-            <span class="ff-confirm-icon" aria-hidden="true"><svg class="ic"><use href="#i-key"/></svg></span>
-            <h2 class="card-title" data-i18n="confirm.show.title">Type these 6 words on your other device</h2>
-            <p class="text-muted-foreground" data-i18n="confirm.show.text">They prove the other screen is really yours. No file moves until they match.</p>
-            <ol class="ff-words ff-words-confirm" id="confirm-words"></ol>
-            <p class="ff-waiting"><span class="spinner spinner-sm spinner-primary" aria-hidden="true"></span> <span data-i18n="confirm.show.waiting">Waiting for the words to be typed on the other device...</span></p>
-            <details class="ff-fp-more"><summary data-i18n="confirm.details">Details: connection fingerprint</summary><p class="ff-fp-digits ff-fp-small" id="confirm-fp-show"></p></details>
-            <div><button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button></div>
-          </div>
-        </article>
-      </div>
-
-      <div id="connect-confirm-type" hidden>
-        <article class="card ff-card">
-          <div class="card-body ff-confirm">
-            <span class="ff-confirm-icon" aria-hidden="true"><svg class="ic"><use href="#i-key"/></svg></span>
-            <h2 class="card-title" id="confirm-type-title" data-i18n="confirm.type.title">Type the 6 words shown on your other device</h2>
-            <p class="text-muted-foreground" data-i18n="confirm.type.text">This proves the device that joined is yours, not someone who saw the code. No file moves until the words match.</p>
-            <div id="confirm-inputs"></div>
-            <div class="alert alert-danger" id="confirm-error" role="alert" hidden>
-              <svg class="alert-icon" aria-hidden="true"><use href="#i-alert"/></svg>
-              <div class="alert-content"><p class="alert-description" id="confirm-error-text"></p></div>
+            <hr class="ff-rule">
+            <h3 class="ff-h3" data-i18n="invite.reply.title">Then scan the QR code it shows back</h3>
+            <p class="text-sm ff-muted" data-i18n="invite.reply.text">The other device answers with its own QR code. Scan it with this device, or paste its code below.</p>
+            <div class="field">
+              <label class="label" for="reply-input" data-i18n="invite.reply.label">Answer code</label>
+              <textarea class="textarea ff-code" id="reply-input" rows="2" spellcheck="false" autocomplete="off"></textarea>
             </div>
-            <div class="card-actions ff-actions-start">
-              <button type="button" class="btn btn-primary" id="confirm-btn"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="confirm.type.button">Confirm</span></button>
+            <div class="ff-actions">
+              <button type="button" class="btn btn-primary" id="reply-btn"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="invite.reply.button">Connect</span></button>
+              <button type="button" class="btn btn-outline" id="reply-scan" hidden><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.button">Scan QR</span></button>
               <button type="button" class="btn btn-ghost" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
             </div>
-            <details class="ff-fp-more"><summary data-i18n="confirm.details">Details: connection fingerprint</summary><p class="ff-fp-digits ff-fp-small" id="confirm-fp-type"></p></details>
           </div>
         </article>
       </div>
 
-      <div id="connect-invite" hidden>
-        <article class="card ff-card">
-          <div class="card-body ff-share">
-            <div class="ff-qr-wrap">
-              <div class="ff-qr" id="invite-qr" role="img" aria-label="QR code for your other device" data-i18n-attr="aria-label:invite.qr"></div>
-            </div>
-            <div class="ff-share-text">
-              <h2 class="card-title" data-i18n="invite.title">Scan this QR code with your other device</h2>
-              <p class="text-muted-foreground" data-i18n="invite.text">Point the other device's camera at the QR code. No camera there? Copy the code and paste it on that device.</p>
-              <input type="hidden" id="invite-link">
-              <div class="flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline btn-sm" id="invite-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
-                <span class="badge badge-info" id="invite-lock" hidden><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span data-i18n="invite.locked">Passphrase required</span></span>
-              </div>
-              <p class="ff-pending" hidden><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span class="ff-pending-text"></span></p>
-              <hr class="divider">
-              <h3 class="ff-h3" data-i18n="invite.reply.title">Then scan the QR code it shows back</h3>
-              <p class="text-sm text-muted-foreground" data-i18n="invite.reply.text">The other device answers with its own QR code. Scan it with this device, or paste its code below.</p>
-              <div class="field">
-                <label class="label" for="reply-input" data-i18n="invite.reply.label">Answer code</label>
-                <textarea class="textarea ff-code" id="reply-input" rows="2" spellcheck="false" autocomplete="off"></textarea>
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <button type="button" class="btn btn-primary" id="reply-btn"><svg class="ic" aria-hidden="true"><use href="#i-plug"/></svg><span data-i18n="invite.reply.button">Connect</span></button>
-                <button type="button" class="btn btn-outline" id="reply-scan" hidden><svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span data-i18n="scan.button">Scan QR</span></button>
-                <button type="button" class="btn btn-ghost" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
-              </div>
-            </div>
+      <div id="connect-reply" class="ff-stage" hidden>
+        <article class="ff-panel ff-share">
+          <div class="ff-qr-wrap">
+            <div class="ff-qr" id="reply-qr" role="img" aria-label="Answer QR code" data-i18n-attr="aria-label:reply.qr"></div>
           </div>
-        </article>
-      </div>
-
-      <div id="connect-reply" hidden>
-        <article class="card ff-card">
-          <div class="card-body ff-share">
-            <div class="ff-qr-wrap">
-              <div class="ff-qr" id="reply-qr" role="img" aria-label="Answer QR code" data-i18n-attr="aria-label:reply.qr"></div>
+          <div class="ff-share-text">
+            <h2 class="ff-h3" id="reply-title">Show this answer</h2>
+            <p class="ff-muted text-sm" data-i18n="reply.text">Scan this QR code with the device that showed the first one, or copy the code and paste it there. It connects as soon as the answer arrives.</p>
+            <input type="hidden" id="reply-link">
+            <div class="ff-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="reply-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
             </div>
-            <div class="ff-share-text">
-              <h2 class="card-title" id="reply-title">Show this answer</h2>
-              <p class="text-muted-foreground" data-i18n="reply.text">Scan this QR code with the device that showed the first one, or copy the code and paste it there. It connects as soon as the answer arrives.</p>
-              <input type="hidden" id="reply-link">
-              <div class="flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline btn-sm" id="reply-copy"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="code.copy">Copy code</span></button>
-                <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
-              </div>
-              <p class="ff-waiting"><span class="spinner spinner-sm spinner-primary" aria-hidden="true"></span> <span data-i18n="reply.waiting">Waiting for the other device...</span></p>
-            </div>
+            <p class="ff-waiting"><span class="spinner spinner-sm spinner-primary" aria-hidden="true"></span> <span data-i18n="reply.waiting">Waiting for the other device...</span></p>
           </div>
         </article>
       </div>
@@ -341,7 +327,7 @@
         <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-connect"><span data-i18n="cancel">Cancel</span></button>
       </div>
 
-      <div id="connect-failed" hidden>
+      <div id="connect-failed" class="ff-stage" hidden>
         <div class="alert alert-danger" role="alert">
           <svg class="alert-icon" aria-hidden="true"><use href="#i-alert"/></svg>
           <div class="alert-content">
@@ -349,57 +335,57 @@
             <p class="alert-description" id="fail-text"></p>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2 mt-4">
+        <div class="ff-actions">
           <button type="button" class="btn btn-primary" data-action="retry-known" id="fail-known" hidden><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span id="fail-known-text">Try again</span></button>
           <button type="button" class="btn btn-primary" data-action="restart-connect"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="fail.retry">Try again</span></button>
           <button type="button" class="btn btn-outline" data-action="open-ice"><svg class="ic" aria-hidden="true"><use href="#i-relay"/></svg><span data-i18n="fail.turn">Add a TURN relay</span></button>
         </div>
       </div>
 
-      <div id="connect-status" hidden>
-        <article class="card ff-card">
-          <div class="card-body">
-            <div class="ff-peer">
-              <span class="ff-link-anim" aria-hidden="true">
-                <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
-                <span class="ff-link-line"><span></span></span>
-                <span class="ff-peer-icon ff-peer-icon-2"><svg class="ic"><use href="#i-devices"/></svg></span>
-              </span>
-              <div>
-                <h2 class="card-title" id="peer-title">Connected</h2>
-                <p class="text-muted-foreground text-sm" id="peer-route"></p>
-              </div>
-              <span class="badge badge-success badge-dot ml-auto" id="peer-badge" data-i18n="status.connected">Connected</span>
+      <div id="connect-status" class="ff-stage" hidden>
+        <article class="ff-panel ff-status">
+          <div class="ff-peer">
+            <span class="ff-link-anim" aria-hidden="true">
+              <span class="ff-peer-icon"><svg class="ic"><use href="#i-devices"/></svg></span>
+              <span class="ff-link-line"><span></span></span>
+              <span class="ff-peer-icon ff-peer-icon-2"><svg class="ic"><use href="#i-devices"/></svg></span>
+            </span>
+            <div class="ff-peer-text">
+              <h2 class="ff-h3" id="peer-title">Connected</h2>
+              <p class="ff-muted text-sm" id="peer-route"></p>
             </div>
-            <p class="ff-paired" id="paired-note" hidden><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="status.paired">Confirmed: the 6 words matched on both devices.</span></p>
-            <div class="ff-remember" id="remember-box" hidden>
-              <label class="label ff-check"><input type="checkbox" class="toggle toggle-sm" role="switch" id="remember" aria-describedby="remember-hint"> <span id="remember-text">Remember this device</span></label>
-              <p class="hint" id="remember-hint" data-i18n="known.remember.hint">Next time, tap each other under Your devices and type only the confirmation words. The secret stays in this browser.</p>
-            </div>
-            <details class="ff-fp" id="fp-box" open>
-              <summary class="ff-fp-label" data-i18n="status.fp.label">Connection fingerprint</summary>
-              <p class="ff-fp-digits" id="peer-fp" aria-describedby="fp-help"></p>
-              <p class="text-sm text-muted-foreground" id="fp-help" data-i18n="status.fp.help">Both screens must show the same 12 digits. If they differ, someone may have changed a code on the way: disconnect and start again.</p>
-            </details>
-            <ul class="ff-security">
-              <li><svg class="ic text-success" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="status.dtls">Encrypted end to end with DTLS by WebRTC. No server of ours ever sees your files.</span></li>
-              <li id="sec-pass"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span id="sec-pass-text"></span></li>
-              <li id="sec-relay" hidden><svg class="ic" aria-hidden="true"><use href="#i-relay"/></svg><span data-i18n="status.relay">Your data goes through a TURN relay, which only forwards encrypted packets and cannot read them.</span></li>
-            </ul>
-            <dl class="ff-stats">
-              <div><dt data-i18n="status.rtt">Round trip</dt><dd id="stat-rtt">-</dd></div>
-              <div><dt data-i18n="status.sent">Sent</dt><dd id="stat-sent">0 B</dd></div>
-              <div><dt data-i18n="status.received">Received</dt><dd id="stat-recv">0 B</dd></div>
-            </dl>
-            <div class="card-actions">
-              <button type="button" class="btn btn-primary" data-go="send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="status.sendfiles">Send files or text</span></button>
-              <button type="button" class="btn btn-outline btn-danger" id="disconnect-btn"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg><span data-i18n="status.disconnect">Disconnect</span></button>
-            </div>
+            <span class="badge badge-success badge-dot" id="peer-badge" data-i18n="status.connected">Connected</span>
           </div>
+          <p class="ff-paired" id="paired-note" hidden><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="status.paired">Confirmed: the 6 words matched on both devices.</span></p>
+          <dl class="ff-stats">
+            <div><dt data-i18n="status.rtt">Round trip</dt><dd id="stat-rtt">-</dd></div>
+            <div><dt data-i18n="status.sent">Sent</dt><dd id="stat-sent">0 B</dd></div>
+            <div><dt data-i18n="status.received">Received</dt><dd id="stat-recv">0 B</dd></div>
+          </dl>
+          <div class="ff-actions">
+            <button type="button" class="btn btn-primary" data-go="send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="status.sendfiles">Send files or text</span></button>
+            <button type="button" class="btn btn-ghost ff-danger-text" id="disconnect-btn"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg><span data-i18n="status.disconnect">Disconnect</span></button>
+          </div>
+          <div class="ff-remember" id="remember-box" hidden>
+            <label class="label ff-check"><input type="checkbox" class="toggle toggle-sm" role="switch" id="remember" aria-describedby="remember-hint"> <span id="remember-text">Remember this device</span></label>
+            <p class="hint" id="remember-hint" data-i18n="known.remember.hint">Next time, tap each other under Your devices and type only the confirmation words. The secret stays in this browser.</p>
+          </div>
+          <details class="ff-disclosure ff-fp" id="fp-box" open>
+            <summary class="ff-fp-label" data-i18n="status.fp.label">Connection fingerprint</summary>
+            <div class="ff-disclosure-body">
+              <p class="ff-fp-digits" id="peer-fp" aria-describedby="fp-help"></p>
+              <p class="text-sm ff-muted" id="fp-help" data-i18n="status.fp.help">Both screens must show the same 12 digits. If they differ, someone may have changed a code on the way: disconnect and start again.</p>
+              <ul class="ff-security">
+                <li><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="status.dtls">Encrypted end to end with DTLS by WebRTC. No server of ours ever sees your files.</span></li>
+                <li id="sec-pass"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span id="sec-pass-text"></span></li>
+                <li id="sec-relay" hidden><svg class="ic" aria-hidden="true"><use href="#i-relay"/></svg><span data-i18n="status.relay">Your data goes through a TURN relay, which only forwards encrypted packets and cannot read them.</span></li>
+              </ul>
+            </div>
+          </details>
         </article>
       </div>
 
-      <div id="connect-lost" hidden>
+      <div id="connect-lost" class="ff-stage" hidden>
         <div class="alert alert-warning" role="alert">
           <svg class="alert-icon" aria-hidden="true"><use href="#i-alert"/></svg>
           <div class="alert-content">
@@ -407,14 +393,14 @@
             <p class="alert-description" data-i18n="lost.text">Unfinished transfers are kept. Connect the same two devices again and they continue from where they stopped, without sending everything again. Keep this tab open.</p>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2 mt-4">
+        <div class="ff-actions">
           <button type="button" class="btn btn-primary" data-action="restart-connect"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="lost.reconnect">Reconnect</span></button>
         </div>
       </div>
 
-      <details class="collapse collapse-arrow ff-howto">
-        <summary class="collapse-title" data-i18n="connect.how.title">How does this work without a server?</summary>
-        <div class="collapse-content prose">
+      <details class="ff-disclosure ff-howto">
+        <summary data-i18n="connect.how.title">How does this work without a server?</summary>
+        <div class="ff-disclosure-body ff-prose">
           <p data-i18n="connect.how.0">With pairing words, both devices turn the 6 words into a secret topic name and an encryption key. They meet on a few public message relays (MQTT brokers that are not ours) and swap their connection details there, encrypted with that key, so the relays only see random names and ciphertext. Then they connect directly and leave the relays. The 6 confirmation words prove the device that joined is yours.</p>
           <p data-i18n="connect.how.1">With the advanced no relay option, nothing touches any relay: the first QR code holds what the other browser needs to find this one, compressed, and the answer QR code carries the same back. You scan or paste both by hand.</p>
           <p data-i18n="connect.how.2">Public STUN servers only tell each browser its own public address. They never see your files. If both devices sit behind strict firewalls, a direct path may be impossible; then a TURN relay you add in Settings forwards the encrypted packets without being able to read them.</p>
@@ -424,157 +410,169 @@
 
     <!-- SEND -->
     <section class="ff-view" id="view-send" aria-labelledby="h-send" hidden>
-      <h1 id="h-send" class="ff-h1" data-i18n="send.title">Send files and folders</h1>
-      <div class="alert alert-info" id="send-offline" role="status">
+      <header class="ff-head">
+        <h1 id="h-send" class="ff-h1" data-i18n="send.title">Send files and folders</h1>
+      </header>
+      <div class="alert alert-info ff-offline" id="send-offline" role="status">
         <svg class="alert-icon" aria-hidden="true"><use href="#i-info"/></svg>
         <div class="alert-content"><p class="alert-description" data-i18n="send.offline">Not connected yet. You can pick files or write text now; they go out as soon as a device connects.</p></div>
-        <div class="alert-actions"><button type="button" class="btn btn-sm btn-info" data-go="connect" data-i18n="nav.connect">Connect</button></div>
+        <div class="alert-actions"><button type="button" class="btn btn-sm btn-outline" data-go="connect" data-i18n="nav.connect">Connect</button></div>
       </div>
       <div class="dropzone ff-drop" id="dropzone">
         <div class="dropzone-area">
           <span class="dropzone-glyph"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></span>
-          <span class="grid gap-1">
+          <span class="ff-drop-copy">
             <span class="dropzone-title" data-i18n="send.drop">Drop files or folders here</span>
             <span class="dropzone-hint" data-i18n="send.hint">Any size. Folders keep their structure. Nothing is uploaded anywhere: data goes straight to your other device.</span>
           </span>
-          <span class="flex flex-wrap justify-center gap-2 mt-2">
-            <label class="btn btn-primary btn-sm ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="send.pickfiles">Choose files</span><input type="file" id="pick-files" multiple></label>
-            <label class="btn btn-outline btn-sm ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="send.pickfolder">Choose a folder</span><input type="file" id="pick-folder" webkitdirectory multiple></label>
+          <span class="ff-actions ff-actions-center">
+            <label class="btn btn-primary ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="send.pickfiles">Choose files</span><input type="file" id="pick-files" multiple></label>
+            <label class="btn btn-outline ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="send.pickfolder">Choose a folder</span><input type="file" id="pick-folder" webkitdirectory multiple></label>
           </span>
         </div>
       </div>
-      <article class="card ff-card ff-clipbox">
-        <div class="card-body">
-          <div class="field">
-            <label class="label" for="clip-input"><svg class="ic" aria-hidden="true"><use href="#i-text"/></svg><span data-i18n="clip.title">Send text or a link</span></label>
-            <textarea class="textarea" id="clip-input" rows="2" maxlength="100000" data-i18n-attr="placeholder:clip.placeholder" placeholder="Paste a link, an address, a note..."></textarea>
-          </div>
-          <div class="ff-clip-bar">
-            <button type="button" class="btn btn-primary btn-sm" id="clip-send" disabled><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="clip.send">Send text</span></button>
-            <button type="button" class="btn btn-ghost btn-sm" id="clip-paste" hidden><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="clip.paste">Paste</span></button>
-            <span class="text-sm text-muted-foreground ff-clip-hint" data-i18n="clip.hint">Ctrl + Enter sends. It arrives on the other device ready to copy.</span>
-            <span class="text-sm text-muted-foreground" id="clip-count"></span>
-          </div>
-          <ul class="ff-clips-out" id="clips-out" hidden></ul>
+      <div class="ff-clipbox">
+        <label class="ff-clip-label" for="clip-input"><svg class="ic" aria-hidden="true"><use href="#i-text"/></svg><span data-i18n="clip.title">Send text or a link</span></label>
+        <textarea class="ff-clip-input" id="clip-input" rows="2" maxlength="100000" data-i18n-attr="placeholder:clip.placeholder" placeholder="Paste a link, an address, a note..."></textarea>
+        <div class="ff-clip-bar">
+          <span class="text-xs ff-muted ff-clip-hint" data-i18n="clip.hint">Ctrl + Enter sends. It arrives on the other device ready to copy.</span>
+          <span class="text-xs ff-muted" id="clip-count"></span>
+          <button type="button" class="btn btn-ghost btn-sm" id="clip-paste" hidden><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="clip.paste">Paste</span></button>
+          <button type="button" class="btn btn-primary btn-sm" id="clip-send" disabled><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span data-i18n="clip.send">Send text</span></button>
         </div>
-      </article>
+        <ul class="ff-clips-out" id="clips-out" hidden></ul>
+      </div>
       <div class="ff-overall" id="send-overall" hidden>
-        <div class="flex items-center justify-between gap-2 text-sm"><span data-i18n="send.overall">All transfers</span><span id="send-overall-text"></span></div>
-        <progress class="progress progress-sm" id="send-overall-bar" max="1" value="0"></progress>
+        <div class="ff-overall-row"><span data-i18n="send.overall">All transfers</span><span id="send-overall-text"></span></div>
+        <progress class="progress progress-xs" id="send-overall-bar" max="1" value="0"></progress>
       </div>
       <div id="send-list" class="ff-list" aria-live="off"></div>
-      <div class="empty-state" id="send-empty">
-        <div class="empty-state-icon"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></div>
-        <p class="empty-state-description" data-i18n="send.empty">Files you send show up here with progress, speed and time left.</p>
+      <div class="ff-empty" id="send-empty">
+        <p data-i18n="send.empty">Files you send show up here with progress, speed and time left.</p>
       </div>
     </section>
 
     <!-- RECEIVED -->
     <section class="ff-view" id="view-received" aria-labelledby="h-received" hidden>
-      <h1 id="h-received" class="ff-h1" data-i18n="received.title">Received files</h1>
-      <p class="ff-lead" data-i18n="received.lead">You accept every file before it arrives, and nothing is opened by itself. Each file is checked with SHA-256 against the sender's copy.</p>
+      <header class="ff-head">
+        <h1 id="h-received" class="ff-h1" data-i18n="received.title">Received files</h1>
+        <p class="ff-lead" data-i18n="received.lead">You accept every file before it arrives, and nothing is opened by itself. Each file is checked with SHA-256 against the sender's copy.</p>
+      </header>
       <div id="clips-in" class="ff-list ff-clips-in" aria-live="polite"></div>
       <div id="received-list" class="ff-list"></div>
-      <div class="empty-state" id="received-empty">
-        <div class="empty-state-icon"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg></div>
-        <p class="empty-state-description" data-i18n="received.empty">Nothing received yet. Files and texts from your other device show up here.</p>
+      <div class="ff-empty" id="received-empty">
+        <span class="ff-empty-icon"><svg class="ic" aria-hidden="true"><use href="#i-inbox"/></svg></span>
+        <p data-i18n="received.empty">Nothing received yet. Files and texts from your other device show up here.</p>
       </div>
     </section>
 
     <!-- SYNC -->
     <section class="ff-view" id="view-sync" aria-labelledby="h-sync" hidden>
-      <h1 id="h-sync" class="ff-h1" data-i18n="sync.title">Sync a folder between two devices</h1>
-      <p class="ff-lead" data-i18n="sync.lead">Pick a folder here and the matching folder on your other device. filefinch compares both lists (path, size, date and SHA-256) and moves only what changed. Edits made on both sides become conflicts you decide on.</p>
+      <header class="ff-head">
+        <h1 id="h-sync" class="ff-h1" data-i18n="sync.title">Sync a folder between two devices</h1>
+        <p class="ff-lead" data-i18n="sync.lead">Pick a folder here and the matching folder on your other device. filefinch compares both lists (path, size, date and SHA-256) and moves only what changed. Edits made on both sides become conflicts you decide on.</p>
+      </header>
       <div class="alert alert-warning" id="sync-unsupported" hidden role="status">
         <svg class="alert-icon" aria-hidden="true"><use href="#i-info"/></svg>
         <div class="alert-content"><p class="alert-description" data-i18n="sync.unsupported">Folder sync needs a browser that can write to a folder you pick, such as Chrome or Edge on a computer. You can still send whole folders from the Send tab.</p></div>
       </div>
-      <article class="card ff-card" id="sync-setup">
-        <div class="card-body">
-          <div class="flex flex-wrap items-center gap-3">
-            <button type="button" class="btn btn-outline" id="sync-pick"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="sync.pick">Choose folder</span></button>
-            <span class="ff-folder" id="sync-folder" data-i18n="sync.none">No folder chosen</span>
-          </div>
-          <div class="ff-grid-3">
-            <div class="field">
-              <label class="label" for="sync-mode" data-i18n="sync.mode">Direction</label>
-              <select class="select" id="sync-mode">
-                <option value="two-way" data-i18n="sync.mode.two">Both ways</option>
-                <option value="push" data-i18n="sync.mode.push">This device to the other</option>
-                <option value="pull" data-i18n="sync.mode.pull">The other device to this one</option>
-              </select>
-            </div>
-            <div class="field">
-              <label class="label" for="sync-conflict" data-i18n="sync.conflict">When both changed a file</label>
-              <select class="select" id="sync-conflict">
-                <option value="ask" data-i18n="sync.conflict.ask">Ask me</option>
-                <option value="both" data-i18n="sync.conflict.both">Keep both</option>
-                <option value="newer" data-i18n="sync.conflict.newer">Newest wins</option>
-              </select>
-            </div>
-            <label class="label ff-check ff-check-field"><input type="checkbox" class="toggle toggle-sm" role="switch" id="sync-deletions"> <span data-i18n="sync.deletions">Also delete files removed on one side</span></label>
-          </div>
-          <div class="card-actions">
-            <button type="button" class="btn btn-primary" id="sync-start" disabled><svg class="ic" aria-hidden="true"><use href="#i-sync"/></svg><span data-i18n="sync.compare">Compare with the other device</span></button>
-          </div>
-          <div id="sync-recent" class="ff-recent"></div>
+      <article class="ff-panel" id="sync-setup">
+        <div class="ff-folder-row">
+          <button type="button" class="btn btn-outline" id="sync-pick"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="sync.pick">Choose folder</span></button>
+          <span class="ff-folder" id="sync-folder" data-i18n="sync.none">No folder chosen</span>
         </div>
+        <div class="ff-grid-3">
+          <div class="field">
+            <label class="label" for="sync-mode" data-i18n="sync.mode">Direction</label>
+            <select class="select" id="sync-mode">
+              <option value="two-way" data-i18n="sync.mode.two">Both ways</option>
+              <option value="push" data-i18n="sync.mode.push">This device to the other</option>
+              <option value="pull" data-i18n="sync.mode.pull">The other device to this one</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="sync-conflict" data-i18n="sync.conflict">When both changed a file</label>
+            <select class="select" id="sync-conflict">
+              <option value="ask" data-i18n="sync.conflict.ask">Ask me</option>
+              <option value="both" data-i18n="sync.conflict.both">Keep both</option>
+              <option value="newer" data-i18n="sync.conflict.newer">Newest wins</option>
+            </select>
+          </div>
+          <label class="label ff-check ff-check-field"><input type="checkbox" class="toggle toggle-sm" role="switch" id="sync-deletions"> <span data-i18n="sync.deletions">Also delete files removed on one side</span></label>
+        </div>
+        <div class="ff-actions">
+          <button type="button" class="btn btn-primary" id="sync-start" disabled><svg class="ic" aria-hidden="true"><use href="#i-sync"/></svg><span data-i18n="sync.compare">Compare with the other device</span></button>
+        </div>
+        <div id="sync-recent" class="ff-recent"></div>
       </article>
       <div id="sync-progress" class="ff-sync-progress" hidden>
         <p id="sync-status" role="status"></p>
-        <progress class="progress progress-sm" id="sync-bar" max="1"></progress>
+        <progress class="progress progress-xs" id="sync-bar" max="1"></progress>
       </div>
-      <article class="card ff-card" id="sync-plan" hidden>
-        <div class="card-body">
-          <h2 class="card-title" data-i18n="sync.plan.title">What will change</h2>
-          <div class="stats ff-plan-stats" id="sync-plan-stats"></div>
-          <div id="sync-conflicts"></div>
-          <details class="collapse collapse-arrow"><summary class="collapse-title" data-i18n="sync.plan.details">Show every file</summary><div class="collapse-content"><ul class="ff-plan-list" id="sync-plan-list"></ul></div></details>
-          <div class="card-actions">
-            <button type="button" class="btn btn-primary" id="sync-apply"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="sync.apply">Start sync</span></button>
-            <button type="button" class="btn btn-ghost" id="sync-cancel"><span data-i18n="cancel">Cancel</span></button>
-          </div>
+      <article class="ff-panel" id="sync-plan" hidden>
+        <h2 class="ff-h3" data-i18n="sync.plan.title">What will change</h2>
+        <div class="stats ff-plan-stats" id="sync-plan-stats"></div>
+        <div id="sync-conflicts"></div>
+        <details class="ff-disclosure"><summary data-i18n="sync.plan.details">Show every file</summary><div class="ff-disclosure-body"><ul class="ff-plan-list" id="sync-plan-list"></ul></div></details>
+        <div class="ff-actions">
+          <button type="button" class="btn btn-primary" id="sync-apply"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="sync.apply">Start sync</span></button>
+          <button type="button" class="btn btn-ghost" id="sync-cancel"><span data-i18n="cancel">Cancel</span></button>
         </div>
       </article>
     </section>
 
     <!-- LIBRARY -->
     <section class="ff-view" id="view-library" aria-labelledby="h-library" hidden>
-      <h1 id="h-library" class="ff-h1" data-i18n="library.title">Library</h1>
-      <p class="ff-lead" data-i18n="library.lead">Files kept inside filefinch, in this browser's private storage. Preview them, save them where you want, or send them again later.</p>
-      <div class="flex flex-wrap items-center gap-3 mb-4">
+      <header class="ff-head">
+        <h1 id="h-library" class="ff-h1" data-i18n="library.title">Library</h1>
+        <p class="ff-lead" data-i18n="library.lead">Files kept inside filefinch, in this browser's private storage. Preview them, save them where you want, or send them again later.</p>
+      </header>
+      <div class="ff-toolbar">
         <label class="btn btn-outline btn-sm ff-file-btn"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg><span data-i18n="library.add">Add files</span><input type="file" id="library-add" multiple></label>
         <button type="button" class="btn btn-ghost btn-sm" id="library-persist" hidden><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span data-i18n="library.persist">Keep storage when space runs low</span></button>
-        <span class="text-sm text-muted-foreground" id="library-usage"></span>
+        <span class="text-xs ff-muted ff-toolbar-end" id="library-usage"></span>
       </div>
       <div id="library-list" class="ff-list"></div>
-      <div class="empty-state" id="library-empty">
-        <div class="empty-state-icon"><svg class="ic" aria-hidden="true"><use href="#i-library"/></svg></div>
-        <p class="empty-state-description" data-i18n="library.empty">Choose "Keep in library" when accepting files, or add files here, to keep them for later.</p>
+      <div class="ff-empty" id="library-empty">
+        <span class="ff-empty-icon"><svg class="ic" aria-hidden="true"><use href="#i-library"/></svg></span>
+        <p data-i18n="library.empty">Choose "Keep in library" when accepting files, or add files here, to keep them for later.</p>
       </div>
     </section>
 
     <!-- HISTORY -->
-    <section class="ff-view" id="view-history" aria-labelledby="h-history" hidden>
-      <h1 id="h-history" class="ff-h1" data-i18n="history.title">History</h1>
-      <p class="ff-lead" data-i18n="history.lead">A list of past transfers, stored only in this browser. File contents are not kept here.</p>
-      <div class="flex justify-end mb-3"><button type="button" class="btn btn-ghost btn-sm" id="history-clear"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg><span data-i18n="history.clear">Clear history</span></button></div>
-      <div class="table-wrap" id="history-wrap">
-        <table class="table table-hover ff-history">
+    <section class="ff-view ff-view-wide" id="view-history" aria-labelledby="h-history" hidden>
+      <header class="ff-head ff-head-row">
+        <div>
+          <h1 id="h-history" class="ff-h1" data-i18n="history.title">History</h1>
+          <p class="ff-lead" data-i18n="history.lead">A list of past transfers, stored only in this browser. File contents are not kept here.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="history-clear"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg><span data-i18n="history.clear">Clear history</span></button>
+      </header>
+      <div class="table-wrap ff-table" id="history-wrap">
+        <table class="table ff-history">
           <thead><tr><th data-i18n="history.when">When</th><th data-i18n="history.what">What</th><th data-i18n="history.device">Device</th><th data-i18n="history.size">Size</th><th data-i18n="history.speed">Speed</th><th data-i18n="history.result">Result</th></tr></thead>
           <tbody id="history-body"></tbody>
         </table>
       </div>
-      <div class="empty-state" id="history-empty">
-        <div class="empty-state-icon"><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg></div>
-        <p class="empty-state-description" data-i18n="history.empty">No transfers yet.</p>
+      <div class="ff-empty" id="history-empty">
+        <span class="ff-empty-icon"><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg></span>
+        <p data-i18n="history.empty">No transfers yet.</p>
       </div>
     </section>
   </main>
 </div>
 
 <footer class="ff-foot">
-  <p><span data-i18n="foot.private">No server of ours ever sees your files. Everything stays between your devices.</span> <a href="../" class="link" data-i18n="foot.about">About filefinch</a> <span aria-hidden="true">&middot;</span> <a href="../guides/" class="link" data-i18n="foot.guides">Guides</a> <span aria-hidden="true">&middot;</span> <a href="https://github.com/kwy404/filefinch" class="link" rel="noopener">GitHub</a></p>
+  <p class="ff-foot-text"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="foot.private">No server of ours ever sees your files. Everything stays between your devices.</span></p>
+  <nav class="ff-foot-links" aria-label="filefinch">
+    <a href="../" data-i18n="foot.about">About filefinch</a>
+    <a href="../guides/" data-i18n="foot.guides">Guides</a>
+    <a href="https://github.com/kwy404/filefinch" rel="noopener">GitHub</a>
+    <span class="ff-foot-tools">
+      <button type="button" class="ff-foot-btn" id="lang-btn" aria-label="Language: switch to Portuguese" title="Language"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span class="ff-lang-code" id="lang-code">EN</span></button>
+      <button type="button" class="ff-foot-btn" id="theme-btn" aria-label="Theme: system" title="Theme"><svg class="ic" aria-hidden="true"><use href="#i-auto" id="theme-icon"/></svg></button>
+    </span>
+  </nav>
 </footer>
 
 <!-- DIALOGS -->

@@ -296,6 +296,52 @@ async function main() {
     const unsafeLink = await pageB.$eval('#clips-in .ff-clip[data-id="evil1"]', (card) => !!card.querySelector('a'));
     check('a javascript: text never becomes a link', unsafe && !unsafeLink);
 
+    // The context menu: a right click on a received text opens one accessible menu with Copy and
+    // Open link, arrow keys move, Escape closes and gives focus back; Shift+F10 opens it from the
+    // keyboard; it stays inside the viewport near an edge; a long press on touch opens it too.
+    await pageB.click('[data-go="received"]');
+    const linkClip = pageB.locator(`#clips-in .ff-clip:has(a.ff-clip-text[href="${link}"])`);
+    await linkClip.click({ button: 'right', position: { x: 40, y: 20 } });
+    const menu = pageB.locator('.ff-menu[role="menu"]');
+    await menu.waitFor({ state: 'visible', timeout: 5000 });
+    const items = await menu.locator('[role="menuitem"]').allTextContents();
+    await pageB.keyboard.press('ArrowDown');
+    const firstItem = await pageB.evaluate(() => document.activeElement?.getAttribute('role') + ':' + document.activeElement?.textContent);
+    await pageB.keyboard.press('ArrowDown');
+    const secondItem = await pageB.evaluate(() => document.activeElement?.textContent);
+    await pageB.keyboard.press('Escape');
+    const closed = (await menu.count()) === 0;
+    const backOnCard = await pageB.evaluate(() => !!document.activeElement?.closest('#clips-in .ff-clip'));
+    check('a right click on a received text opens a menu with Copy and Open link, arrows move, Escape closes', items.includes('Copy') && items.includes('Open link') && firstItem === 'menuitem:Copy' && secondItem === 'Open link' && closed && backOnCard, `${items.join(', ')} | ${firstItem} | ${secondItem}`);
+    await linkClip.focus();
+    await pageB.keyboard.press('Shift+F10');
+    const keyMenu = await menu
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => pageB.evaluate(() => document.activeElement?.getAttribute('role') === 'menuitem'))
+      .catch(() => false);
+    await pageB.keyboard.press('Escape');
+    // The browser may follow Shift+F10 with its own contextmenu event, which the app ignores for a moment.
+    await pageB.waitForTimeout(700);
+    await pageB.evaluate(() => {
+      const card = document.querySelector('#clips-in .ff-clip');
+      card.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2, clientX: innerWidth - 2, clientY: innerHeight - 2 }));
+    });
+    await menu.waitFor({ state: 'visible', timeout: 5000 });
+    const inside = await pageB.evaluate(() => {
+      const r = document.querySelector('.ff-menu').getBoundingClientRect();
+      return r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight;
+    });
+    await pageB.keyboard.press('Escape');
+    const box = await linkClip.boundingBox();
+    await pageB.evaluate(({ x, y }) => {
+      const card = document.querySelector('#clips-in .ff-clip');
+      card.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', clientX: x, clientY: y, isPrimary: true }));
+    }, { x: box.x + 40, y: box.y + 20 });
+    const pressed = await menu.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
+    await pageB.evaluate(({ x, y }) => document.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerType: 'touch', clientX: x, clientY: y })), { x: box.x + 40, y: box.y + 20 });
+    await pageB.keyboard.press('Escape');
+    check('the menu opens from the keyboard and a long press, and stays inside the viewport at the edge', keyMenu && inside && pressed, JSON.stringify({ keyMenu, inside, pressed }));
+
     // The ceiling: raw 64 KB messages on the same data channel with no app logic, for comparison.
     const RAW_MB = 16;
     const rawDone = pageB.evaluate(
@@ -344,6 +390,13 @@ async function main() {
     check('receiver verified the SHA-256 against the sender', recv.files[0].verified && recv.files[0].hash === fx.bigHash);
     check('file on disk matches the original byte for byte', diskHash === fx.bigHash, diskHash.slice(0, 16));
     check('download kept its file name', download.suggestedFilename() === bigName, download.suggestedFilename());
+
+    // The menu on a received file removes it from the list.
+    await pageB.click('[data-go="received"]');
+    const bigCard = pageB.locator('#received-list .ff-tr', { hasText: bigName });
+    await bigCard.click({ button: 'right', position: { x: 60, y: 20 } });
+    await pageB.locator('.ff-menu [role="menuitem"]', { hasText: 'Remove from list' }).click();
+    check('the menu on a received file removes it from the list', (await bigCard.count()) === 0);
 
     // 3. A nested folder, written into a picked folder with the File System Access API.
     await pageA.setInputFiles('#pick-folder', fx.folder);

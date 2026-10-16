@@ -26,6 +26,7 @@ import { initSync, onSyncMessage, syncConnectionLost } from './sync-ui.js';
 import { initPanels, openSettings, refreshHistory, refreshLibrary } from './panels.js';
 import { canScan, scanSignal } from './scan.js';
 import { initSeason, renderSeason } from './season.js';
+import { attachMenu, initContextMenu } from './contextmenu.js';
 
 const VIEWS = ['connect', 'send', 'received', 'sync', 'library', 'history'];
 const engine = new TransferEngine({ onMessage: (m) => onMessage(m) });
@@ -44,6 +45,7 @@ let joinInputs = null;
 let confirmInputs = null;
 let retryKnown = null; // the known device to try again from the failure screen
 let forgotten = null; // the entry just forgotten on the status screen, so the switch can undo it
+let renaming = null; // the known device whose name is being edited
 
 const app = {
   engine,
@@ -71,10 +73,32 @@ function go(view, focus = false) {
     if (b.dataset.go === view) b.setAttribute('aria-current', 'page');
     else b.removeAttribute('aria-current');
   }
+  $('#more-btn').classList.toggle('is-active', ['sync', 'library', 'history'].includes(view));
+  setMore(false);
   try {
     sessionStorage.setItem('filefinch:view', view);
   } catch {}
   if (focus) $(`#h-${view}`)?.focus({ preventScroll: false });
+}
+
+/** On small screens Sync, Library and History sit behind More in the bottom bar. */
+function setMore(on) {
+  $('#ff-tabs').classList.toggle('is-more', on);
+  $('#more-btn').setAttribute('aria-expanded', String(on));
+}
+
+function bindMore() {
+  const more = $('#more-btn');
+  more.addEventListener('click', () => setMore(more.getAttribute('aria-expanded') !== 'true'));
+  document.addEventListener('pointerdown', (e) => {
+    if (!e.target.closest('#ff-tabs-more, #more-btn')) setMore(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && more.getAttribute('aria-expanded') === 'true') {
+      setMore(false);
+      more.focus();
+    }
+  });
 }
 
 // ---- theme and language ----
@@ -184,32 +208,89 @@ function saveKnown(list) {
   renderKnown();
 }
 
+/** The name shown for a known device: the one given here with Rename, or the one it sent. */
+const knownName = (e) => settings.aliases[e.device] || e.name;
+
 function renderKnown() {
   const list = $('#known-list');
   list.replaceChildren(
-    ...settings.known.map((e) =>
-      el(
+    ...settings.known.map((e) => {
+      const name = knownName(e);
+      if (renaming === e.device) return renameRow(e);
+      const item = el(
         'li.ff-known-item',
-        {},
+        { dataset: { device: e.device } },
         el(
           'button.ff-known-btn',
           { type: 'button', dataset: { device: e.device }, onclick: () => startKnown(e.device) },
           el('span.ff-known-icon', {}, icon('devices')),
-          el('span.ff-known-name', {}, el('span.font-medium', { text: e.name }), el('span.text-sm.text-muted-foreground', { text: e.seen ? t('known.seen', { when: dateTime(e.seen) }) : '' })),
+          el('span.ff-known-name', {}, el('span.font-medium', { text: name }), el('span.text-sm.text-muted-foreground', { text: e.seen ? t('known.seen', { when: dateTime(e.seen) }) : '' })),
           el('span.ff-known-go', {}, el('span', { text: t('known.connect') }), icon('plug')),
         ),
-        button('', 'x', () => forgetKnown(e.device), 'btn-ghost btn-sm btn-square ff-known-forget', { 'aria-label': t('known.forget', { name: e.name }), title: t('known.forget', { name: e.name }) }),
-      ),
-    ),
+        button('', 'x', () => forgetKnown(e.device), 'btn-ghost btn-sm btn-square ff-known-forget', { 'aria-label': t('known.forget', { name }), title: t('known.forget', { name }) }),
+      );
+      attachMenu(item, () => [
+        { label: t('known.connect'), icon: 'plug', run: () => startKnown(e.device) },
+        { label: t('known.rename'), icon: 'text', run: () => startRename(e.device) },
+        '-',
+        { label: t('known.forget', { name }), icon: 'trash', danger: true, run: () => forgetKnown(e.device) },
+      ]);
+      return item;
+    }),
   );
   if (connectPanel === 'start') $('#known-box').hidden = !settings.known.length;
+}
+
+function startRename(device) {
+  renaming = device;
+  renderKnown();
+  const input = $('#known-rename');
+  input?.focus();
+  input?.select();
+}
+
+/** The inline editor that replaces a known device's row while it is renamed. */
+function renameRow(e) {
+  const input = el('input.input.input-sm.ff-known-input', { id: 'known-rename', value: knownName(e), maxlength: 40, autocomplete: 'off', 'aria-label': t('known.rename.label', { name: e.name }) });
+  const done = (keep) => {
+    if (renaming !== e.device) return;
+    renaming = null;
+    if (keep) {
+      const value = input.value.trim().slice(0, 40);
+      if (value && value !== e.name) settings.aliases[e.device] = value;
+      else delete settings.aliases[e.device];
+      save();
+    }
+    renderKnown();
+    $(`#known-list .ff-known-item[data-device="${e.device}"] .ff-known-btn`)?.focus();
+  };
+  input.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') {
+      ev.preventDefault();
+      done(true);
+    } else if (ev.key === 'Escape') {
+      ev.preventDefault();
+      ev.stopPropagation();
+      done(false);
+    }
+  });
+  return el(
+    'li.ff-known-item.ff-known-editing',
+    { dataset: { device: e.device } },
+    el('span.ff-known-icon', {}, icon('devices')),
+    input,
+    button(t('save'), 'check', () => done(true), 'btn-primary btn-sm', { id: 'known-rename-save' }),
+    button('', 'x', () => done(false), 'btn-ghost btn-sm btn-square', { 'aria-label': t('cancel'), title: t('cancel') }),
+  );
 }
 
 function forgetKnown(device) {
   const entry = settings.known.find((e) => e.device === device);
   if (!entry) return;
+  const name = knownName(entry);
+  delete settings.aliases[device];
   saveKnown(forgetDevice(settings.known, device));
-  toast(t('known.forgotten', { name: entry.name }), 'info');
+  toast(t('known.forgotten', { name }), 'info');
 }
 
 /** Both devices tap each other: the one with the smaller id shows the offer, the other knocks. */
@@ -227,8 +308,8 @@ function startKnown(device) {
 }
 
 function showKnownWait(entry) {
-  $('#known-wait-title').textContent = t('known.wait.title', { name: entry.name });
-  $('#known-wait-text').textContent = t('known.wait.text', { name: entry.name, me: settings.name });
+  $('#known-wait-title').textContent = t('known.wait.title', { name: knownName(entry) });
+  $('#known-wait-text').textContent = t('known.wait.text', { name: knownName(entry), me: settings.name });
   $('#known-relays').textContent = '';
   showPanel('known');
 }
@@ -314,14 +395,15 @@ function showFailure(text, title = t('fail.title'), known = null) {
   $('#fail-text').textContent = text;
   retryKnown = known?.device ?? null;
   $('#fail-known').hidden = !retryKnown;
-  if (known) $('#fail-known-text').textContent = t('known.retry', { name: known.name });
+  if (known) $('#fail-known-text').textContent = t('known.retry', { name: knownName(known) });
   showPanel('failed');
   go('connect');
 }
 
 /** Nobody answered on a known device's topic: say what to do on the other device. */
 function showKnownFailure(known) {
-  showFailure(t('known.nopeer', { name: known.name, me: settings.name }), t('known.nopeer.title', { name: known.name }), known);
+  const name = knownName(known);
+  showFailure(t('known.nopeer', { name, me: settings.name }), t('known.nopeer.title', { name }), known);
 }
 
 function stopRelays() {
@@ -447,7 +529,7 @@ async function startCode(known = null) {
   }
   if (pass === false) return;
   layer = pass;
-  showPanel('busy', t(known ? 'known.busy' : 'pair.busy.code', { name: known?.name }));
+  showPanel('busy', t(known ? 'known.busy' : 'pair.busy.code', { name: known ? knownName(known) : '' }));
   let rv = null;
   try {
     rv = known ? await deriveKnownRendezvous(known.key) : null;
@@ -1036,6 +1118,8 @@ function handleHash() {
 function boot() {
   applyI18n(document);
   bind();
+  bindMore();
+  initContextMenu();
   initTransfers(app);
   initSync(app);
   initPanels(app);
