@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { PAL } from './art/palette.mjs';
-import { faviconSVG, headSVG, mascotSVG } from './art/finn.mjs';
+import { faviconSVG, headSVG, mascotSVG, maskableSVG } from './art/finn.mjs';
 import { bannerSVG, socialSVG } from './art/banner.mjs';
 import { ICONS, iconSVG } from './art/icons.mjs';
 import { ART, artSVG } from './art/art.mjs';
@@ -61,6 +61,8 @@ export function buildArt() {
     write(`assets/illustrations/lit/${n}-light.svg`, litSVG(n, 'light'));
   }
   write('docs/favicon.svg', faviconSVG());
+  write('docs/app/icons/icon.svg', faviconSVG());
+  write('docs/app/icons/maskable.svg', maskableSVG());
   write('docs/assets/art/finn.svg', mascotSVG('light'));
   write('docs/assets/art/finn-dark.svg', mascotSVG('dark'));
   write('docs/assets/art/finn-head.svg', headSVG('light'));
@@ -103,7 +105,7 @@ async function renderWithPlaywright(browserPath, jobs) {
       await page.setContent(`<!doctype html><html><body style="margin:0;overflow:hidden">${job.svg}</body></html>`);
       const out = join(root, job.out);
       mkdirSync(dirname(out), { recursive: true });
-      await page.screenshot({ path: out, clip: { x: 0, y: 0, width: job.width, height: job.height } });
+      await page.screenshot({ path: out, clip: { x: 0, y: 0, width: job.width, height: job.height }, omitBackground: true });
     }
   } finally {
     await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 3000))]);
@@ -134,6 +136,9 @@ export async function renderPng(jobs) {
 }
 
 export const baseImages = () => [
+  { svg: appIconSVG(192), width: 192, height: 192, out: 'docs/app/icons/icon-192.png' },
+  { svg: appIconSVG(512), width: 512, height: 512, out: 'docs/app/icons/icon-512.png' },
+  { svg: maskableSVG().replace('width="64" height="64"', 'width="512" height="512"'), width: 512, height: 512, out: 'docs/app/icons/maskable-512.png' },
   { svg: socialSVG(1280, 640), width: 1280, height: 640, out: 'assets/social-preview.png' },
   { svg: socialSVG(1200, 630), width: 1200, height: 630, out: 'docs/og.png' },
 ];

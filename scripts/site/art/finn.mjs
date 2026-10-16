@@ -76,8 +76,8 @@ export function finnBody(theme = 'light', { wink = false } = {}) {
   out.push(`<path d="${S.beak}" fill="${p.beak}"/>`);
   out.push(`<path d="M298 168 C316 168 332 170 344 172" fill="none" stroke="${dark ? '#B86F12' : '#D9861C'}" stroke-width="3" stroke-linecap="round"/>`);
   // eye and cheek
-  if (wink) out.push(`<path d="M246 160 C252 152 264 152 270 160" fill="none" stroke="${dark ? '#0B1530' : p.ink}" stroke-width="5" stroke-linecap="round"/>`);
-  else out.push(`<circle cx="258" cy="158" r="13" fill="${dark ? '#0B1530' : p.ink}"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/><circle cx="254" cy="163" r="2" fill="#FFFFFF" opacity=".7"/>`);
+  if (wink) out.push(`<path d="M246 160 C252 152 264 152 270 160" fill="none" stroke="${dark ? '#0B0B0E' : p.ink}" stroke-width="5" stroke-linecap="round"/>`);
+  else out.push(`<circle cx="258" cy="158" r="13" fill="${dark ? '#0B0B0E' : p.ink}"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/><circle cx="254" cy="163" r="2" fill="#FFFFFF" opacity=".7"/>`);
   out.push(`<ellipse cx="270" cy="186" rx="13" ry="8" fill="#FF8F7A" opacity=".75"/>`);
   return out.join('');
 }
@@ -115,7 +115,7 @@ export function headInner(theme = 'light', { rim = true } = {}) {
 <circle cx="222" cy="62" r="7" fill="${p.navy2}"/>
 <path d="${S.beak}" fill="${p.beak}"/>
 <path d="M298 168 C316 168 332 170 344 172" fill="none" stroke="${dark ? '#B86F12' : '#D9861C'}" stroke-width="3" stroke-linecap="round"/>
-<circle cx="258" cy="158" r="13" fill="${dark ? '#0B1530' : p.ink}"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/>
+<circle cx="258" cy="158" r="13" fill="${dark ? '#0B0B0E' : p.ink}"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/>
 <ellipse cx="270" cy="186" rx="13" ry="8" fill="#FF8F7A" opacity=".75"/>`;
 }
 
@@ -126,27 +126,41 @@ ${headInner(theme)}
 </svg>`;
 }
 
-/** Favicon: Finn's head on a sky tile, readable at 16 pixels. */
-export function faviconSVG() {
+/** Finn's head, cap and beak for the app icon, at a given placement. */
+function iconHead(transform) {
   const p = PAL.light;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-<defs><clipPath id="ff-tile"><rect width="64" height="64" rx="16"/></clipPath></defs>
-<g clip-path="url(#ff-tile)">
-<rect width="64" height="64" fill="${p.blue}"/>
-<path d="M0 46 C14 40 30 42 64 50 L64 64 L0 64 Z" fill="#4C86F5"/>
-<g transform="translate(-23 -6) scale(.23)">
-<path d="${S.head}" fill="${p.coral}" stroke="#FFFFFF" stroke-width="14"/>
-<path d="${S.visor}" fill="${p.navy2}" stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round"/>
-<path d="${S.beak}" fill="${p.beak}" stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round"/>
+  const d = PAL.dark;
+  return `<g transform="${transform}">
 <path d="${S.head}" fill="${p.coral}"/>
 <path d="M256 190 C276 196 292 190 300 176 C298 204 282 224 256 232 C238 226 236 200 256 190 Z" fill="${p.cream}"/>
-<path d="${S.cap}" fill="${p.navy}" stroke="#FFFFFF" stroke-width="10" stroke-linejoin="round"/>
-<path d="${S.visor}" fill="${p.navy2}"/>
+<path d="${S.visor}" fill="#26262D"/>
+<path d="${S.cap}" fill="#34343D"/>
 <path d="M150 126 C170 116 196 110 222 110 C252 110 278 114 298 120" fill="none" stroke="${p.sun}" stroke-width="12" stroke-linecap="round"/>
 <path d="${S.beak}" fill="${p.beak}"/>
-<circle cx="258" cy="158" r="17" fill="${p.ink}"/><circle cx="264" cy="152" r="6" fill="#FFFFFF"/>
+<circle cx="258" cy="158" r="17" fill="${d.sky}"/><circle cx="264" cy="152" r="6" fill="#FFFFFF"/>
+</g>`;
+}
+
+/** Favicon and app icon: Finn's head on a near black tile with a hairline edge and a coral glow. */
+export function faviconSVG() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<defs><clipPath id="ff-tile"><rect width="64" height="64" rx="15"/></clipPath><radialGradient id="ff-glow" cx=".62" cy=".62" r=".6"><stop offset="0" stop-color="#FF7A45" stop-opacity=".38"/><stop offset="1" stop-color="#FF7A45" stop-opacity="0"/></radialGradient><linearGradient id="ff-edge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".22"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".05"/></linearGradient></defs>
+<g clip-path="url(#ff-tile)">
+<rect width="64" height="64" fill="#0E0E11"/>
+<rect width="64" height="64" fill="url(#ff-glow)"/>
+${iconHead('translate(-23 -6) scale(.23)')}
 </g>
-</g>
+<rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="none" stroke="url(#ff-edge)"/>
+</svg>`;
+}
+
+/** The maskable app icon: the same head inside the safe zone of a full bleed tile. */
+export function maskableSVG() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<defs><radialGradient id="ff-glow" cx=".58" cy=".6" r=".55"><stop offset="0" stop-color="#FF7A45" stop-opacity=".34"/><stop offset="1" stop-color="#FF7A45" stop-opacity="0"/></radialGradient></defs>
+<rect width="64" height="64" fill="#0E0E11"/>
+<rect width="64" height="64" fill="url(#ff-glow)"/>
+${iconHead('translate(-11.5 1.6) scale(.19)')}
 </svg>`;
 }
 

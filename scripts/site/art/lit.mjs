@@ -8,7 +8,7 @@ const W = 640;
 const H = 400;
 
 export const LIT_THEME = {
-  dark: { line: '#EAF1FF', soft: 'rgba(234,241,255,.16)', faint: 'rgba(234,241,255,.07)', blue: '#7AB8FF', blue2: '#4C8DFF', coral: '#FF9B66', sun: '#FFC86B', mint: '#5BE6B8', core: '#FFFFFF', glow: 1, panel: 'rgba(20,34,72,.72)', panelLine: 'rgba(160,190,255,.22)', text: '#EAF1FF', sub: '#9DB3E0' },
+  dark: { line: '#EDEDF0', soft: 'rgba(237,237,240,.14)', faint: 'rgba(237,237,240,.06)', blue: '#B4B8C4', blue2: '#8D8D98', coral: '#FF7A45', sun: '#FFB27A', mint: '#3ECF8E', core: '#FFFFFF', glow: 1, panel: 'rgba(18,18,22,.8)', panelLine: 'rgba(255,255,255,.12)', text: '#EDEDF0', sub: '#8D8D98' },
   light: { line: '#10244A', soft: 'rgba(16,36,74,.16)', faint: 'rgba(16,36,74,.07)', blue: '#2F6FED', blue2: '#5B93FF', coral: '#FF6A2B', sun: '#F5A623', mint: '#14A77A', core: '#10244A', glow: 0.45, panel: 'rgba(255,255,255,.86)', panelLine: 'rgba(16,36,74,.14)', text: '#10244A', sub: '#51658A' },
 };
 

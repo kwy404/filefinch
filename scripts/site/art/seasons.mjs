@@ -45,7 +45,7 @@ function costume(id, theme) {
         `${conf}<path d="M20 120 C60 100 80 150 120 128 C150 112 160 150 190 136" fill="none" stroke="${b}" stroke-width="5" stroke-linecap="round" opacity=".8"/>`,
         `${rimmed(p, 'M226 150 C242 132 282 132 300 146 C306 168 294 184 272 180 C264 170 254 170 246 180 C226 184 218 168 226 150 Z', a)}
 <path d="M226 150 C242 132 282 132 300 146" fill="none" stroke="${b}" stroke-width="5" stroke-linecap="round"/>
-<circle cx="258" cy="158" r="14" fill="${dark ? '#0B1530' : p.ink}"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/>
+<circle cx="258" cy="158" r="14" fill="${dark ? '#0B0B0E' : p.ink}"/><circle cx="263" cy="153" r="4.5" fill="#FFFFFF"/>
 <path d="M300 146 C318 120 330 96 326 70 C340 96 336 124 304 152 Z" fill="${c}" stroke="${p.rim}" stroke-width="5" stroke-linejoin="round"/>
 <path d="M302 150 C330 132 352 120 364 98 C366 124 344 142 306 156 Z" fill="${b}" stroke="${p.rim}" stroke-width="5" stroke-linejoin="round"/>`,
       ];
@@ -187,7 +187,7 @@ function accentBody(id, theme) {
       return `${s}<path d="M640 0 C660 40 610 60 640 100 C665 132 625 150 646 190" fill="none" stroke="${a}" stroke-width="4" stroke-linecap="round" opacity=".7"/><path d="M1020 0 C1000 36 1050 60 1024 96 C1004 124 1044 146 1030 176" fill="none" stroke="${c}" stroke-width="4" stroke-linecap="round" opacity=".7"/>`;
     }
     case 'easter': {
-      const egg = (x, y, col, r) => `<g transform="rotate(${r} ${x} ${y})"><ellipse cx="${x}" cy="${y}" rx="15" ry="20" fill="${col}"/><path d="M${x - 13} ${y} l6 -5 l7 5 l7 -5 l6 5" fill="none" stroke="${dark ? '#0B1530' : '#FFFFFF'}" stroke-width="2.6" opacity=".55"/></g>`;
+      const egg = (x, y, col, r) => `<g transform="rotate(${r} ${x} ${y})"><ellipse cx="${x}" cy="${y}" rx="15" ry="20" fill="${col}"/><path d="M${x - 13} ${y} l6 -5 l7 5 l7 -5 l6 5" fill="none" stroke="${dark ? '#0B0B0E' : '#FFFFFF'}" stroke-width="2.6" opacity=".55"/></g>`;
       const flower = (x, y, col) => `<g>${[0, 72, 144, 216, 288].map((r) => `<ellipse cx="${x}" cy="${y - 8}" rx="5" ry="8" fill="${col}" transform="rotate(${r} ${x} ${y})"/>`).join('')}<circle cx="${x}" cy="${y}" r="4.5" fill="${b === col ? a : b}"/></g>`;
       return `<path d="M760 200 C860 186 1000 192 1200 182" fill="none" stroke="${c}" stroke-width="3" opacity=".6"/>${egg(840, 172, a, -14)}${egg(900, 168, b, 8)}${egg(1090, 160, c, -6)}${flower(960, 150, b)}${flower(1150, 120, a)}${flower(780, 120, c)}${flower(120, 60, b)}`;
     }

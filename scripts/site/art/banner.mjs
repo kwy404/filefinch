@@ -69,7 +69,7 @@ export function bannerSVG(theme = 'light') {
 }
 
 /** Social card (1280 by 640 for GitHub, 1200 by 630 for Open Graph). */
-export function socialSVG(W, H, theme = 'light') {
+export function socialSVG(W, H, theme = 'dark') {
   const p = PAL[theme];
   let s = sky(p, W, H, { theme, sunX: W - 120, sunY: 100, hillY: H * 0.86 });
   s += placeFinn(theme, W * 0.04, H * 0.2, H * 0.68);
@@ -84,7 +84,7 @@ export function socialSVG(W, H, theme = 'light') {
 }
 
 /** Open Graph card for a page or guide. */
-export function cardSVG({ title, kicker, art, theme = 'light' }) {
+export function cardSVG({ title, kicker, art, theme = 'dark' }) {
   const W = 1200, H = 630;
   const p = PAL[theme];
   let s = sky(p, W, H, { theme, sunX: 1110, sunY: 70, hills: false });

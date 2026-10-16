@@ -1,6 +1,7 @@
 // Shared colors of the filefinch art: an open daytime sky for the light
-// theme and a clear night sky for the dark theme. Finn keeps his coral
-// feathers in both, the rim and the shadows change.
+// theme and a near black night for the dark theme, where graphite and
+// hairlines carry the shapes and Finn's coral is the only color that glows.
+// Finn keeps his coral feathers in both, the rim and the shadows change.
 
 export const PAL = {
   light: {
@@ -37,38 +38,39 @@ export const PAL = {
     hill2: '#B4E0C6',
   },
   dark: {
-    sky: '#0B1530',
-    sky2: '#11214A',
-    sky3: '#1A2E62',
-    horizon: '#24345F',
-    sun: '#FFD66B',
-    sunGlow: '#3A4570',
-    ink: '#EAF1FF',
-    ink2: '#C3D3F5',
-    soft: '#9AAED6',
-    line: '#2A3E73',
-    card: '#14244D',
-    card2: '#1A2C5A',
-    blue: '#6FA0FF',
-    blue2: '#8FB6FF',
-    mint: '#4BE0B0',
-    mint2: '#1F6F5A',
-    coral: '#FF8A5B',
-    coral2: '#EE6534',
-    coralSoft: '#7A3A2A',
-    cream: '#FFF0DA',
-    beak: '#FFB84F',
-    kraft: '#E6B072',
-    kraft2: '#B4793A',
-    string: '#6E431D',
-    navy: '#2B4C94',
-    navy2: '#1C3570',
-    rim: '#DCE7FF',
-    shadow: 'rgba(0,0,0,.35)',
-    trail: '#4C6FB8',
-    hill: '#1B3550',
-    hill2: '#163047',
+    sky: '#0B0B0E',
+    sky2: '#111115',
+    sky3: '#18181D',
+    horizon: '#1E1E24',
+    sun: '#FFB86B',
+    sunGlow: '#2A1D14',
+    ink: '#EDEDF0',
+    ink2: '#C4C4CC',
+    soft: '#8D8D98',
+    line: '#2A2A31',
+    card: '#141418',
+    card2: '#1A1A1F',
+    blue: '#B4B8C4',
+    blue2: '#D3D6DE',
+    mint: '#3ECF8E',
+    mint2: '#173D2E',
+    coral: '#FF7A45',
+    coral2: '#E9602C',
+    coralSoft: '#47231A',
+    cream: '#FFEBD6',
+    beak: '#FFB04F',
+    kraft: '#D9A066',
+    kraft2: '#A8713A',
+    string: '#5E3A1A',
+    navy: '#2C2C34',
+    navy2: '#1F1F25',
+    rim: '#34343D',
+    shadow: 'rgba(0,0,0,.55)',
+    trail: '#7A3A22',
+    hill: '#141418',
+    hill2: '#101013',
   },
+
 };
 
 export const FONT = "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif";
