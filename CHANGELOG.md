@@ -4,6 +4,8 @@ All notable changes to filefinch are documented here. The format follows [Keep a
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-17
+
 ### Added
 
 - A context menu in the app: right click, a long press on touch, or the Menu key (or Shift+F10) on a focused item. Received files offer Open, Save, Keep in library, Copy and Remove from list; texts offer Copy and Open link; known devices offer Connect, Rename and Forget; transfers offer Pause, Resume, Cancel, Send again and Remove from list. It is one keyboard friendly menu that stays inside the screen.
@@ -25,6 +27,7 @@ All notable changes to filefinch are documented here. The format follows [Keep a
 
 - The passphrase prompt showed its text keys instead of its title and explanation.
 - The installed app could not start offline: one of its scripts (library.js) was left out of the offline cache.
+- A phrase pasted into the six word boxes now spreads over all six even when a phone keyboard inserts it without a paste event.
 
 ## [0.2.0] - 2026-10-14
 
@@ -62,5 +65,6 @@ First public release.
 - Website with a landing page, eleven English guides, three Portuguese guides, sitemap, robots, Open Graph images and a 404 page.
 - Finn the finch courier mascot, an original icon set and illustrations in light and dark.
 
+[0.3.0]: https://github.com/kwy404/filefinch/releases/tag/v0.3.0
 [0.2.0]: https://github.com/kwy404/filefinch/releases/tag/v0.2.0
 [0.1.0]: https://github.com/kwy404/filefinch/releases/tag/v0.1.0
